@@ -1,36 +1,426 @@
 <!DOCTYPE html>
-<html>
+<html lang="lt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jumpsipidy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Angis lygiai</title>
   <style>
-    body{
-      margin:0;
-      font-family:Arial,sans-serif;
-      background:#111;
-      color:white;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      text-align:center;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    .box{
-      background:#1e1e1e;
-      padding:30px;
-      border-radius:16px;
-      width:90%;
-      max-width:500px;
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      color: white;
+      background:
+        radial-gradient(circle at top left, rgba(0,255,180,0.18), transparent 25%),
+        radial-gradient(circle at top right, rgba(0,180,255,0.18), transparent 30%),
+        radial-gradient(circle at bottom, rgba(140,0,255,0.20), transparent 35%),
+        linear-gradient(135deg, #050816, #0c1630 35%, #111827 65%, #030712);
+      overflow-x: hidden;
     }
-    a{color:#7db7ff;}
+
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.35;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    .orb1 {
+      width: 220px;
+      height: 220px;
+      background: #00ffc8;
+      top: 10%;
+      left: 5%;
+    }
+
+    .orb2 {
+      width: 280px;
+      height: 280px;
+      background: #7c3aed;
+      top: 55%;
+      right: 8%;
+      animation-delay: 2s;
+    }
+
+    .orb3 {
+      width: 180px;
+      height: 180px;
+      background: #00a2ff;
+      bottom: 10%;
+      left: 35%;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px) translateX(0px) scale(1); }
+      50% { transform: translateY(-20px) translateX(10px) scale(1.05); }
+      100% { transform: translateY(0px) translateX(0px) scale(1); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 30px 20px 40px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #ffffff, #67e8f9, #22c55e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(255,255,255,0.15);
+    }
+
+    .hero p {
+      margin-top: 14px;
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+      padding: 24px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .level-btn {
+      position: relative;
+      border: none;
+      border-radius: 18px;
+      padding: 18px 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, rgba(34,197,94,0.25), rgba(59,130,246,0.25));
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      overflow: hidden;
+    }
+
+    .level-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: translateX(-120%);
+      transition: transform 0.5s ease;
+    }
+
+    .level-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35), 0 0 18px rgba(34,197,94,0.25);
+      background: linear-gradient(135deg, rgba(34,197,94,0.40), rgba(59,130,246,0.40));
+    }
+
+    .level-btn:hover::before {
+      transform: translateX(120%);
+    }
+
+    .content {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .code-box {
+      background: rgba(2, 6, 23, 0.88);
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03), 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    .code-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .code-title h2 {
+      font-size: 1.35rem;
+      color: #67e8f9;
+    }
+
+    .badge {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.22), rgba(59,130,246,0.22));
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.96rem;
+      line-height: 1.6;
+      color: #dbeafe;
+      font-family: Consolas, monospace;
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #facc15;
+      text-shadow: 0 0 12px rgba(250,204,21,0.28);
+      padding: 20px;
+      background: rgba(250,204,21,0.08);
+      border: 1px solid rgba(250,204,21,0.18);
+      border-radius: 20px;
+    }
+
+    .small-text {
+      margin-top: 10px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 700px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .level-btn {
+        padding: 16px 10px;
+        font-size: 0.95rem;
+      }
+
+      pre {
+        font-size: 0.88rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Laimonas Damarodas kakutis</h1>
-    <p>Labas šikniau.</p>
-    <p>čia gyvena cipukas ir cipulrnas.</p>
+  <div class="bg-glow">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
   </div>
+
+  <div class="container">
+    <section class="hero">
+      <h1>ANGIS LYGIŲ ATSAKYMAI</h1>
+      <p>
+        Čia yra cool atrodantis puslapis su mygtukais nuo <b>Angis lygis 4</b> iki <b>Angis lygis 14</b>.
+        Veikia gražiai, mygtukai šviečia, o apačioje rodo pasirinktą kodą.
+      </p>
+    </section>
+
+    <section class="panel">
+      <div class="button-grid">
+        <button class="level-btn" onclick="showCode(4)">Angis lygis 4</button>
+        <button class="level-btn" onclick="showCode(5)">Angis lygis 5</button>
+        <button class="level-btn" onclick="showCode(6)">Angis lygis 6</button>
+        <button class="level-btn" onclick="showCode(7)">Angis lygis 7</button>
+        <button class="level-btn" onclick="showCode(8)">Angis lygis 8</button>
+        <button class="level-btn" onclick="showCode(9)">Angis lygis 9</button>
+        <button class="level-btn" onclick="showCode(10)">Angis lygis 10</button>
+        <button class="level-btn" onclick="showCode(11)">Angis lygis 11</button>
+        <button class="level-btn" onclick="showCode(12)">Angis lygis 12</button>
+        <button class="level-btn" onclick="showCode(13)">Angis lygis 13</button>
+        <button class="level-btn" onclick="showCode(14)">Angis lygis 14</button>
+      </div>
+
+      <div class="content">
+        <div class="code-box">
+          <div class="code-title">
+            <h2 id="levelTitle">Pasirink lygį</h2>
+            <div class="badge">Interaktyvus kodų puslapis</div>
+          </div>
+          <pre id="codeOutput">Spausk mygtuką viršuje ir čia atsiras kodas.</pre>
+        </div>
+
+        <div class="footer-note">
+          Daugiau neduosiu atsakymų nes patys dirbkyt nugetsai
+        </div>
+        <div class="small-text">
+          Sukurta su HTML, CSS ir JavaScript.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const codes = {
+      4: `reikalingas lygis4
+
+slibinas = lygis4.slibinas
+
+kartok 6:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 5:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 4:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 4:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 3:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 3:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 2:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 2:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 1:
+    slibinas.šok()
+slibinas.dešinėn()
+kartok 1:
+    slibinas.šok()
+slibinas.dešinėn()`,
+
+      5: `reikalingas lygis5
+
+liepsna = lygis5.liepsna
+slibinas = lygis5.slibinas
+komanda ugniesBurtas():
+ kartok 4:
+  liepsna.pirmyn(8)
+  liepsna.dešinėn()
+ugniesBurtas()
+ugniesBurtas()
+
+slibinas.spruk()`,
+
+      6: `reikalingas lygis6
+
+princas = lygis6.princas
+kaimas = lygis6.kaimas
+
+tekstas = princas.paklauskTeksto()
+if not tekstas or len(tekstas.strip()) == 0:
+    tekstas = "Ačiū"
+
+kaimas.iškelkUžrašą(tekstas)`,
+
+      7: `reikalingas žaidimas
+
+scena = žaidimas.duokSceną()
+
+atsakymas = žaidimas.paklauskTeksto("Koks slaptažodis?")
+
+if atsakymas == "abcd":
+    scena.naudokPaveiksliuką("sveiki_atvyke.png")`,
+
+      8: `reikalingas lygis8
+
+princas = lygis8.princas
+gynėjas = lygis8.gynėjas
+
+princas.pirmyn(2)
+
+while gynėjas.gyvybėsTaškai > 0:
+    princas.kirsk()
+
+princas.sakyk("Ar jau nugalėjau?")
+princas.sakyk("Ar jau nugalėjau?")`,
+
+      9: `reikalingas lygis9
+
+sprogimas = lygis9.sprogimas
+fonas = lygis9.fonas
+
+blogietis = lygis9.sukurkBlogietį(x=20, y=400)
+
+def nupieškSprogimą(x, y):
+    sprogimas.atsirask(x=x, y=y)
+
+def susprogdinkBlogietį(x, y):
+
+    nupieškSprogimą(x, y)
+
+    blogietis.mirk()
+
+blogietis.pelęPaspaudus(susprogdinkBlogietį)
+fonas.pelęPaspaudus(nupieškSprogimą)`,
+
+      10: `Angis lygis 10
+
+Čia dar neįdėtas kodas.
+Jei norėsi, galiu tau padaryti ir 10 lygio atsakymo vietą.`,
+
+      11: `Angis lygis 11
+
+Čia dar neįdėtas kodas.
+Jei norėsi, galiu tau padaryti ir 11 lygio atsakymo vietą.`,
+
+      12: `Angis lygis 12
+
+Čia dar neįdėtas kodas.
+Jei norėsi, galiu tau padaryti ir 12 lygio atsakymo vietą.`,
+
+      13: `Angis lygis 13
+
+Čia dar neįdėtas kodas.
+Jei norėsi, galiu tau padaryti ir 13 lygio atsakymo vietą.`,
+
+      14: `Angis lygis 14
+
+Čia dar neįdėtas kodas.
+Jei norėsi, galiu tau padaryti ir 14 lygio atsakymo vietą.`
+    };
+
+    function showCode(level) {
+      document.getElementById("levelTitle").textContent = "Angis lygis " + level;
+      document.getElementById("codeOutput").textContent = codes[level];
+    }
+  </script>
 </body>
 </html>
