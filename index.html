@@ -1,4 +1,4 @@
- 	<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="lt">
 <head>
   <meta charset="UTF-8" />
@@ -33,7 +33,7 @@
     * { box-sizing:border-box; margin:0; padding:0; user-select: none; }
     html { scroll-behavior:smooth; }
     
-    /* RESTORED ORIGINAL BACKGROUND PROPERLY */
+    /* BACKGROUND */
     body {
       min-height: 100vh; font-family: 'Segoe UI', Arial, sans-serif; color: var(--text);
       background: radial-gradient(circle at 10% 10%, rgba(34,211,238,.14), transparent 22%),
@@ -113,10 +113,13 @@
     .level-btn:hover::before { transform:translateX(120%); }
     .level-btn:active { transform:translateY(-1px) scale(.98); }
     
-    /* SPECIAL UNLOCK BUTTON */
-    .unlock-btn { background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(34,211,238,0.3)); border-color: var(--cyan); text-shadow: 0 0 5px #fff; grid-column: 1 / -1; animation: pulseGlow 2s infinite;}
-    @keyframes pulseGlow { 0% { box-shadow: 0 0 5px rgba(34,211,238,0.2); } 50% { box-shadow: 0 0 20px rgba(34,211,238,0.6); } 100% { box-shadow: 0 0 5px rgba(34,211,238,0.2); } }
+    /* SPECIAL BUTTONS */
+    .unlock-btn { background: linear-gradient(135deg, rgba(255,0,85,0.2), rgba(255,170,0,0.2)); border-color: #ff0055; text-shadow: 0 0 5px #fff; animation: pulseGlowRed 2s infinite;}
+    @keyframes pulseGlowRed { 0% { box-shadow: 0 0 5px rgba(255,0,85,0.2); } 50% { box-shadow: 0 0 20px rgba(255,0,85,0.6); } 100% { box-shadow: 0 0 5px rgba(255,0,85,0.2); } }
     
+    .riddle-btn { background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(34,197,94,0.3)); border-color: var(--purple); text-shadow: 0 0 5px #fff; animation: pulseGlowPurple 3s infinite;}
+    @keyframes pulseGlowPurple { 0% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } 50% { box-shadow: 0 0 20px rgba(139,92,246,0.6); } 100% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } }
+
     .hidden-level { display: none; opacity: 0; transform: translateY(20px); }
     .hidden-level.revealed { display: block; animation: revealLevel 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes revealLevel { to { opacity: 1; transform: translateY(0); } }
@@ -157,19 +160,31 @@
     .mini-logo { display:flex; align-items:center; justify-content:center; gap:12px; padding:16px; border-radius:18px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); font-weight:900; letter-spacing:.8px; color:#e0f2fe; transition: transform 0.1s; transform-style: preserve-3d;}
     .mini-logo-ring { width:24px; height:24px; border-radius:50%; border:3px solid rgba(34,211,238,.18); border-top-color:var(--cyan); animation:spin 1s linear infinite; transform: translateZ(25px); transition: border-color 1s ease;}
     
-    /* ADMIN LOGIN MODAL */
-    .admin-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 100000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
-    .admin-modal.show { opacity: 1; visibility: visible; }
-    .admin-box { background: rgba(10,15,30,0.9); border: 2px solid var(--cyan); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(34,211,238,0.3); transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 400px; width: 90%;}
-    .admin-modal.show .admin-box { transform: scale(1); }
-    .admin-box h2 { color: #fff; letter-spacing: 2px; margin-bottom: 20px; font-family: monospace; }
-    .admin-box input { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 1.2rem; text-align: center; border-radius: 8px; margin-bottom: 20px; font-family: monospace; outline: none; transition: 0.3s;}
-    .admin-box input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(34,211,238,0.4); }
-    .admin-btn { background: var(--cyan); color: #000; border: none; padding: 15px 30px; font-weight: 900; font-size: 1.1rem; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.2s; }
-    .admin-btn:hover { background: #fff; box-shadow: 0 0 20px #fff; }
-    .admin-error { color: #ff3333; margin-top: 15px; font-weight: bold; height: 20px; font-family: monospace;}
-    .close-modal { position: absolute; top: 15px; right: 20px; color: #888; font-size: 1.5rem; cursor: pointer; font-family: sans-serif;}
+    /* MODALS (ADMIN & RIDDLE) */
+    .custom-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 100000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
+    .custom-modal.show { opacity: 1; visibility: visible; }
+    .modal-box { background: rgba(10,15,30,0.9); border: 2px solid var(--cyan); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(34,211,238,0.3); transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 450px; width: 90%; position: relative;}
+    .custom-modal.show .modal-box { transform: scale(1); }
+    .modal-box h2 { color: #fff; letter-spacing: 2px; margin-bottom: 20px; font-family: monospace; }
+    .modal-box input { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 1.2rem; text-align: center; border-radius: 8px; margin-bottom: 20px; font-family: monospace; outline: none; transition: 0.3s;}
+    .modal-box input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(34,211,238,0.4); }
+    .modal-btn { background: var(--cyan); color: #000; border: none; padding: 15px 30px; font-weight: 900; font-size: 1.1rem; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.2s; }
+    .modal-btn:hover { background: #fff; box-shadow: 0 0 20px #fff; }
+    .modal-error { color: #ff3333; margin-top: 15px; font-weight: bold; min-height: 20px; font-family: monospace; font-size: 0.9rem;}
+    .close-modal { position: absolute; top: 15px; right: 20px; color: #888; font-size: 1.5rem; cursor: pointer; font-family: sans-serif; z-index: 10;}
     .close-modal:hover { color: #fff; }
+
+    /* SPECIFIC RIDDLE MODAL STYLING */
+    #riddleModal .modal-box { border-color: var(--purple); box-shadow: 0 0 50px rgba(139,92,246,0.3); max-width: 550px;}
+    #riddleModal input:focus { border-color: var(--purple); box-shadow: 0 0 15px rgba(139,92,246,0.4); }
+    #riddleModal .modal-btn { background: var(--purple); color: #fff; }
+    #riddleModal .modal-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff; }
+    .riddle-text-area { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-family: monospace; color: var(--cyan); line-height: 1.6; min-height: 100px;}
+    .riddle-warning { font-size: 0.8rem; color: var(--yellow); margin-bottom: 15px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;}
+    .riddle-hint { color: var(--green); font-family: monospace; font-size: 0.85rem; margin-top: 15px; display: none; animation: fadeUp 0.5s; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 10px;}
+    
+    .link-to-riddle { color: var(--cyan); text-decoration: underline; cursor: pointer; display: block; margin-top: 10px; font-size: 0.85rem;}
+    .link-to-riddle:hover { color: #fff; }
 
     /* CONTEXT MENU */
     #customContextMenu { position: fixed; background: rgba(10,15,30,0.95); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.9), var(--glow-cyan); backdrop-filter: blur(10px); padding: 8px; z-index: 99999; display: none; min-width: 220px; transform-origin: top left; animation: menuScale 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -240,13 +255,26 @@
   <div class="orb orb2"></div>
   <div class="orb orb3"></div>
 
-  <div id="adminModal" class="admin-modal">
-    <div class="admin-box">
+  <div id="adminModal" class="custom-modal">
+    <div class="modal-box">
       <span class="close-modal" onclick="closeAdminModal()">&times;</span>
       <h2>SISTEMOS AUTORIZACIJA</h2>
       <input type="password" id="adminCode" placeholder="Įveskite kodą..." autocomplete="off" onkeypress="if(event.key === 'Enter') verifyCode()">
-      <button class="admin-btn" onclick="verifyCode()">PATVIRTINTI PRIEIGĄ</button>
-      <div id="adminError" class="admin-error"></div>
+      <button class="modal-btn" onclick="verifyCode()">PATVIRTINTI PRIEIGĄ</button>
+      <div id="adminError" class="modal-error"></div>
+    </div>
+  </div>
+
+  <div id="riddleModal" class="custom-modal">
+    <div class="modal-box">
+      <span class="close-modal" onclick="closeRiddleModal()">&times;</span>
+      <h2>KRIPTOGRAFINĖ MĮSLĖ</h2>
+      <div class="riddle-warning">DĖMESIO: Ši mįslė atrakina TIK 10 lygį.<br>Kiti lygiai liks užrakinti.</div>
+      <div class="riddle-text-area" id="riddleTextDisplay">Šifruojama...</div>
+      <input type="text" id="riddleAnswer" placeholder="Įveskite atsakymą..." autocomplete="off" onkeypress="if(event.key === 'Enter') verifyRiddle()">
+      <button class="modal-btn" onclick="verifyRiddle()">DEŠIFRUOTI LYGĮ</button>
+      <div id="riddleError" class="modal-error"></div>
+      <div id="riddleHint" class="riddle-hint">Užuomina: Tavo pirštai ant manęs šoka kiekvieną dieną...</div>
     </div>
   </div>
 
@@ -298,13 +326,15 @@
         <button class="level-btn" onclick="openLevel(8)">Lygis 8</button>
         <button class="level-btn" onclick="openLevel(9)">Lygis 9</button>
         
+        <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openRiddleModal()">Iššifruoti Lygį 10</button>
+
         <button class="level-btn unlock-btn" id="unlockBtn" onclick="openAdminModal()">Gauti visus atsakymus nuo 9</button>
         
-        <button class="level-btn hidden-level" onclick="openLevel(10)" style="animation-delay: 0.1s;">Lygis 10</button>
-        <button class="level-btn hidden-level" onclick="openLevel(11)" style="animation-delay: 0.2s;">Lygis 11</button>
-        <button class="level-btn hidden-level" onclick="openLevel(12)" style="animation-delay: 0.3s;">Lygis 12</button>
-        <button class="level-btn hidden-level" onclick="openLevel(13)" style="animation-delay: 0.4s;">Lygis 13</button>
-        <button class="level-btn hidden-level" onclick="openLevel(14)" style="animation-delay: 0.5s;">Lygis 14</button>
+        <button id="btn-lygis-10" class="level-btn hidden-level" onclick="openLevel(10)" style="animation-delay: 0.1s;">Lygis 10</button>
+        <button id="btn-lygis-11" class="level-btn hidden-level" onclick="openLevel(11)" style="animation-delay: 0.2s;">Lygis 11</button>
+        <button id="btn-lygis-12" class="level-btn hidden-level" onclick="openLevel(12)" style="animation-delay: 0.3s;">Lygis 12</button>
+        <button id="btn-lygis-13" class="level-btn hidden-level" onclick="openLevel(13)" style="animation-delay: 0.4s;">Lygis 13</button>
+        <button id="btn-lygis-14" class="level-btn hidden-level" onclick="openLevel(14)" style="animation-delay: 0.5s;">Lygis 14</button>
       </div>
 
       <div class="content">
@@ -351,7 +381,7 @@
       8: `reikalingas lygis8\n\nprincas = lygis8.princas\ngynėjas = lygis8.gynėjas\n\nprincas.pirmyn(2)\n\nwhile gynėjas.gyvybėsTaškai > 0:\n    princas.kirsk()\n\nprincas.sakyk("Ar jau nugalėjau?")\nprincas.sakyk("Ar jau nugalėjau?")`,
       9: `reikalingas lygis9\n\nsprogimas = lygis9.sprogimas\nfonas = lygis9.fonas\n\nblogietis = lygis9.sukurkBlogietį(x=20, y=400)\n\ndef nupieškSprogimą(x, y):\n    sprogimas.atsirask(x=x, y=y)\n\ndef susprogdinkBlogietį(x, y):\n    nupieškSprogimą(x, y)\n    blogietis.mirk()\n\nblogietis.pelęPaspaudus(susprogdinkBlogietį)\nfonas.pelęPaspaudus(nupieškSprogimą)`,
       
-      // NEW UNLOCKED LEVELS
+      // UNLOCKED LEVELS
       10: `reikalinga angis\nreikalingas žaidimas\n\nscena = žaidimas.Scena(plotis=800, aukštis=800)\nscena.naudokFoną('pav/pilis/fejos_mene.png')\n\nveidrodis  = žaidimas.Dekoracija('pav/pilis/veidrodis.png',  x=0,   y=510)\nlangas     = žaidimas.Dekoracija('pav/pilis/langas.png',     x=180, y=410)\nlempa      = žaidimas.Dekoracija('pav/pilis/lempa.png',      x=300, y=510)\nskrynia    = žaidimas.Dekoracija('pav/pilis/skrynia.png',    x=420, y=510)\nherbas     = žaidimas.Dekoracija('pav/pilis/herbas.png',     x=430, y=630)\npaveikslas = žaidimas.Dekoracija('pav/pilis/paveikslas.png', x=530, y=630)\nužuolaidos = žaidimas.Dekoracija('pav/pilis/uzuolaidos.png', x=670, y=510)\n\ndef padarykPerkeliama(obj):\n    def paspaudus(x, y):\n        obj.prisikabinkPriePelės()\n    def atleidus(x, y):\n        obj.atsikabinkNuoPelės()\n    obj.pelęPaspaudus(paspaudus)\n    obj.pelęAtleidus(atleidus)\n\npadarykPerkeliama(veidrodis)\npadarykPerkeliama(langas)\npadarykPerkeliama(lempa)\npadarykPerkeliama(skrynia)\npadarykPerkeliama(herbas)\npadarykPerkeliama(paveikslas)\npadarykPerkeliama(užuolaidos)`,
       11: `reikalingas lygis11\nreikalingas žaidimas\n\nžmogausTaškai = 0\nslibinoTaškai = 0\n\nžmogus = žaidimas.Dekoracija('pav/zmogus1.png', 1, 100)\nslibinas = žaidimas.Dekoracija('pav/slibinas1.png', 400, 100)\n\nžmogausPasirinkimas = žaidimas.paklauskTeksto("a - akmuo \\n ž - žirklės \\n p - popierius")\n\njei žmogausPasirinkimas == 'a':\n    žmogus.naudokPaveiksliuką('pav/zmogus_akmuo.png')\n    slibinoPasirinkimas = 'p'\njei žmogausPasirinkimas == 'ž':\n    žmogus.naudokPaveiksliuką('pav/zmogus_zirkles.png')\n    slibinoPasirinkimas = 'a'\njei žmogausPasirinkimas == 'p':\n    žmogus.naudokPaveiksliuką('pav/zmogus_popierius.png')\n    slibinoPasirinkimas = 'ž'\n\njei slibinoPasirinkimas == 'a':\n    slibinas.naudokPaveiksliuką('pav/slibinas_akmuo.png')\njei slibinoPasirinkimas == 'ž':\n    slibinas.naudokPaveiksliuką('pav/slibinas_zirkles.png')\njei slibinoPasirinkimas == 'p':\n    slibinas.naudokPaveiksliuką('pav/slibinas_popierius.png')\n\njei žmogausPasirinkimas == 'a':\n    jei slibinoPasirinkimas == 'ž':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'p':\n        slibinoTaškai = slibinoTaškai + 1\n\njei žmogausPasirinkimas == 'p': \n    jei slibinoPasirinkimas == 'a':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'ž':\n        slibinoTaškai = slibinoTaškai + 1\n\njei žmogausPasirinkimas == 'ž': \n    jei slibinoPasirinkimas == 'p':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'a':\n        slibinoTaškai = slibinoTaškai + 1\n\nžaidimas.sakyk("Slibinas ", slibinoTaškai, ": Žmogus ", žmogausTaškai)`,
       12: `reikalingas lygis12\nreikalingas žaidimas\n\nprincas = lygis12.princas\n\nkomanda pirmyn(mygtukas):\n    princas.pirmyn()\n\nkomanda atgal(mygtukas):\n    princas.atgal()\n\nkomanda kairėn(mygtukas):\n    princas.kairėn()\n\nkomanda dešinėn(mygtukas):\n    princas.dešinėn()\n\nkomanda kirsk(mygtukas):\n    princas.kirsk()\n\nkomanda stop(mygtukas):\n    princas.stok()\n\nžaidimas.mygtukąPaspaudus('w', pirmyn)\nžaidimas.mygtukąPaspaudus('s', atgal)\nžaidimas.mygtukąPaspaudus('a', kairėn)\nžaidimas.mygtukąPaspaudus('d', dešinėn)\nžaidimas.mygtukąPaspaudus(' ', kirsk)\n\nžaidimas.mygtukąAtleidus(stop)`,
@@ -391,7 +421,7 @@
     function openAdminModal() {
       adminModal.classList.add('show');
       adminCodeInput.value = '';
-      adminError.textContent = '';
+      adminError.innerHTML = '';
       adminCodeInput.focus();
     }
     
@@ -402,10 +432,9 @@
     function verifyCode() {
       const code = adminCodeInput.value;
       if (code === "7851") {
-        // SUCCESS: INITIATE OVERRIDE SEQUENCE
+        // SUCCESS
         adminError.style.color = "#22c55e";
         adminError.textContent = "PRIEIGA PATVIRTINTA. INITIATING OVERRIDE...";
-        
         setTimeout(() => {
           closeAdminModal();
           triggerSystemOverride();
@@ -413,43 +442,116 @@
       } else {
         // FAIL
         adminError.style.color = "#ff3333";
-        adminError.textContent = "Neteisingas administratoriaus kodas.";
-        // Shake effect
-        document.querySelector('.admin-box').style.animation = "glitchSkew 0.3s";
-        setTimeout(() => { document.querySelector('.admin-box').style.animation = ""; }, 300);
+        // Pridėta hakeriška nuoroda atidaryti mįslę po nesėkmingo bandymo
+        adminError.innerHTML = `Neteisingas administratoriaus kodas.<br><span class="link-to-riddle" onclick="closeAdminModal(); openRiddleModal();">Arba iššifruokite mįslę 10-am lygiui.</span>`;
+        document.querySelector('#adminModal .modal-box').style.animation = "glitchSkew 0.3s";
+        setTimeout(() => { document.querySelector('#adminModal .modal-box').style.animation = ""; }, 300);
       }
     }
     
     function triggerSystemOverride() {
-      // Massive visual glitch
       document.body.style.filter = "url(#override-filter) url(#glitch-filter)";
-      
       setTimeout(() => {
         document.body.style.filter = "none";
-        
-        // Change Theme globally to Red Hacker Mode
         document.body.classList.add("admin-mode");
         
-        // Update Labels
         document.getElementById('levelRangeLabel').innerHTML = "Lygiai: 4 → 14 <span style='color:var(--cyan);'>[ADMIN]</span>";
         document.getElementById('authorTitle').textContent = "SYSTEM_ADMIN: ELIJAS";
         document.getElementById('warningCard').textContent = "ADMINISTRATORIAUS PRIEIGA AKTYVI. VISI LYGIAI ATRAKINTI.";
         
-        // Hide the unlock button
         unlockBtn.style.display = "none";
+        document.getElementById('openRiddleBtn').style.display = "none"; // Hide riddle btn if admin
         
-        // Reveal hidden levels dynamically
+        // Reveal ALL hidden levels
         const hiddenLevels = document.querySelectorAll('.hidden-level');
-        hiddenLevels.forEach(btn => {
-          btn.classList.add('revealed');
-        });
+        hiddenLevels.forEach(btn => { btn.classList.add('revealed'); });
         
         showCopyMessage("SISTEMA NULAUŽTA SĖKMINGAI.");
-        
-        // Retarget physics to be even more aggressive
         mouseArea.radius = 280;
-        
       }, 800);
+    }
+
+    // ============================================================================
+    // MODULE 3.5: RIDDLE PROTOCOL (HACKER LOGIC)
+    // ============================================================================
+    const riddleModal = document.getElementById('riddleModal');
+    const riddleError = document.getElementById('riddleError');
+    const riddleInput = document.getElementById('riddleAnswer');
+    const riddleDisplay = document.getElementById('riddleTextDisplay');
+    const riddleHint = document.getElementById('riddleHint');
+    
+    let riddleAttempts = 0;
+    const RIDDLE_TEXT = "Turiu šimtą dantų, bet nieko nekandu.\nMoku rašyti, bet neturiu rankų.\nEsu miškas, bet niekada nepavargsta.\nKas aš?";
+    let decryptInterval = null;
+
+    function openRiddleModal() {
+      riddleModal.classList.add('show');
+      riddleInput.value = '';
+      riddleError.innerHTML = '';
+      riddleInput.focus();
+      
+      // Decrypt the riddle text dynamically
+      if(decryptInterval) clearInterval(decryptInterval);
+      let iteration = 0;
+      const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+      
+      decryptInterval = setInterval(() => {
+        riddleDisplay.innerText = RIDDLE_TEXT.split("").map((letter, index) => {
+          if(letter === '\n' || letter === ' ') return letter;
+          if(index < iteration) return letter;
+          return ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+        }).join("");
+        
+        if(iteration >= RIDDLE_TEXT.length){ 
+          clearInterval(decryptInterval);
+        }
+        iteration += 1; // Speed of decryption
+      }, 15);
+    }
+
+    function closeRiddleModal() {
+      riddleModal.classList.remove('show');
+    }
+
+    function verifyRiddle() {
+      // Clean up input: to lower case, remove spaces, handle lithuanian characters
+      let answer = riddleInput.value.toLowerCase().trim();
+      
+      if (answer === "klaviatura" || answer === "klaviatūra") {
+        // SUCCESS
+        riddleError.style.color = "#22c55e";
+        riddleError.textContent = "ATSAKYMAS TEISINGAS. 10 LYGIS ATRAKINTAS.";
+        
+        setTimeout(() => {
+          closeRiddleModal();
+          // Visual Glitch
+          document.body.style.filter = "url(#glitch-filter)";
+          setTimeout(() => document.body.style.filter = "none", 200);
+          
+          // Reveal ONLY Level 10
+          document.getElementById('btn-lygis-10').classList.add('revealed');
+          document.getElementById('openRiddleBtn').style.display = "none"; // Hide riddle button
+          
+          // Update Label
+          document.getElementById('levelRangeLabel').innerHTML = "Lygiai: 4 → 10 <span style='color:var(--purple);'>[PARTIAL UNLOCK]</span>";
+          showCopyMessage("10 LYGIS ATRAKINTAS!");
+        }, 1000);
+
+      } else {
+        // FAIL
+        riddleAttempts++;
+        riddleError.style.color = "#ff3333";
+        riddleError.textContent = "Neteisingas atsakymas. Prieiga atmesta.";
+        
+        // Shake effect
+        document.querySelector('#riddleModal .modal-box').style.animation = "glitchSkew 0.3s";
+        setTimeout(() => { document.querySelector('#riddleModal .modal-box').style.animation = ""; }, 300);
+        
+        // Show Hint after 3 fails
+        if (riddleAttempts >= 3) {
+          riddleHint.style.display = "block";
+        }
+      }
     }
 
     // ============================================================================
@@ -471,7 +573,6 @@
     function initiateHackerTyping(targetElement, fullText, callback) {
       if(activeTypeTask) clearTimeout(activeTypeTask);
       targetElement.innerHTML = "";
-      
       let index = 0;
       
       function typeCharacter() {
@@ -480,7 +581,7 @@
           targetElement.innerHTML = highlightSyntaxAST(typed) + "<span class='type-cursor'></span>";
           
           let char = fullText.charAt(index);
-          let speed = Math.random() * 8 + 5; // Insanely fast base speed
+          let speed = Math.random() * 8 + 5; 
           if (char === '\n') speed += 40; 
           if (char === ' ') speed += 10; 
           
@@ -606,32 +707,25 @@
     };
 
     // ============================================================================
-    // MODULE 8: HARDWARE EVENT LISTENERS (KEYBOARD BINDS)
+    // MODULE 8: HARDWARE EVENT LISTENERS
     // ============================================================================
     document.addEventListener("keydown", (e) => {
-      // Prevent shortcut interference if typing in admin box
-      if (document.activeElement === adminCodeInput) return;
+      // Prevent shortcut interference if typing in inputs
+      if (document.activeElement.tagName === 'INPUT') return;
       
-      // Quick launch levels 4-9
-      if (['4','5','6','7','8','9'].includes(e.key)) {
-        openLevel(e.key);
-      }
+      if (['4','5','6','7','8','9'].includes(e.key)) { openLevel(e.key); }
       if (e.ctrlKey && e.key === 'c' && _rawBuffer) {
-        if(window.getSelection().toString() === "") {
-          e.preventDefault();
-          copyCode();
-        }
+        if(window.getSelection().toString() === "") { e.preventDefault(); copyCode(); }
       }
     });
 
     // ============================================================================
-    // MODULE 9: AGGRESSIVE PARTICLE MESH NETWORK (REPULSION & PARALLAX)
+    // MODULE 9: AGGRESSIVE PARTICLE MESH NETWORK
     // ============================================================================
     const pCanvas = document.getElementById("particleCanvas");
     const pCtx = pCanvas.getContext("2d");
     let particlesArray = [];
     
-    // Forcefield around mouse
     let mouseArea = { x: null, y: null, radius: 200 };
 
     function resizeCanvas() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
@@ -641,8 +735,6 @@
     window.addEventListener('mousemove', (e) => {
       mouseArea.x = e.clientX; 
       mouseArea.y = e.clientY;
-      
-      // Parallax effect on the entire canvas container
       const shiftX = (e.clientX / window.innerWidth - 0.5) * -40;
       const shiftY = (e.clientY / window.innerHeight - 0.5) * -40;
       pCanvas.style.transform = `translate(${shiftX}px, ${shiftY}px)`;
@@ -668,7 +760,6 @@
         if (this.x > pCanvas.width || this.x < 0) this.dx = -this.dx;
         if (this.y > pCanvas.height || this.y < 0) this.dy = -this.dy;
 
-        // Extremely aggressive mouse repulsion
         let ddx = mouseArea.x - this.x;
         let ddy = mouseArea.y - this.y;
         let distance = Math.sqrt(ddx*ddx + ddy*ddy);
@@ -677,11 +768,9 @@
           const forceDirectionX = ddx / distance;
           const forceDirectionY = ddy / distance;
           const force = (mouseArea.radius - distance) / mouseArea.radius;
-          // Pushing particles away hard
           this.x -= forceDirectionX * force * 15;
           this.y -= forceDirectionY * force * 15;
         } else {
-          // Elastic return to normal position
           if(this.x !== this.baseX) this.x -= (this.x - this.baseX)*0.02;
           if(this.y !== this.baseY) this.y -= (this.y - this.baseY)*0.02;
         }
@@ -709,7 +798,6 @@
 
     function connectParticles() {
       let lineColor = getComputedStyle(document.body).getPropertyValue('--cyan').trim();
-      
       for (let a = 0; a < particlesArray.length; a++) {
         for (let b = a; b < particlesArray.length; b++) {
           let dist = ((particlesArray[a].x - particlesArray[b].x)**2) + ((particlesArray[a].y - particlesArray[b].y)**2);
