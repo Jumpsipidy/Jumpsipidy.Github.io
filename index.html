@@ -32,8 +32,6 @@
     
     * { box-sizing:border-box; margin:0; padding:0; user-select: none; }
     html { scroll-behavior:smooth; }
-
-
     
     /* BACKGROUND */
     body {
@@ -122,6 +120,10 @@
     .riddle-btn { background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(34,197,94,0.3)); border-color: var(--purple); text-shadow: 0 0 5px #fff; animation: pulseGlowPurple 3s infinite;}
     @keyframes pulseGlowPurple { 0% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } 50% { box-shadow: 0 0 20px rgba(139,92,246,0.6); } 100% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } }
 
+    /* PAYPAL DONATE BUTTON */
+    .donate-btn { background: linear-gradient(135deg, rgba(250,204,21,0.2), rgba(251,113,133,0.2)); border-color: #facc15; color: #facc15; text-shadow: 0 0 8px #facc15; grid-column: span 2; transition: all 0.3s;}
+    .donate-btn:hover { background: linear-gradient(135deg, rgba(250,204,21,0.4), rgba(251,113,133,0.4)); box-shadow: 0 0 20px rgba(250,204,21,0.6); color: #fff; }
+
     .hidden-level { display: none; opacity: 0; transform: translateY(20px); }
     .hidden-level.revealed { display: block; animation: revealLevel 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes revealLevel { to { opacity: 1; transform: translateY(0); } }
@@ -162,7 +164,7 @@
     .mini-logo { display:flex; align-items:center; justify-content:center; gap:12px; padding:16px; border-radius:18px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); font-weight:900; letter-spacing:.8px; color:#e0f2fe; transition: transform 0.1s; transform-style: preserve-3d;}
     .mini-logo-ring { width:24px; height:24px; border-radius:50%; border:3px solid rgba(34,211,238,.18); border-top-color:var(--cyan); animation:spin 1s linear infinite; transform: translateZ(25px); transition: border-color 1s ease;}
     
-    /* MODALS (ADMIN & RIDDLE) */
+    /* MODALS (ADMIN, RIDDLE, DONATE) */
     .custom-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 100000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
     .custom-modal.show { opacity: 1; visibility: visible; }
     .modal-box { background: rgba(10,15,30,0.9); border: 2px solid var(--cyan); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(34,211,238,0.3); transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 450px; width: 90%; position: relative;}
@@ -184,9 +186,12 @@
     .riddle-text-area { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-family: monospace; color: var(--cyan); line-height: 1.6; min-height: 100px;}
     .riddle-warning { font-size: 0.8rem; color: var(--yellow); margin-bottom: 15px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;}
     .riddle-hint { color: var(--green); font-family: monospace; font-size: 0.85rem; margin-top: 15px; display: none; animation: fadeUp 0.5s; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 10px;}
-    
     .link-to-riddle { color: var(--cyan); text-decoration: underline; cursor: pointer; display: block; margin-top: 10px; font-size: 0.85rem;}
     .link-to-riddle:hover { color: #fff; }
+
+    /* SPECIFIC DONATE MODAL STYLING */
+    #donateModal .modal-box { border-color: #facc15; box-shadow: 0 0 50px rgba(250,204,21,0.3); max-width: 600px; padding: 30px;}
+    .paypal-iframe { width: 100%; height: 500px; border: none; border-radius: 12px; background: #fff;}
 
     /* CONTEXT MENU */
     #customContextMenu { position: fixed; background: rgba(10,15,30,0.95); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.9), var(--glow-cyan); backdrop-filter: blur(10px); padding: 8px; z-index: 99999; display: none; min-width: 220px; transform-origin: top left; animation: menuScale 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -259,7 +264,7 @@
 
   <div id="adminModal" class="custom-modal">
     <div class="modal-box">
-      <span class="close-modal" onclick="closeAdminModal()">&times;</span>
+      <span class="close-modal" onclick="closeModal('adminModal')">&times;</span>
       <h2>SISTEMOS AUTORIZACIJA</h2>
       <input type="password" id="adminCode" placeholder="Įveskite kodą..." autocomplete="off" onkeypress="if(event.key === 'Enter') verifyCode()">
       <button class="modal-btn" onclick="verifyCode()">PATVIRTINTI PRIEIGĄ</button>
@@ -269,7 +274,7 @@
 
   <div id="riddleModal" class="custom-modal">
     <div class="modal-box">
-      <span class="close-modal" onclick="closeRiddleModal()">&times;</span>
+      <span class="close-modal" onclick="closeModal('riddleModal')">&times;</span>
       <h2>KRIPTOGRAFINĖ MĮSLĖ</h2>
       <div class="riddle-warning">DĖMESIO: Ši mįslė atrakina TIK 10 lygį.<br>Kiti lygiai liks užrakinti.</div>
       <div class="riddle-text-area" id="riddleTextDisplay">Šifruojama...</div>
@@ -277,6 +282,15 @@
       <button class="modal-btn" onclick="verifyRiddle()">DEŠIFRUOTI LYGĮ</button>
       <div id="riddleError" class="modal-error"></div>
       <div id="riddleHint" class="riddle-hint">Užuomina: Tavo pirštai ant manęs šoka kiekvieną dieną...</div>
+    </div>
+  </div>
+
+  <div id="donateModal" class="custom-modal">
+    <div class="modal-box">
+      <span class="close-modal" onclick="closeModal('donateModal')" style="color: #000; z-index: 100;">&times;</span>
+      <h2 style="color: #facc15; margin-bottom: 10px;">PALAIKYTI PROJEKTĄ</h2>
+      <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Jūsų parama padeda išlaikyti serverius ir kurti naujus atsakymus.</p>
+      <iframe class="paypal-iframe" src="https://www.paypal.com/donate/?hosted_button_id=J5PKDLSVGESJE"></iframe>
     </div>
   </div>
 
@@ -327,10 +341,12 @@
         <button class="level-btn" onclick="openLevel(7)">Lygis 7</button>
         <button class="level-btn" onclick="openLevel(8)">Lygis 8</button>
         <button class="level-btn" onclick="openLevel(9)">Lygis 9</button>
+        
         <button class="level-btn" style="background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(139,92,246,0.2)); border-color: #22d3ee; color: #fff; text-shadow: 0 0 8px #22d3ee; grid-column: span 2;" onclick="window.location.href='/game-1'">🎮 SISTEMOS ŽAIDIMAS 1</button>
-        <button class="level-btn" style="background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(15,23,42,0.8)); border-color: #334155; color: #94a3b8; letter-spacing: 1px;" onmouseover="this.style.borderColor='#fb7185'; this.style.color='#fb7185'; this.style.boxShadow='0 0 15px rgba(251,113,133,0.5)';" onmouseout="this.style.borderColor='#334155'; this.style.color='#94a3b8'; this.style.boxShadow='none';" onclick="window.location.href='/tamsa'">🌑 Nerti į Tamsą</button>
-        <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openRiddleModal()">Iššifruoti Lygį 10</button>
+        
+        <button class="level-btn donate-btn" onclick="openModal('donateModal')">💛 PALAIKYTI PROJEKTĄ</button>
 
+        <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openRiddleModal()">Iššifruoti Lygį 10</button>
         <button class="level-btn unlock-btn" id="unlockBtn" onclick="openAdminModal()">Gauti visus atsakymus nuo 9</button>
         
         <button id="btn-lygis-10" class="level-btn hidden-level" onclick="openLevel(10)" style="animation-delay: 0.1s;">Lygis 10</button>
@@ -414,39 +430,41 @@
     document.addEventListener('mouseup', () => { glow.style.transform = 'translate(-50%, -50%) scale(1)'; });
 
     // ============================================================================
+    // MODAL HANDLERS
+    // ============================================================================
+    function openModal(id) {
+      document.getElementById(id).classList.add('show');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // ============================================================================
     // MODULE 3: ADMIN AUTHENTICATION (SYSTEM OVERRIDE)
     // ============================================================================
-    const adminModal = document.getElementById('adminModal');
-    const adminError = document.getElementById('adminError');
     const adminCodeInput = document.getElementById('adminCode');
+    const adminError = document.getElementById('adminError');
     const unlockBtn = document.getElementById('unlockBtn');
     
     function openAdminModal() {
-      adminModal.classList.add('show');
+      openModal('adminModal');
       adminCodeInput.value = '';
       adminError.innerHTML = '';
       adminCodeInput.focus();
     }
     
-    function closeAdminModal() {
-      adminModal.classList.remove('show');
-    }
-    
     function verifyCode() {
       const code = adminCodeInput.value;
       if (code === "7851") {
-        // SUCCESS
         adminError.style.color = "#22c55e";
         adminError.textContent = "PRIEIGA PATVIRTINTA. INITIATING OVERRIDE...";
         setTimeout(() => {
-          closeAdminModal();
+          closeModal('adminModal');
           triggerSystemOverride();
         }, 800);
       } else {
-        // FAIL
         adminError.style.color = "#ff3333";
-        // Pridėta hakeriška nuoroda atidaryti mįslę po nesėkmingo bandymo
-        adminError.innerHTML = `Neteisingas administratoriaus kodas.<br><span class="link-to-riddle" onclick="closeAdminModal(); openRiddleModal();">Arba iššifruokite mįslę 10-am lygiui.</span>`;
+        adminError.innerHTML = `Neteisingas administratoriaus kodas.<br><span class="link-to-riddle" onclick="closeModal('adminModal'); openRiddleModal();">Arba iššifruokite mįslę 10-am lygiui.</span>`;
         document.querySelector('#adminModal .modal-box').style.animation = "glitchSkew 0.3s";
         setTimeout(() => { document.querySelector('#adminModal .modal-box').style.animation = ""; }, 300);
       }
@@ -463,9 +481,8 @@
         document.getElementById('warningCard').textContent = "ADMINISTRATORIAUS PRIEIGA AKTYVI. VISI LYGIAI ATRAKINTI.";
         
         unlockBtn.style.display = "none";
-        document.getElementById('openRiddleBtn').style.display = "none"; // Hide riddle btn if admin
+        document.getElementById('openRiddleBtn').style.display = "none"; 
         
-        // Reveal ALL hidden levels
         const hiddenLevels = document.querySelectorAll('.hidden-level');
         hiddenLevels.forEach(btn => { btn.classList.add('revealed'); });
         
@@ -477,7 +494,6 @@
     // ============================================================================
     // MODULE 3.5: RIDDLE PROTOCOL (HACKER LOGIC)
     // ============================================================================
-    const riddleModal = document.getElementById('riddleModal');
     const riddleError = document.getElementById('riddleError');
     const riddleInput = document.getElementById('riddleAnswer');
     const riddleDisplay = document.getElementById('riddleTextDisplay');
@@ -488,12 +504,11 @@
     let decryptInterval = null;
 
     function openRiddleModal() {
-      riddleModal.classList.add('show');
+      openModal('riddleModal');
       riddleInput.value = '';
       riddleError.innerHTML = '';
       riddleInput.focus();
       
-      // Decrypt the riddle text dynamically
       if(decryptInterval) clearInterval(decryptInterval);
       let iteration = 0;
       const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
@@ -505,52 +520,41 @@
           return ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
         }).join("");
         
-        if(iteration >= RIDDLE_TEXT.length){ 
-          clearInterval(decryptInterval);
-        }
-        iteration += 1; // Speed of decryption
+        if(iteration >= RIDDLE_TEXT.length) clearInterval(decryptInterval);
+        iteration += 1; 
       }, 15);
     }
 
     function closeRiddleModal() {
-      riddleModal.classList.remove('show');
+      closeModal('riddleModal');
     }
 
     function verifyRiddle() {
-      // Clean up input: to lower case, remove spaces, handle lithuanian characters
       let answer = riddleInput.value.toLowerCase().trim();
       
       if (answer === "klaviatura" || answer === "klaviatūra") {
-        // SUCCESS
         riddleError.style.color = "#22c55e";
         riddleError.textContent = "ATSAKYMAS TEISINGAS. 10 LYGIS ATRAKINTAS.";
         
         setTimeout(() => {
           closeRiddleModal();
-          // Visual Glitch
           document.body.style.filter = "url(#glitch-filter)";
           setTimeout(() => document.body.style.filter = "none", 200);
           
-          // Reveal ONLY Level 10
           document.getElementById('btn-lygis-10').classList.add('revealed');
-          document.getElementById('openRiddleBtn').style.display = "none"; // Hide riddle button
-          
-          // Update Label
+          document.getElementById('openRiddleBtn').style.display = "none"; 
           document.getElementById('levelRangeLabel').innerHTML = "Lygiai: 4 → 10 <span style='color:var(--purple);'>[PARTIAL UNLOCK]</span>";
           showCopyMessage("10 LYGIS ATRAKINTAS!");
         }, 1000);
 
       } else {
-        // FAIL
         riddleAttempts++;
         riddleError.style.color = "#ff3333";
         riddleError.textContent = "Neteisingas atsakymas. Prieiga atmesta.";
         
-        // Shake effect
         document.querySelector('#riddleModal .modal-box').style.animation = "glitchSkew 0.3s";
         setTimeout(() => { document.querySelector('#riddleModal .modal-box').style.animation = ""; }, 300);
         
-        // Show Hint after 3 fails
         if (riddleAttempts >= 3) {
           riddleHint.style.display = "block";
         }
@@ -713,9 +717,7 @@
     // MODULE 8: HARDWARE EVENT LISTENERS
     // ============================================================================
     document.addEventListener("keydown", (e) => {
-      // Prevent shortcut interference if typing in inputs
       if (document.activeElement.tagName === 'INPUT') return;
-      
       if (['4','5','6','7','8','9'].includes(e.key)) { openLevel(e.key); }
       if (e.ctrlKey && e.key === 'c' && _rawBuffer) {
         if(window.getSelection().toString() === "") { e.preventDefault(); copyCode(); }
