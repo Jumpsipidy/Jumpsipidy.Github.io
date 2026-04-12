@@ -121,8 +121,11 @@
     @keyframes pulseGlowPurple { 0% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } 50% { box-shadow: 0 0 20px rgba(139,92,246,0.6); } 100% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } }
 
     /* PAYPAL DONATE BUTTON */
-    .donate-btn { background: linear-gradient(135deg, rgba(250,204,21,0.2), rgba(251,113,133,0.2)); border-color: #facc15; color: #facc15; text-shadow: 0 0 8px #facc15; grid-column: span 2; transition: all 0.3s;}
+    .donate-btn { background: linear-gradient(135deg, rgba(250,204,21,0.2), rgba(251,113,133,0.2)); border-color: #facc15; color: #facc15; text-shadow: 0 0 8px #facc15; transition: all 0.3s;}
     .donate-btn:hover { background: linear-gradient(135deg, rgba(250,204,21,0.4), rgba(251,113,133,0.4)); box-shadow: 0 0 20px rgba(250,204,21,0.6); color: #fff; }
+
+    /* GAME BUTTON */
+    .game-btn { background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(139,92,246,0.2)); border-color: #22d3ee; color: #fff; text-shadow: 0 0 8px #22d3ee; grid-column: span 2;}
 
     .hidden-level { display: none; opacity: 0; transform: translateY(20px); }
     .hidden-level.revealed { display: block; animation: revealLevel 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -188,10 +191,6 @@
     .riddle-hint { color: var(--green); font-family: monospace; font-size: 0.85rem; margin-top: 15px; display: none; animation: fadeUp 0.5s; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 10px;}
     .link-to-riddle { color: var(--cyan); text-decoration: underline; cursor: pointer; display: block; margin-top: 10px; font-size: 0.85rem;}
     .link-to-riddle:hover { color: #fff; }
-
-    /* SPECIFIC DONATE MODAL STYLING */
-    #donateModal .modal-box { border-color: #facc15; box-shadow: 0 0 50px rgba(250,204,21,0.3); max-width: 600px; padding: 30px;}
-    .paypal-iframe { width: 100%; height: 500px; border: none; border-radius: 12px; background: #fff;}
 
     /* CONTEXT MENU */
     #customContextMenu { position: fixed; background: rgba(10,15,30,0.95); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.9), var(--glow-cyan); backdrop-filter: blur(10px); padding: 8px; z-index: 99999; display: none; min-width: 220px; transform-origin: top left; animation: menuScale 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -285,15 +284,6 @@
     </div>
   </div>
 
-  <div id="donateModal" class="custom-modal">
-    <div class="modal-box">
-      <span class="close-modal" onclick="closeModal('donateModal')" style="color: #000; z-index: 100;">&times;</span>
-      <h2 style="color: #facc15; margin-bottom: 10px;">PALAIKYTI PROJEKTĄ</h2>
-      <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Jūsų parama padeda išlaikyti serverius ir kurti naujus atsakymus.</p>
-      <iframe class="paypal-iframe" src="https://www.paypal.com/donate/?hosted_button_id=J5PKDLSVGESJE"></iframe>
-    </div>
-  </div>
-
   <div id="customContextMenu">
     <div class="ctx-item" onclick="triggerMenuAction('copy')">Kopijuoti kodą <span class="ctx-shortcut">Ctrl+C</span></div>
     <div class="ctx-item" onclick="triggerMenuAction('clear')">Išvalyti atmintį <span class="ctx-shortcut">Del</span></div>
@@ -342,11 +332,11 @@
         <button class="level-btn" onclick="openLevel(8)">Lygis 8</button>
         <button class="level-btn" onclick="openLevel(9)">Lygis 9</button>
         
-        <button class="level-btn" style="background: linear-gradient(135deg, rgba(34,211,238,0.2), rgba(139,92,246,0.2)); border-color: #22d3ee; color: #fff; text-shadow: 0 0 8px #22d3ee; grid-column: span 2;" onclick="window.location.href='/game-1'">🎮 SISTEMOS ŽAIDIMAS 1</button>
+        <button class="level-btn game-btn" onclick="window.location.href='/game-1'">🎮 SISTEMOS ŽAIDIMAS 1</button>
         
-        <button class="level-btn donate-btn" onclick="openModal('donateModal')">💛 PALAIKYTI PROJEKTĄ</button>
+        <button class="level-btn donate-btn" onclick="openPayPalPopup()">💛 PALAIKYTI PROJEKTĄ</button>
 
-        <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openRiddleModal()">Iššifruoti Lygį 10</button>
+        <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openModal('riddleModal'); document.getElementById('riddleAnswer').focus();">Iššifruoti Lygį 10</button>
         <button class="level-btn unlock-btn" id="unlockBtn" onclick="openAdminModal()">Gauti visus atsakymus nuo 9</button>
         
         <button id="btn-lygis-10" class="level-btn hidden-level" onclick="openLevel(10)" style="animation-delay: 0.1s;">Lygis 10</button>
@@ -440,6 +430,22 @@
     }
 
     // ============================================================================
+    // SECURE PAYPAL POPUP PROTOCOL
+    // ============================================================================
+    function openPayPalPopup() {
+      const width = 450;
+      const height = 700;
+      const left = (screen.width / 2) - (width / 2);
+      const top = (screen.height / 2) - (height / 2);
+      
+      window.open(
+        "https://www.paypal.com/donate/?hosted_button_id=J5PKDLSVGESJE", 
+        "PayPalDonation", 
+        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,status=no,location=no,toolbar=no`
+      );
+    }
+
+    // ============================================================================
     // MODULE 3: ADMIN AUTHENTICATION (SYSTEM OVERRIDE)
     // ============================================================================
     const adminCodeInput = document.getElementById('adminCode');
@@ -464,7 +470,7 @@
         }, 800);
       } else {
         adminError.style.color = "#ff3333";
-        adminError.innerHTML = `Neteisingas administratoriaus kodas.<br><span class="link-to-riddle" onclick="closeModal('adminModal'); openRiddleModal();">Arba iššifruokite mįslę 10-am lygiui.</span>`;
+        adminError.innerHTML = `Neteisingas administratoriaus kodas.<br><span class="link-to-riddle" onclick="closeModal('adminModal'); document.getElementById('openRiddleBtn').click();">Arba iššifruokite mįslę 10-am lygiui.</span>`;
         document.querySelector('#adminModal .modal-box').style.animation = "glitchSkew 0.3s";
         setTimeout(() => { document.querySelector('#adminModal .modal-box').style.animation = ""; }, 300);
       }
@@ -525,10 +531,6 @@
       }, 15);
     }
 
-    function closeRiddleModal() {
-      closeModal('riddleModal');
-    }
-
     function verifyRiddle() {
       let answer = riddleInput.value.toLowerCase().trim();
       
@@ -537,7 +539,7 @@
         riddleError.textContent = "ATSAKYMAS TEISINGAS. 10 LYGIS ATRAKINTAS.";
         
         setTimeout(() => {
-          closeRiddleModal();
+          closeModal('riddleModal');
           document.body.style.filter = "url(#glitch-filter)";
           setTimeout(() => document.body.style.filter = "none", 200);
           
