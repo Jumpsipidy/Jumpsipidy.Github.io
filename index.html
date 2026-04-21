@@ -76,8 +76,6 @@
     .orb3 { width:220px; height:220px; bottom:4%; left:38%; background:var(--green); animation-delay:4s; }
     @keyframes float { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-30px) scale(1.1)} 100%{transform:translate(0,0) scale(1)} }
     
-    .wrap { position:relative; z-index:10; max-width:1300px; margin:0 auto; padding:32px 18px 60px; }
-    
     /* SYSTEM GLITCH ANIMATION */
     .glitch-anim { animation: glitchSkew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; color: var(--cyan); text-shadow: 2px 0 var(--red), -2px 0 var(--blue); }
     @keyframes glitchSkew {
@@ -85,7 +83,21 @@
       60% { transform: skew(-5deg); } 80% { transform: skew(5deg); } 100% { transform: skew(0deg); }
     }
 
+    /* ======================================================================
+       GATEKEEPER (LANDING SCREEN) STYLES
+       ====================================================================== */
+    .gatekeeper-container {
+      position: relative; z-index: 20; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; min-height: 100vh; padding: 20px;
+      animation: fadeUp 1s ease;
+    }
+    
+    #mainApp {
+      display: none; opacity: 0; transition: opacity 1.5s ease-in-out;
+    }
+
     /* HERO SECTION */
+    .wrap { position:relative; z-index:10; max-width:1300px; margin:0 auto; padding:32px 18px 60px; }
     .hero { text-align:center; padding:28px 10px 30px; animation:fadeUp .9s ease; position: relative;}
     .hero-badge { display:inline-block; padding:8px 16px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; font-weight:700; letter-spacing:.4px; box-shadow:var(--shadow); margin-bottom:18px; backdrop-filter: blur(10px);}
     .hero h1 { font-size:clamp(2.2rem,6vw,4.4rem); line-height:1.02; font-weight:900; letter-spacing:1.5px; text-transform:uppercase; background:linear-gradient(90deg,#fff,var(--cyan),var(--green),var(--purple)); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:shine 6s linear infinite; filter: drop-shadow(var(--glow-cyan)); transition: background 1s ease;}
@@ -167,7 +179,7 @@
     .mini-logo { display:flex; align-items:center; justify-content:center; gap:12px; padding:16px; border-radius:18px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); font-weight:900; letter-spacing:.8px; color:#e0f2fe; transition: transform 0.1s; transform-style: preserve-3d;}
     .mini-logo-ring { width:24px; height:24px; border-radius:50%; border:3px solid rgba(34,211,238,.18); border-top-color:var(--cyan); animation:spin 1s linear infinite; transform: translateZ(25px); transition: border-color 1s ease;}
     
-    /* MODALS (ADMIN, RIDDLE, DONATE) */
+    /* MODALS (ADMIN, RIDDLE, DONATE, VERIFICATION) */
     .custom-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 100000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
     .custom-modal.show { opacity: 1; visibility: visible; }
     .modal-box { background: rgba(10,15,30,0.9); border: 2px solid var(--cyan); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(34,211,238,0.3); transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 450px; width: 90%; position: relative;}
@@ -201,7 +213,7 @@
     .ctx-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0; }
 
     /* ALERTS & LOADERS */
-    .copy-msg { position:fixed; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:rgba(2,6,23,.95); color:white; border:1px solid rgba(255,255,255,.15); padding:14px 24px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.8); opacity:0; pointer-events:none; transition:.3s cubic-bezier(0.16, 1, 0.3, 1); z-index:999; font-weight:800; letter-spacing: 1px;}
+    .copy-msg { position:fixed; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:rgba(2,6,23,.95); color:white; border:1px solid rgba(255,255,255,.15); padding:14px 24px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.8); opacity:0; pointer-events:none; transition:.3s cubic-bezier(0.16, 1, 0.3, 1); z-index:9999; font-weight:800; letter-spacing: 1px;}
     .copy-msg.show { opacity:1; transform:translateX(-50%) translateY(0); }
     
     .overlay { position:fixed; inset:0; background:radial-gradient(circle at center,rgba(17,24,39,.8),rgba(2,6,23,.95)); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s ease; backdrop-filter:blur(10px);}
@@ -234,11 +246,12 @@
     .svg-filters { position: absolute; width: 0; height: 0; pointer-events: none; }
 
     @media (max-width:980px) { .content{grid-template-columns:1fr;} .code-wrap{min-height:auto;} pre{min-height:300px;} }
-    @media (max-width:640px) { .wrap{padding:20px 10px 40px;} .button-grid{grid-template-columns:repeat(2,1fr); padding: 16px;} .hero h1{font-size: 2rem;} .level-btn{font-size:.95rem; padding:14px 10px;} .panel-head{padding:16px; flex-direction: column; align-items: flex-start;} .code-wrap, .side-box{padding:16px;} pre{font-size:.85rem;} .cursor-glow{display:none;} }
+    @media (max-width:640px) { .wrap{padding:20px 10px 40px;} .button-grid{grid-template-columns:repeat(1,1fr); padding: 16px;} .hero h1{font-size: 2rem;} .level-btn{font-size:.95rem; padding:14px 10px;} .panel-head{padding:16px; flex-direction: column; align-items: flex-start;} .code-wrap, .side-box{padding:16px;} pre{font-size:.85rem;} .cursor-glow{display:none;} }
   </style>
 </head>
 <body>
 
+  <!-- HIDDEN SVG FILTER FOR GLITCH FX -->
   <svg class="svg-filters">
     <defs>
       <filter id="glitch-filter">
@@ -252,8 +265,10 @@
     </defs>
   </svg>
 
+  <!-- CUSTOM GLOWING MOUSE -->
   <div class="cursor-glow" id="mouseGlow"></div>
 
+  <!-- ADVANCED: HTML5 Canvas for Particles & Parallax -->
   <canvas id="particleCanvas"></canvas>
 
   <div class="bg-grid"></div>
@@ -261,6 +276,35 @@
   <div class="orb orb2"></div>
   <div class="orb orb3"></div>
 
+  <!-- ========================================================= -->
+  <!-- GATEKEEPER / LANDING SCREEN -->
+  <!-- ========================================================= -->
+  <div id="gatekeeper" class="gatekeeper-container">
+    <div class="center-logo" style="width: 100px; height: 100px; font-size: 2.2rem; margin: 0 auto 30px;">EJ</div>
+    <h1 class="glitch-anim" style="font-size: clamp(2rem, 5vw, 4rem); text-transform: uppercase; margin-bottom: 40px; font-weight: 900; letter-spacing: 2px;">Pensininkas Corp</h1>
+    <div class="button-grid" style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+      
+      <button class="level-btn" onclick="openVerificationModal()" style="border-color: var(--cyan); box-shadow: var(--glow-cyan); font-size: 1.1rem; padding: 20px;">🔐 Eiti į klasiokų atsakymai angis</button>
+      
+      <button class="level-btn" onclick="window.location.href='/jumpsipidy'" style="border-color: var(--purple); box-shadow: 0 0 15px rgba(139,92,246,0.5); font-size: 1.1rem; padding: 20px; background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(15,23,42,0.5));">👁️ Go to Jumpsipidy overview</button>
+      
+    </div>
+  </div>
+
+  <!-- SECURITY VERIFICATION MODAL -->
+  <div id="verificationModal" class="custom-modal">
+    <div class="modal-box">
+      <span class="close-modal" onclick="closeModal('verificationModal')">&times;</span>
+      <h2>SAUGUMO PATIKRA</h2>
+      <p style="color: var(--muted); margin-bottom: 20px; font-size: 0.9rem;">Sistemos prieiga ribojama. Atsakykite į saugumo klausimą:</p>
+      <h3 style="color: var(--cyan); margin-bottom: 20px; font-family: monospace; font-size: 1.3rem;">Koks yra Vakario pavardė?</h3>
+      <input type="text" id="verificationAnswer" placeholder="Įveskite atsakymą..." autocomplete="off" onkeypress="if(event.key === 'Enter') verifyClassmate()">
+      <button class="modal-btn" onclick="verifyClassmate()">PATVIRTINTI</button>
+      <div id="verificationError" class="modal-error"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL -->
   <div id="adminModal" class="custom-modal">
     <div class="modal-box">
       <span class="close-modal" onclick="closeModal('adminModal')">&times;</span>
@@ -271,6 +315,7 @@
     </div>
   </div>
 
+  <!-- RIDDLE MODAL -->
   <div id="riddleModal" class="custom-modal">
     <div class="modal-box">
       <span class="close-modal" onclick="closeModal('riddleModal')">&times;</span>
@@ -284,6 +329,7 @@
     </div>
   </div>
 
+  <!-- CUSTOM CONTEXT MENU -->
   <div id="customContextMenu">
     <div class="ctx-item" onclick="triggerMenuAction('copy')">Kopijuoti kodą <span class="ctx-shortcut">Ctrl+C</span></div>
     <div class="ctx-item" onclick="triggerMenuAction('clear')">Išvalyti atmintį <span class="ctx-shortcut">Del</span></div>
@@ -308,76 +354,79 @@
 
   <div class="copy-msg" id="copyMsg">Nukopijuota.</div>
 
-  <main class="wrap">
-    <section class="hero" id="heroTarget">
-      <div class="hero-badge">Nigeriai • Pensininkas • Elijas • Adolf hitler</div>
-      <h1>ANGIS LYGIŲ Atsakymai iš pensininko Elijaus veikiantys</h1>
-      <p>Elijo darbas per visas atostogas. Saugumo lygis: Maksimalus.</p>
-    </section>
+  <!-- ========================================================= -->
+  <!-- MAIN APPLICATION (HIDDEN BEHIND GATEKEEPER) -->
+  <!-- ========================================================= -->
+  <div id="mainApp">
+    <main class="wrap">
+      <section class="hero" id="heroTarget">
+        <div class="hero-badge">Nigeriai • Pensininkas • Elijas • Adolf hitler</div>
+        <h1>ANGIS LYGIŲ Atsakymai iš pensininko Elijaus veikiantys</h1>
+        <p>Elijo darbas per visas atostogas. Saugumo lygis: Maksimalus.</p>
+      </section>
 
-    <section class="main-panel">
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <div class="pill"><span class="pulse-dot"></span>Sistemos Būsena: Prisijungta</div>
-          <div class="pill" id="levelRangeLabel">Lygiai: 4 → 9</div>
+      <section class="main-panel">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="pill"><span class="pulse-dot"></span>Sistemos Būsena: Prisijungta</div>
+            <div class="pill" id="levelRangeLabel">Lygiai: 4 → 9</div>
+          </div>
+          <div class="pill uptime-display">UPTIME: <span id="uptimeCounter">00:00:00</span></div>
         </div>
-        <div class="pill uptime-display">UPTIME: <span id="uptimeCounter">00:00:00</span></div>
-      </div>
 
-      <div class="button-grid" id="mainButtonGrid">
-        <button class="level-btn" onclick="openLevel(4)">Lygis 4</button>
-        <button class="level-btn" onclick="openLevel(5)">Lygis 5</button>
-        <button class="level-btn" onclick="openLevel(6)">Lygis 6</button>
-        <button class="level-btn" onclick="openLevel(7)">Lygis 7</button>
-        <button class="level-btn" onclick="openLevel(8)">Lygis 8</button>
-        <button class="level-btn" onclick="openLevel(9)">Lygis 9</button>
-        
-        <button class="level-btn game-btn" onclick="window.location.href='/game-1'">🎮 SISTEMOS ŽAIDIMAS 1</button>
-        
-        <button class="level-btn donate-btn" onclick="openPayPalPopup()">💛 PALAIKYTI PROJEKTĄ</button>
+        <div class="button-grid" id="mainButtonGrid">
+          <button class="level-btn" onclick="openLevel(4)">Lygis 4</button>
+          <button class="level-btn" onclick="openLevel(5)">Lygis 5</button>
+          <button class="level-btn" onclick="openLevel(6)">Lygis 6</button>
+          <button class="level-btn" onclick="openLevel(7)">Lygis 7</button>
+          <button class="level-btn" onclick="openLevel(8)">Lygis 8</button>
+          <button class="level-btn" onclick="openLevel(9)">Lygis 9</button>
+          
+          <button class="level-btn game-btn" onclick="window.location.href='/game-1'">🎮 SISTEMOS ŽAIDIMAS 1</button>
+          <button class="level-btn donate-btn" onclick="openPayPalPopup()">💛 PALAIKYTI PROJEKTĄ</button>
 
-       <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openRiddleModal()">Iššifruoti Lygį 10</button>
-        
-        <button class="level-btn unlock-btn" id="unlockBtn" onclick="openAdminModal()">Gauti visus atsakymus nuo 9</button>
-        
-        <button id="btn-lygis-10" class="level-btn hidden-level" onclick="openLevel(10)" style="animation-delay: 0.1s;">Lygis 10</button>
-        <button id="btn-lygis-11" class="level-btn hidden-level" onclick="openLevel(11)" style="animation-delay: 0.2s;">Lygis 11</button>
-        <button id="btn-lygis-12" class="level-btn hidden-level" onclick="openLevel(12)" style="animation-delay: 0.3s;">Lygis 12</button>
-        <button id="btn-lygis-13" class="level-btn hidden-level" onclick="openLevel(13)" style="animation-delay: 0.4s;">Lygis 13</button>
-        <button id="btn-lygis-14" class="level-btn hidden-level" onclick="openLevel(14)" style="animation-delay: 0.5s;">Lygis 14</button>
-      </div>
+          <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openRiddleModal()">Iššifruoti Lygį 10</button>
+          <button class="level-btn unlock-btn" id="unlockBtn" onclick="openAdminModal()">Gauti visus atsakymus nuo 9</button>
+          
+          <button id="btn-lygis-10" class="level-btn hidden-level" onclick="openLevel(10)" style="animation-delay: 0.1s;">Lygis 10</button>
+          <button id="btn-lygis-11" class="level-btn hidden-level" onclick="openLevel(11)" style="animation-delay: 0.2s;">Lygis 11</button>
+          <button id="btn-lygis-12" class="level-btn hidden-level" onclick="openLevel(12)" style="animation-delay: 0.3s;">Lygis 12</button>
+          <button id="btn-lygis-13" class="level-btn hidden-level" onclick="openLevel(13)" style="animation-delay: 0.4s;">Lygis 13</button>
+          <button id="btn-lygis-14" class="level-btn hidden-level" onclick="openLevel(14)" style="animation-delay: 0.5s;">Lygis 14</button>
+        </div>
 
-      <div class="content">
-        <section class="panel">
-          <div class="panel-head">
-            <h2 id="levelTitle">Laukiama įvesties...</h2>
-            <div class="panel-actions">
-              <a href="https://www.angis.net" target="_blank" class="action-btn link-btn">Angis.net ↗</a>
-              <button class="action-btn" onclick="copyCode()">Kopijuoti kodą</button>
-              <button class="action-btn" onclick="clearCode()">Išvalyti</button>
+        <div class="content">
+          <section class="panel">
+            <div class="panel-head">
+              <h2 id="levelTitle">Laukiama įvesties...</h2>
+              <div class="panel-actions">
+                <a href="https://www.angis.net" target="_blank" class="action-btn link-btn">Angis.net ↗</a>
+                <button class="action-btn" onclick="copyCode()">Kopijuoti kodą</button>
+                <button class="action-btn" onclick="clearCode()">Išvalyti</button>
+              </div>
             </div>
-          </div>
-          <div class="code-wrap">
-            <pre id="codeOutput">Sistemos paruoštos. Spauskite lygio mygtuką, kad inicijuotumėte įsilaužimą ir kodo dešifravimą.</pre>
-          </div>
-        </section>
+            <div class="code-wrap">
+              <pre id="codeOutput">Sistemos paruoštos. Spauskite lygio mygtuką, kad inicijuotumėte įsilaužimą ir kodo dešifravimą.</pre>
+            </div>
+          </section>
 
-        <aside class="side-box">
-          <div class="info-card 3d-card">
-            <h3 id="authorTitle">Kas čia Sukūrė</h3>
-            <p>Tavo mielus Geras pensininkas klasiokas Elijas</p>
-          </div>
-          <div class="mini-logo 3d-card">
-            <div class="mini-logo-ring" id="logoRing"></div>
-            ELIJAS - JUMPSIPIDY
-          </div>
-          <div class="warning" id="warningCard">Neduosiu daugiau nes patys dirbkyt nigeriai</div>
-        </aside>
-      </div>
-    </section>
+          <aside class="side-box">
+            <div class="info-card 3d-card">
+              <h3 id="authorTitle">Kas čia Sukūrė</h3>
+              <p>Tavo mielus Geras pensininkas klasiokas Elijas</p>
+            </div>
+            <div class="mini-logo 3d-card">
+              <div class="mini-logo-ring" id="logoRing"></div>
+              ELIJAS - JUMPSIPIDY
+            </div>
+            <div class="warning" id="warningCard">Neduosiu daugiau nes patys dirbkyt nigeriai</div>
+          </aside>
+        </div>
+      </section>
 
-    <div class="footer">2026 and Elijas | <span class="insane-text">Created with insane programming</span></div>
-  </main>
+      <div class="footer">2026 and Elijas | <span class="insane-text">Created with insane programming</span></div>
+    </main>
+  </div>
 
   <script>
     // ============================================================================
@@ -423,11 +472,51 @@
     // ============================================================================
     // MODAL HANDLERS
     // ============================================================================
-    function openModal(id) {
-      document.getElementById(id).classList.add('show');
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+    // ============================================================================
+    // GATEKEEPER / VERIFICATION (NEW MODULE)
+    // ============================================================================
+    function openVerificationModal() {
+      openModal('verificationModal');
+      document.getElementById('verificationAnswer').value = '';
+      document.getElementById('verificationError').innerHTML = '';
+      document.getElementById('verificationAnswer').focus();
     }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('show');
+
+    function verifyClassmate() {
+      const inputVal = document.getElementById('verificationAnswer').value.toLowerCase().trim();
+      const err = document.getElementById('verificationError');
+      
+      if (inputVal === 'bogusas' || inputVal === 'bogušas') {
+        err.style.color = "#22c55e";
+        err.textContent = "Tapatybė patvirtinta. Jungiamasi...";
+        
+        setTimeout(() => {
+          closeModal('verificationModal');
+          
+          // Cool Boot-up visual glitch
+          document.body.style.filter = "url(#glitch-filter)";
+          setTimeout(() => document.body.style.filter = "none", 300);
+
+          // Hide Gatekeeper, Show Main App
+          document.getElementById('gatekeeper').style.display = 'none';
+          const mainApp = document.getElementById('mainApp');
+          mainApp.style.display = 'block';
+          
+          // Force layout recalculation for smooth fade in
+          window.getComputedStyle(mainApp).opacity;
+          mainApp.style.opacity = '1';
+          
+          showCopyMessage("Sistemos Prieiga Suteikta.");
+        }, 800);
+      } else {
+        err.style.color = "#ff3333";
+        err.textContent = "Neteisingas atsakymas. Prieiga atmesta.";
+        document.querySelector('#verificationModal .modal-box').style.animation = "glitchSkew 0.3s";
+        setTimeout(() => { document.querySelector('#verificationModal .modal-box').style.animation = ""; }, 300);
+      }
     }
 
     // ============================================================================
@@ -471,7 +560,7 @@
         }, 800);
       } else {
         adminError.style.color = "#ff3333";
-        adminError.innerHTML = `Neteisingas administratoriaus kodas.<br><span class="link-to-riddle" onclick="closeModal('adminModal'); document.getElementById('openRiddleBtn').click();">Arba iššifruokite mįslę 10-am lygiui.</span>`;
+        adminError.innerHTML = `Neteisingas administratoriaus kodas.<br><span class="link-to-riddle" onclick="closeModal('adminModal'); openRiddleModal();">Arba iššifruokite mįslę 10-am lygiui.</span>`;
         document.querySelector('#adminModal .modal-box').style.animation = "glitchSkew 0.3s";
         setTimeout(() => { document.querySelector('#adminModal .modal-box').style.animation = ""; }, 300);
       }
@@ -532,6 +621,10 @@
       }, 15);
     }
 
+    function closeRiddleModal() {
+      closeModal('riddleModal');
+    }
+
     function verifyRiddle() {
       let answer = riddleInput.value.toLowerCase().trim();
       
@@ -540,7 +633,7 @@
         riddleError.textContent = "ATSAKYMAS TEISINGAS. 10 LYGIS ATRAKINTAS.";
         
         setTimeout(() => {
-          closeModal('riddleModal');
+          closeRiddleModal();
           document.body.style.filter = "url(#glitch-filter)";
           setTimeout(() => document.body.style.filter = "none", 200);
           
@@ -693,6 +786,9 @@
     const ctxMenu = document.getElementById("customContextMenu");
     document.addEventListener("contextmenu", (e) => {
       e.preventDefault();
+      // Only show context menu if main app is visible (they passed the gatekeeper)
+      if (document.getElementById('mainApp').style.display === 'none') return;
+      
       ctxMenu.style.display = "block";
       
       let x = e.pageX, y = e.pageY;
@@ -721,9 +817,12 @@
     // ============================================================================
     document.addEventListener("keydown", (e) => {
       if (document.activeElement.tagName === 'INPUT') return;
-      if (['4','5','6','7','8','9'].includes(e.key)) { openLevel(e.key); }
-      if (e.ctrlKey && e.key === 'c' && _rawBuffer) {
-        if(window.getSelection().toString() === "") { e.preventDefault(); copyCode(); }
+      // Only allow quick launch if main app is visible
+      if (document.getElementById('mainApp').style.display !== 'none') {
+        if (['4','5','6','7','8','9'].includes(e.key)) { openLevel(e.key); }
+        if (e.ctrlKey && e.key === 'c' && _rawBuffer) {
+          if(window.getSelection().toString() === "") { e.preventDefault(); copyCode(); }
+        }
       }
     });
 
