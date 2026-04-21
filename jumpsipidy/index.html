@@ -1,1 +1,356 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jumpsipidy | Overview</title>
+  <style>
+    :root {
+      --bg: #050508;
+      --card-bg: rgba(20, 20, 30, 0.4);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #22d3ee;
+      --yt-color: #ff0000;
+      --twitch-color: #9146ff;
+      --tiktok-color: #00f2fe;
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* =========================================
+       DYNAMIC GLOWING BACKGROUND
+       ========================================= */
+    .bg-glow {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: -1; pointer-events: none;
+      background: 
+        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08), transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(34, 211, 238, 0.08), transparent 40%);
+      animation: bgPulse 8s infinite alternate;
+    }
+    @keyframes bgPulse {
+      0% { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* =========================================
+       LANGUAGE SELECTION SCREEN
+       ========================================= */
+    #langScreen {
+      position: fixed; inset: 0;
+      background: #030305;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 1000; transition: opacity 0.8s ease, visibility 0.8s;
+    }
+    
+    .lang-title {
+      font-size: 2.5rem; margin-bottom: 40px; letter-spacing: 4px;
+      text-transform: uppercase; font-weight: 900;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: pulseText 2s infinite; text-align: center;
+    }
+    @keyframes pulseText {
+      0%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(34,211,238,0.4); }
+      50% { opacity: 0.7; text-shadow: 0 0 10px rgba(139,92,246,0.2); }
+    }
+
+    .lang-buttons { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+    
+    .lang-btn {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text); padding: 15px 50px; font-size: 1.2rem;
+      font-weight: bold; border-radius: 12px; cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      letter-spacing: 2px; backdrop-filter: blur(5px);
+    }
+    .lang-btn:hover {
+      background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(34,211,238,0.2));
+      border-color: var(--accent-cyan);
+      box-shadow: 0 10px 30px rgba(34,211,238,0.3);
+      transform: translateY(-5px);
+    }
+
+    /* =========================================
+       MAIN PORTFOLIO
+       ========================================= */
+    #mainPortfolio {
+      display: none; opacity: 0;
+      max-width: 1100px; margin: 0 auto; padding: 60px 20px;
+    }
+
+    /* SCROLL REVEAL ANIMATION CLASSES */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    /* HEADER & SOCIALS */
+    .header { text-align: center; margin-bottom: 80px; }
+    .header h1 { font-size: 4.5rem; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; }
+    .header p { color: var(--muted); font-size: 1.3rem; max-width: 600px; margin: 0 auto 40px; }
+
+    .social-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+    
+    .social-link {
+      text-decoration: none; color: var(--text); font-weight: 600;
+      padding: 12px 25px; border-radius: 50px; background: var(--card-bg);
+      border: 1px solid var(--card-border); transition: all 0.3s ease;
+      display: flex; align-items: center; gap: 10px; backdrop-filter: blur(10px);
+    }
+    .social-link:hover { transform: translateY(-3px); }
+    .social-link.yt:hover { border-color: var(--yt-color); box-shadow: 0 5px 20px rgba(255,0,0,0.3); }
+    .social-link.twitch:hover { border-color: var(--twitch-color); box-shadow: 0 5px 20px rgba(145,70,255,0.3); }
+    .social-link.tiktok:hover { border-color: var(--tiktok-color); box-shadow: 0 5px 20px rgba(0,242,254,0.3); }
+
+    /* =========================================
+       ABOUT & SKILLS SECTIONS
+       ========================================= */
+    .info-section {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 40px; margin-bottom: 60px;
+      backdrop-filter: blur(10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .section-title {
+      font-size: 2rem; margin-bottom: 25px; color: var(--accent-cyan);
+      display: inline-block; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .about-text { font-size: 1.1rem; color: #cbd5e1; margin-bottom: 30px; }
+
+    .skills-container { display: flex; flex-wrap: wrap; gap: 12px; }
+    .skill-tag {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      padding: 8px 20px; border-radius: 50px; font-size: 0.95rem; font-weight: 600;
+      color: var(--accent-cyan); transition: 0.3s;
+    }
+    .skill-tag:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
+    .skill-tag.purple { color: var(--accent-purple); }
+    .skill-tag.purple:hover { background: var(--accent-purple); color: #fff; box-shadow: 0 0 15px var(--accent-purple); }
+
+    /* =========================================
+       PROJECTS / VIDEOS SECTION
+       ========================================= */
+    .video-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;
+    }
+
+    .video-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 20px; overflow: hidden; transition: transform 0.4s ease, box-shadow 0.4s ease;
+      backdrop-filter: blur(10px); display: flex; flex-direction: column;
+    }
+    .video-card:hover { 
+      transform: translateY(-10px); 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(139,92,246,0.2); 
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .video-container {
+      width: 100%; aspect-ratio: 16 / 9; background: #0a0a0f; position: relative;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    video { width: 100%; height: 100%; object-fit: cover; }
+
+    .video-info { padding: 25px; flex-grow: 1; display: flex; flex-direction: column;}
+    .video-info h3 { margin-bottom: 12px; font-size: 1.3rem; font-weight: 700; color: #fff; }
+    .video-info p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; flex-grow: 1;}
+    
+    .tech-stack { font-size: 0.8rem; color: var(--accent-purple); font-family: monospace; font-weight: bold; letter-spacing: 1px;}
+
+    /* FOOTER */
+    footer { text-align: center; margin-top: 80px; padding: 20px; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .header h1 { font-size: 3rem; }
+      .info-section { padding: 25px; }
+      .video-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BACKGROUND EFFECT -->
+  <div class="bg-glow"></div>
+
+  <!-- 1. LANGUAGE SELECTION SCREEN -->
+  <div id="langScreen">
+    <h2 class="lang-title">SELECT SYSTEM LANGUAGE</h2>
+    <div class="lang-buttons">
+      <button class="lang-btn" onclick="initSystem('lt')">LIETUVIŲ (LT)</button>
+      <button class="lang-btn" onclick="initSystem('en')">ENGLISH (EN)</button>
+    </div>
+  </div>
+
+  <!-- 2. MAIN PORTFOLIO -->
+  <div id="mainPortfolio">
+    
+    <header class="header reveal">
+      <h1>JUMPSIPIDY</h1>
+      <p class="translate" 
+         data-lt="Skaitmeninio turinio kūrėjas. Video montažas, programavimas ir vizualiniai efektai." 
+         data-en="Digital content creator. Video editing, programming, and visual effects.">
+        Skaitmeninio turinio kūrėjas. Video montažas, programavimas ir vizualiniai efektai.
+      </p>
+      
+      <div class="social-grid">
+        <a href="https://www.youtube.com/@Jumpsipidy" target="_blank" class="social-link yt">📺 YouTube</a>
+        <a href="https://twitch.tv/jumpsipidy" target="_blank" class="social-link twitch">🟪 Twitch</a>
+        <a href="https://tiktok.com/@jumpsipidy" target="_blank" class="social-link tiktok">🎵 TikTok</a>
+      </div>
+    </header>
+
+    <!-- ABOUT & SKILLS SECTION -->
+    <section class="info-section reveal">
+      <h2 class="section-title translate" data-lt="Apie Mane" data-en="About Me">Apie Mane</h2>
+      <p class="about-text translate" 
+         data-lt="Sveiki! Aš esu Elijas (Jumpsipidy). Specializuojuosi dinamiškame video montaže, žaidimų turinio kūrime ir programavime. Mano tikslas – paversti paprastus kadrus į įtraukiančias, aukštos kokybės vizualines patirtis." 
+         data-en="Hello! I am Elijas (Jumpsipidy). I specialize in dynamic video editing, gaming content creation, and programming. My goal is to turn simple footage into engaging, high-quality visual experiences.">
+        Sveiki! Aš esu Elijas (Jumpsipidy). Specializuojuosi dinamiškame video montaže, žaidimų turinio kūrime ir programavime. Mano tikslas – paversti paprastus kadrus į įtraukiančias, aukštos kokybės vizualines patirtis.
+      </p>
+      
+      <h3 style="color: #fff; margin-bottom: 15px; font-size: 1.1rem;" class="translate" data-lt="Mano Įgūdžiai:" data-en="My Skills:">Mano Įgūdžiai:</h3>
+      <div class="skills-container">
+        <span class="skill-tag purple">Adobe Premiere Pro</span>
+        <span class="skill-tag purple">Adobe After Effects</span>
+        <span class="skill-tag">Python (Angis)</span>
+        <span class="skill-tag">HTML / CSS / JS</span>
+        <span class="skill-tag purple">Video Pacing & Flow</span>
+        <span class="skill-tag">Game Logic</span>
+      </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section class="reveal">
+      <h2 class="section-title translate" data-lt="Mano Darbai" data-en="My Projects">Mano Darbai</h2>
+      
+      <div class="video-grid">
+        
+        <!-- ==============================================================
+             PROJEKTAS 1: BEGARSIS CIKLINIS VIDEO (KAIP GIF)
+             Štai čia yra tas specialus kodas "autoplay loop muted playsinline"
+             ============================================================== -->
+        <div class="video-card reveal">
+          <div class="video-container">
+            <video src="assets/tavo-trumpas-klipas.mp4" autoplay loop muted playsinline></video>
+          </div>
+          <div class="video-info">
+            <h3 class="translate" data-lt="Dinamiškas Montažas" data-en="Dynamic Editing">Dinamiškas Montažas</h3>
+            <p class="translate" 
+               data-lt="Trumpi, greiti ir tikslūs perėjimai. Šis klipas veikia fone automatiškai, demonstruojant mano sugebėjimą kurti energiją išlaikantį turinį." 
+               data-en="Short, fast, and precise transitions. This clip plays automatically in the background, demonstrating my ability to create high-energy content.">
+              Trumpi, greiti ir tikslūs perėjimai. Šis klipas veikia fone automatiškai, demonstruojant mano sugebėjimą kurti energiją išlaikantį turinį.
+            </p>
+            <div class="tech-stack">PREMIERE PRO // AFTER EFFECTS</div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             PROJEKTAS 2: PILNAS VIDEO SU VALDYMU (GARSAS, PAUZĖ)
+             ============================================================== -->
+        <div class="video-card reveal">
+          <div class="video-container">
+            <video src="assets/tavo-ilgas-video.mp4" controls preload="metadata"></video>
+          </div>
+          <div class="video-info">
+            <h3 class="translate" data-lt="Pilnas Projekto Išleidimas" data-en="Full Project Release">Pilnas Projekto Išleidimas</h3>
+            <p class="translate" 
+               data-lt="Ilgas vaizdo įrašas su garso dizainu, spalvų korekcija ir istorijos pasakojimu. Paspauskite 'Play', kad peržiūrėtumėte visą darbą." 
+               data-en="A long-form video featuring sound design, color grading, and storytelling. Click 'Play' to watch the full piece.">
+              Ilgas vaizdo įrašas su garso dizainu, spalvų korekcija ir istorijos pasakojimu. Paspauskite 'Play', kad peržiūrėtumėte visą darbą.
+            </p>
+            <div class="tech-stack">SOUND DESIGN // COLOR GRADING</div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             PROJEKTAS 3: PROGRAMAVIMO PROJEKTAS
+             ============================================================== -->
+        <div class="video-card reveal">
+          <div class="video-container" style="display: flex; align-items: center; justify-content: center; background: #0f172a; border-bottom: 1px solid var(--card-border);">
+             <span style="font-size: 4rem;">💻</span>
+          </div>
+          <div class="video-info">
+            <h3 class="translate" data-lt="Angis / Sistemos Nulaužimas" data-en="Angis / System Breach">Angis / Sistemos Nulaužimas</h3>
+            <p class="translate" 
+               data-lt="Sudėtingos interaktyvios sistemos, terminalo simuliacijos ir edukacinio kodo platformų kūrimas naudojant modernias web technologijas." 
+               data-en="Developing complex interactive systems, terminal simulations, and educational coding platforms using modern web technologies.">
+              Sudėtingos interaktyvios sistemos, terminalo simuliacijos ir edukacinio kodo platformų kūrimas naudojant modernias web technologijas.
+            </p>
+            <div class="tech-stack">HTML // CSS // JAVASCRIPT</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      JUMPSIPIDY © 2026. <span class="translate" data-lt="Visos teisės saugomos." data-en="All rights reserved.">Visos teisės saugomos.</span>
+    </footer>
+
+  </div>
+
+  <script>
+    // =========================================
+    // 1. LANGUAGE TRANSLATION SYSTEM
+    // =========================================
+    function initSystem(language) {
+      const translatableElements = document.querySelectorAll('.translate');
+      
+      // Swap texts based on language
+      translatableElements.forEach(el => {
+        el.innerText = el.getAttribute(`data-${language}`);
+      });
+
+      // Hide Language Screen
+      const screen = document.getElementById('langScreen');
+      screen.style.opacity = '0';
+      screen.style.visibility = 'hidden';
+      
+      setTimeout(() => {
+        screen.style.display = 'none';
+        
+        // Show Main Portfolio
+        const mainApp = document.getElementById('mainPortfolio');
+        mainApp.style.display = 'block';
+        window.getComputedStyle(mainApp).opacity; // trigger reflow
+        mainApp.style.opacity = '1';
+        
+        // Trigger scroll animations immediately for items in view
+        reveal();
+      }, 800);
+    }
+
+    // =========================================
+    // 2. SCROLL REVEAL ANIMATION ENGINE
+    // =========================================
+    function reveal() {
+      var reveals = document.querySelectorAll(".reveal");
+      for (var i = 0; i < reveals.length; i++) {
+        var windowHeight = window.innerHeight;
+        var elementTop = reveals[i].getBoundingClientRect().top;
+        var elementVisible = 100; // How many pixels from bottom to trigger
+
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add("active");
+        }
+      }
+    }
+    // Listen for scrolling
+    window.addEventListener("scroll", reveal);
+  </script>
+</body>
+</html>
