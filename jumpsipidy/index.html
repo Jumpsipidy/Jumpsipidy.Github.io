@@ -6,8 +6,8 @@
   <title>Jumpsipidy | Overview</title>
   <style>
     :root {
-      --bg: #020204;
-      --card-bg: rgba(15, 15, 25, 0.4);
+      --bg: #010103;
+      --card-bg: rgba(12, 12, 20, 0.5);
       --card-border: rgba(255, 255, 255, 0.08);
       --text: #f8fafc;
       --muted: #94a3b8;
@@ -23,7 +23,6 @@
     
     body {
       background-color: var(--bg);
-      background-image: radial-gradient(circle at 50% 0%, #0a0a15 0%, #020204 70%);
       color: var(--text);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
@@ -31,49 +30,60 @@
       line-height: 1.6;
     }
 
+    /* CUSTOM SCROLLBAR */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+
     /* =========================================
-       PREMIUM ANIMATED BACKGROUND
+       PREMIUM 3D ANIMATED BACKGROUND
        ========================================= */
-    .bg-grid {
+    .bg-3d-container {
       position: fixed; inset: 0; z-index: -3;
+      perspective: 1000px; overflow: hidden;
+    }
+
+    .bg-grid {
+      position: absolute; top: 0; left: -50%; width: 200%; height: 200%;
       background-image: 
-        linear-gradient(rgba(34, 211, 238, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34, 211, 238, 0.02) 1px, transparent 1px);
-      background-size: 50px 50px;
-      mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
-      transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-      animation: gridMove 20s linear infinite;
+        linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: rotateX(75deg) translateY(-100px) translateZ(-200px);
+      animation: gridMove 15s linear infinite;
+      mask-image: radial-gradient(ellipse at center, black 10%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 70%);
     }
     @keyframes gridMove {
-      0% { background-position: 0 0; }
-      100% { background-position: 0 50px; }
+      0% { transform: rotateX(75deg) translateY(0) translateZ(-200px); }
+      100% { transform: rotateX(75deg) translateY(60px) translateZ(-200px); }
     }
 
-    .bg-glow {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: -2; pointer-events: none;
-      background: 
-        radial-gradient(circle at 15% 30%, rgba(139, 92, 246, 0.08), transparent 40%),
-        radial-gradient(circle at 85% 70%, rgba(34, 211, 238, 0.08), transparent 40%);
-      filter: blur(60px);
-      animation: bgPulse 10s infinite alternate ease-in-out;
+    /* Ambient floating orbs */
+    .bg-orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
+      animation: floatOrb 20s infinite alternate ease-in-out;
     }
-    @keyframes bgPulse {
-      0% { opacity: 0.5; transform: scale(1); }
-      100% { opacity: 1; transform: scale(1.2); }
+    .orb-1 { width: 500px; height: 500px; background: var(--accent-purple); top: -100px; left: -100px; }
+    .orb-2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -50px; right: -50px; animation-delay: -5s; }
+    .orb-3 { width: 600px; height: 600px; background: rgba(236,72,153,0.15); top: 40%; left: 30%; animation-duration: 25s; }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(100px, 50px) scale(1.2); }
     }
 
-    /* Floating Data Particles */
     .particles {
       position: fixed; inset: 0; z-index: -1; pointer-events: none;
-      background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-      background-size: 60px 60px;
-      animation: particleDrift 40s linear infinite;
-      opacity: 0.3;
+      background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
+      background-size: 80px 80px;
+      animation: particleDrift 30s linear infinite;
+      opacity: 0.5;
     }
     @keyframes particleDrift {
       0% { transform: translateY(0); }
-      100% { transform: translateY(-60px); }
+      100% { transform: translateY(-80px); }
     }
 
     /* =========================================
@@ -102,9 +112,10 @@
     .lang-btn {
       background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.2);
       color: var(--text); padding: 18px 60px; font-size: 1.2rem;
-      font-weight: 800; border-radius: 4px; cursor: pointer;
+      font-weight: 800; border-radius: 8px; cursor: pointer;
       transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
       letter-spacing: 3px; position: relative; overflow: hidden;
+      backdrop-filter: blur(10px);
     }
     .lang-btn::before {
       content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -113,8 +124,8 @@
     }
     .lang-btn:hover::before { left: 100%; }
     .lang-btn:hover {
-      background: rgba(34, 211, 238, 0.1); border-color: var(--accent-cyan);
-      box-shadow: 0 0 20px rgba(34,211,238,0.4); transform: translateY(-3px);
+      background: rgba(34, 211, 238, 0.15); border-color: var(--accent-cyan);
+      box-shadow: 0 0 25px rgba(34,211,238,0.5); transform: translateY(-3px);
     }
 
     /* =========================================
@@ -123,6 +134,20 @@
     #mainPortfolio {
       display: none; opacity: 0;
       max-width: 1200px; margin: 0 auto; padding: 60px 20px;
+      position: relative;
+    }
+
+    /* RETURN TO MAIN SYSTEM BUTTON */
+    .back-btn {
+      position: absolute; top: 20px; left: 20px; z-index: 100;
+      text-decoration: none; color: var(--accent-cyan); font-family: monospace;
+      font-weight: bold; letter-spacing: 1px; padding: 10px 20px;
+      border: 1px solid transparent; border-radius: 8px; transition: 0.3s;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+    }
+    .back-btn:hover {
+      background: rgba(34, 211, 238, 0.1); border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(34,211,238,0.4); transform: translateX(-5px);
     }
 
     /* Enhanced 3D Reveal */
@@ -138,21 +163,21 @@
     }
 
     /* HEADER & SOCIALS */
-    .header { text-align: center; margin-bottom: 80px; position: relative; }
+    .header { text-align: center; margin-top: 40px; margin-bottom: 80px; position: relative; }
     
     .profile-glow {
-      width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--card-bg), #000);
+      width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(20,20,30,0.8), #000);
       border: 2px solid var(--accent-purple);
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; font-weight: 900; color: var(--text);
-      box-shadow: 0 0 30px rgba(139,92,246,0.5);
+      font-size: 3rem; font-weight: 900; color: var(--text);
+      box-shadow: 0 0 40px rgba(139,92,246,0.6);
       animation: float 6s ease-in-out infinite;
     }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
     .header h1 { 
-      font-size: 5rem; letter-spacing: 5px; font-weight: 900; 
+      font-size: clamp(3rem, 8vw, 5.5rem); letter-spacing: 5px; font-weight: 900; 
       margin-bottom: 10px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); 
       display: inline-block;
     }
@@ -183,7 +208,7 @@
     .social-link.tiktok:hover { border-color: var(--tiktok-color); background: rgba(0,242,254,0.1); box-shadow: 0 10px 25px rgba(0,242,254,0.3); }
 
     /* =========================================
-       NEW: QUICK STATS SECTION
+       QUICK STATS SECTION
        ========================================= */
     .stats-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -215,7 +240,7 @@
     
     .section-title {
       font-size: 2.2rem; margin-bottom: 25px; color: #fff;
-      display: inline-block; font-weight: 900; letter-spacing: 2px;
+      display: inline-block; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
     }
 
     .about-text { font-size: 1.2rem; color: #cbd5e1; margin-bottom: 40px; max-width: 800px; line-height: 1.8; }
@@ -234,7 +259,7 @@
        PROJECTS / VIDEOS SECTION
        ========================================= */
     .video-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin-bottom: 80px;
     }
 
     .video-card {
@@ -247,7 +272,7 @@
     /* Interactive Mouse Tracking Glow */
     .video-card::before {
       content: ""; position: absolute; inset: 0; border-radius: inherit;
-      background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+      background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.08), transparent 40%);
       z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.3s;
     }
     .video-card:hover::before { opacity: 1; }
@@ -256,10 +281,10 @@
       content: ""; position: absolute; inset: 0; border-radius: 24px;
       border: 2px solid transparent; transition: 0.4s ease; pointer-events: none; z-index: 2;
     }
-    .video-card:hover::after { border-color: rgba(255,255,255,0.2); }
+    .video-card:hover::after { border-color: rgba(255,255,255,0.3); }
     .video-card:hover { 
-      transform: translateY(-15px); 
-      box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(34,211,238,0.1); 
+      transform: translateY(-15px) scale(1.02); 
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 50px rgba(34,211,238,0.15); 
     }
 
     .video-container {
@@ -267,8 +292,8 @@
     }
     .video-container::after {
       content: "PREVIEW PLAYING"; position: absolute; top: 15px; right: 15px;
-      background: rgba(0,0,0,0.7); color: var(--accent-cyan); font-size: 0.7rem;
-      padding: 5px 10px; border-radius: 4px; font-weight: bold; letter-spacing: 1px;
+      background: rgba(0,0,0,0.8); color: var(--accent-cyan); font-size: 0.7rem;
+      padding: 6px 12px; border-radius: 6px; font-weight: bold; letter-spacing: 1px;
       border: 1px solid var(--accent-cyan); opacity: 0; transition: 0.3s; pointer-events: none;
     }
     .video-card:hover .video-container::after { opacity: 1; }
@@ -276,33 +301,104 @@
     video { width: 100%; height: 100%; object-fit: cover; }
 
     .video-info { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; z-index: 2;}
-    .video-info h3 { margin-bottom: 15px; font-size: 1.5rem; font-weight: 800; color: #fff; }
-    .video-info p { color: var(--muted); font-size: 1rem; line-height: 1.6; margin-bottom: 25px; flex-grow: 1;}
+    .video-info h3 { margin-bottom: 15px; font-size: 1.6rem; font-weight: 800; color: #fff; }
+    .video-info p { color: var(--muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 25px; flex-grow: 1;}
     
-    .tech-stack { 
-      display: flex; gap: 10px; flex-wrap: wrap;
-    }
+    .tech-stack { display: flex; gap: 10px; flex-wrap: wrap; }
     .tech-pill {
       font-size: 0.75rem; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      padding: 5px 12px; border-radius: 50px; font-weight: bold; letter-spacing: 1px;
+      padding: 6px 14px; border-radius: 50px; font-weight: bold; letter-spacing: 1px;
     }
 
+    /* =========================================
+       ADVANCED JOURNEY TIMELINE SECTION
+       ========================================= */
+    .timeline-wrapper {
+      position: relative; margin-bottom: 100px;
+    }
+    .timeline-container {
+      max-width: 850px; margin: 0 auto; position: relative;
+      padding-left: 50px;
+    }
+    /* The glowing connecting line */
+    .timeline-container::before {
+      content: ''; position: absolute; top: 0; bottom: 0; left: 19px; width: 4px;
+      background: linear-gradient(to bottom, transparent, var(--accent-cyan), var(--accent-purple), transparent);
+      border-radius: 4px; box-shadow: 0 0 15px var(--accent-cyan);
+    }
+    
+    .timeline-item {
+      position: relative; margin-bottom: 60px;
+    }
+    .timeline-item:last-child { margin-bottom: 0; }
+    
+    .timeline-dot {
+      position: absolute; left: -57px; top: 20px; width: 26px; height: 26px;
+      border-radius: 50%; background: #000; border: 4px solid var(--accent-cyan);
+      box-shadow: 0 0 15px var(--accent-cyan), inset 0 0 10px var(--accent-cyan); 
+      transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2;
+    }
+    .timeline-item:hover .timeline-dot {
+      background: var(--accent-cyan); transform: scale(1.4); box-shadow: 0 0 25px var(--accent-cyan);
+    }
+    
+    .timeline-content {
+      background: linear-gradient(135deg, rgba(20,20,30,0.7), rgba(10,10,15,0.9)); 
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px; padding: 30px; backdrop-filter: blur(15px);
+      transition: all 0.4s ease; position: relative; overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+    .timeline-content::before {
+      content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--accent-cyan); transition: 0.4s;
+    }
+    .timeline-item:hover .timeline-content {
+      border-color: rgba(255,255,255,0.2); transform: translateX(15px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(34,211,238,0.15);
+    }
+    .timeline-item:hover .timeline-content::before { width: 10px; box-shadow: 0 0 15px var(--accent-cyan); }
+    
+    .timeline-year {
+      font-size: 1.8rem; font-weight: 900; color: #fff; margin-bottom: 10px; letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+    .timeline-text { color: #cbd5e1; font-size: 1.15rem; line-height: 1.7; }
+
+    /* Custom Colors for specific years */
+    .timeline-item:nth-child(even) .timeline-dot { border-color: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple), inset 0 0 10px var(--accent-purple); }
+    .timeline-item:nth-child(even):hover .timeline-dot { background: var(--accent-purple); box-shadow: 0 0 25px var(--accent-purple); }
+    .timeline-item:nth-child(even) .timeline-content::before { background: var(--accent-purple); }
+    .timeline-item:nth-child(even):hover .timeline-content::before { box-shadow: 0 0 15px var(--accent-purple); }
+
+    .timeline-item:last-child .timeline-dot { border-color: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink), inset 0 0 10px var(--accent-pink); }
+    .timeline-item:last-child:hover .timeline-dot { background: var(--accent-pink); box-shadow: 0 0 25px var(--accent-pink); }
+    .timeline-item:last-child .timeline-content::before { background: var(--accent-pink); }
+    .timeline-item:last-child:hover .timeline-content::before { box-shadow: 0 0 15px var(--accent-pink); }
+
     /* FOOTER */
-    footer { text-align: center; margin-top: 100px; padding: 30px; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 2px;}
+    footer { text-align: center; margin-top: 50px; padding: 40px; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); font-size: 0.95rem; letter-spacing: 2px;}
 
     @media (max-width: 768px) {
-      .header h1 { font-size: 3.5rem; }
+      .header h1 { font-size: 3rem; }
       .info-section { padding: 30px; }
       .video-grid { grid-template-columns: 1fr; }
+      .timeline-container { padding-left: 30px; }
+      .timeline-container::before { left: 9px; }
+      .timeline-dot { left: -31px; width: 20px; height: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ADVANCED BACKGROUND EFFECTS -->
-  <div class="bg-grid"></div>
+  <!-- ADVANCED 3D BACKGROUND EFFECTS -->
+  <div class="bg-3d-container">
+    <div class="bg-grid"></div>
+  </div>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
   <div class="particles"></div>
-  <div class="bg-glow"></div>
 
   <!-- 1. LANGUAGE SELECTION SCREEN -->
   <div id="langScreen">
@@ -317,6 +413,9 @@
   <!-- 2. MAIN PORTFOLIO -->
   <div id="mainPortfolio">
     
+    <!-- BACK BUTTON TO MAIN ANGIS PAGE -->
+    <a href="/" class="back-btn translate reveal" data-lt="← Pagrindinė Sistema" data-en="← Main System">← Pagrindinė Sistema</a>
+
     <header class="header reveal">
       <div class="profile-glow">EJ</div>
       <h1 id="typewriter-target"></h1>
@@ -333,14 +432,14 @@
       </div>
     </header>
 
-    <!-- NEW: STATS SECTION -->
+    <!-- STATS SECTION -->
     <section class="stats-grid reveal">
       <div class="stat-card">
         <h3>50+</h3>
         <p class="translate" data-lt="Užbaigti Projektai" data-en="Completed Projects">Užbaigti Projektai</p>
       </div>
       <div class="stat-card">
-        <h3>100%</h3>
+        <h3>95%</h3>
         <p class="translate" data-lt="Atsidavimas Detalėms" data-en="Attention to Detail">Atsidavimas Detalėms</p>
       </div>
       <div class="stat-card">
@@ -364,13 +463,13 @@
         <span class="skill-tag purple">Adobe After Effects</span>
         <span class="skill-tag">Web Development</span>
         <span class="skill-tag">Python (Angis)</span>
-        <span class="skill-tag pink">c# programavimas/coding</span>
+        <span class="skill-tag pink">C# Programavimas / Coding</span>
       </div>
     </section>
 
     <!-- PROJECTS SECTION -->
     <section class="reveal">
-      <h2 class="section-title translate" data-lt="Vizualiniai Darbai" data-en="Visual Projects">Vizualiniai Darbai</h2>
+      <h2 class="section-title translate" data-lt="Vizualiniai Darbai" data-en="Visual Projects" style="text-align: center; width: 100%; margin-bottom: 50px;">Vizualiniai Darbai</h2>
       
       <div class="video-grid" id="cardsContainer">
         
@@ -381,9 +480,9 @@
           <div class="video-info">
             <h3 class="translate" data-lt="Montažo Dinamika" data-en="Editing Dynamics">Montažo Dinamika</h3>
             <p class="translate" 
-               data-lt="čia yra kaip capcut programa tik skirta žmoniem kurie deda daug valandu i video kurima. aka - čia yra adobe premier pro. Ši iškarpa demonstruoja mano gebėjimą kurti energiją išlaikantį turinį naudojant pažangias montažo technikas." 
-               data-en="Short, fast, and precise transitions. This clip demonstrates my ability to create high-energy content using advanced editing techniques.">
-              Trumpi, greiti ir tikslūs perėjimai. Ši iškarpa demonstruoja mano gebėjimą kurti energiją išlaikantį turinį naudojant pažangias montažo technikas.
+               data-lt="Čia yra kaip CapCut programa, tik skirta žmonėms, kurie įdeda daug valandų į video kūrimą. (A.k.a Adobe Premiere Pro). Ši iškarpa demonstruoja mano gebėjimą kurti energiją išlaikantį turinį naudojant pažangias montažo technikas." 
+               data-en="It's like CapCut but for people who put hours into their craft (a.k.a Adobe Premiere Pro). This clip demonstrates my ability to create high-energy content using advanced editing techniques.">
+              Čia yra kaip CapCut programa, tik skirta žmonėms, kurie įdeda daug valandų į video kūrimą. (A.k.a Adobe Premiere Pro). Ši iškarpa demonstruoja mano gebėjimą kurti energiją išlaikantį turinį naudojant pažangias montažo technikas.
             </p>
             <div class="tech-stack">
               <span class="tech-pill">PREMIERE PRO</span>
@@ -431,6 +530,105 @@
       </div>
     </section>
 
+    <!-- ADVANCED JOURNEY TIMELINE SECTION -->
+    <div class="timeline-wrapper">
+      <h2 class="section-title translate reveal" data-lt="Mano Kelionė" data-en="My Journey" style="text-align: center; width: 100%; margin-bottom: 50px;">Mano Kelionė</h2>
+      <div class="timeline-container">
+        
+        <!-- 2021 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-year">2021</h3>
+            <p class="timeline-text translate" 
+               data-lt="Pradėjau domėtis YouTube ir turinio kūrimu." 
+               data-en="Started getting interested into YouTube and content creation.">
+              Pradėjau domėtis YouTube ir turinio kūrimu.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2022 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-year">2022</h3>
+            <p class="timeline-text translate" 
+               data-lt="Išmokau šiek tiek naujų dalykų ir bazinių pagrindų." 
+               data-en="Learned a little bit of things and basic fundamentals.">
+              Išmokau šiek tiek naujų dalykų ir bazinių pagrindų.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2023 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot dot-2023"></div>
+          <div class="timeline-content content-2023">
+            <h3 class="timeline-year year-2023">2023</h3>
+            <p class="timeline-text translate" 
+               data-lt="Pirmą kartą išbandžiau CapCut ir pradėjau mokytis Roblox programavimo." 
+               data-en="First time trying CapCut and started learning Roblox programming.">
+              Pirmą kartą išbandžiau CapCut ir pradėjau mokytis Roblox programavimo.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-year">2024</h3>
+            <p class="timeline-text translate" 
+               data-lt="Pagilinau savo žinias, patobulėjau programavime ir montaže." 
+               data-en="Advanced my knowledge in programming and editing.">
+              Pagilinau savo žinias, patobulėjau programavime ir montaže.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2025 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="timeline-year">2025</h3>
+            <p class="timeline-text translate" 
+               data-lt="Pirmą kartą pamačiau 1999 m. Adobe Premiere Pro vartotojo sąsają. Visiškai įvaldžiau Lua ir Python skriptinimą." 
+               data-en="First time seeing the 1999 Adobe Premiere Pro UI. Completely mastered Lua and Python scripting.">
+              Pirmą kartą pamačiau 1999 m. Adobe Premiere Pro vartotojo sąsają. Visiškai įvaldžiau Lua ir Python skriptinimą.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2026 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot dot-2026"></div>
+          <div class="timeline-content content-2026">
+            <h3 class="timeline-year year-2026">2026</h3>
+            <p class="timeline-text translate" 
+               data-lt="Įvaldžiau modernų Adobe Premiere Pro. Dabar intensyviai mokausi C# programavimo ir toliau tobulėju." 
+               data-en="Mastered modern Adobe Premiere Pro and learning C# continuing hard.">
+              Įvaldžiau modernų Adobe Premiere Pro. Dabar intensyviai mokausi C# programavimo ir toliau tobulėju.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTACT ME SECTION -->
+    <section class="info-section reveal" style="text-align: center; margin-bottom: 20px; padding: 40px;">
+      <h2 class="section-title translate" data-lt="Susisiekti" data-en="Contact Me">Susisiekti</h2>
+      <p class="about-text translate" style="margin: 0 auto 30px;" 
+         data-lt="Turite idėjų, klausimų ar norite bendradarbiauti? Rašykite man tiesiogiai el. paštu." 
+         data-en="Have ideas, questions, or want to collaborate? Send me an email directly.">
+        Turite idėjų, klausimų ar norite bendradarbiauti? Rašykite man tiesiogiai el. paštu.
+      </p>
+      <a href="mailto:jumpsipidy.business@gmail.com" class="lang-btn" style="display: inline-block; text-decoration: none; border-color: var(--accent-pink);">
+        📧 jumpsipidy.business@gmail.com
+      </a>
+    </section>
+
     <footer>
       JUMPSIPIDY © 2026. <span class="translate" data-lt="Viskas suprogramuota nuo nulio." data-en="Built from scratch.">Viskas suprogramuota nuo nulio.</span>
     </footer>
@@ -451,10 +649,10 @@
         if (i < nameToType.length) {
           target.innerHTML += nameToType.charAt(i);
           i++;
-          setTimeout(type, 100); // Speed of typing
+          setTimeout(type, 100); 
         }
       }
-      setTimeout(type, 500); // Initial delay
+      setTimeout(type, 500); 
     }
 
     function initSystem(language) {
@@ -514,7 +712,6 @@
               x = e.clientX - rect.left,
               y = e.clientY - rect.top;
         
-        // Pass mouse coordinates to CSS
         card.style.setProperty("--mouse-x", `${x}px`);
         card.style.setProperty("--mouse-y", `${y}px`);
       };
