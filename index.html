@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jumpsipidy official Page</title>
+  <title>Jumpsipidy official page</title>
   <style>
     /* ======================================================================
        CORE THEME VARIABLES (ORIGINAL DARK THEME)
@@ -213,6 +213,9 @@
     .riddle-btn { background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(34,197,94,0.3)); border-color: var(--purple); text-shadow: 0 0 5px #fff; animation: pulseGlowPurple 3s infinite;}
     @keyframes pulseGlowPurple { 0% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } 50% { box-shadow: 0 0 20px rgba(139,92,246,0.6); } 100% { box-shadow: 0 0 5px rgba(139,92,246,0.2); } }
 
+    .level-11-btn { background: linear-gradient(135deg, rgba(236,72,153,0.3), rgba(139,92,246,0.3)); border-color: var(--accent-pink); text-shadow: 0 0 5px #fff; animation: pulseGlowPink 3s infinite;}
+    @keyframes pulseGlowPink { 0% { box-shadow: 0 0 5px rgba(236,72,153,0.2); } 50% { box-shadow: 0 0 20px rgba(236,72,153,0.6); } 100% { box-shadow: 0 0 5px rgba(236,72,153,0.2); } }
+
     /* PAYPAL DONATE BUTTON */
     .donate-btn { background: linear-gradient(135deg, rgba(250,204,21,0.2), rgba(251,113,133,0.2)); border-color: #facc15; color: #facc15; text-shadow: 0 0 8px #facc15; transition: all 0.3s;}
     .donate-btn:hover { background: linear-gradient(135deg, rgba(250,204,21,0.4), rgba(251,113,133,0.4)); box-shadow: 0 0 20px rgba(250,204,21,0.6); color: #fff; }
@@ -284,6 +287,12 @@
     .riddle-hint { color: var(--green); font-family: monospace; font-size: 0.85rem; margin-top: 15px; display: none; animation: fadeUp 0.5s; border-top: 1px dashed rgba(34,197,94,0.3); padding-top: 10px;}
     .link-to-riddle { color: var(--cyan); text-decoration: underline; cursor: pointer; display: block; margin-top: 10px; font-size: 0.85rem;}
     .link-to-riddle:hover { color: #fff; }
+
+    /* SPECIFIC LEVEL 11 MODAL STYLING */
+    #level11Modal .modal-box { border-color: var(--accent-pink); box-shadow: 0 0 50px rgba(236,72,153,0.3); max-width: 550px;}
+    #level11Modal input:focus { border-color: var(--accent-pink); box-shadow: 0 0 15px rgba(236,72,153,0.4); }
+    #level11Modal .modal-btn { background: var(--accent-pink); color: #fff; }
+    #level11Modal .modal-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff; }
 
     /* CONTEXT MENU */
     #customContextMenu { position: fixed; background: rgba(10,15,30,0.95); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.9), var(--glow-cyan); backdrop-filter: blur(10px); padding: 8px; z-index: 99999; display: none; min-width: 220px; transform-origin: top left; animation: menuScale 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -365,7 +374,6 @@
   <div id="lockdown-container">
     <div class="siren-light"></div>
     <div class="lockdown-content">
-      <!-- Masyvi raudona spyna (SVG) -->
       <svg class="lock-icon" viewBox="0 0 24 24">
         <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
       </svg>
@@ -423,6 +431,18 @@
     </div>
   </div>
 
+  <div id="level11Modal" class="custom-modal">
+    <div class="modal-box">
+      <span class="close-modal" onclick="closeModal('level11Modal')">&times;</span>
+      <h2 style="color: var(--accent-pink);">LYGIO 11 AUTORIZACIJA</h2>
+      <div class="riddle-warning" style="color: var(--accent-pink);">manipulacinis klausimas</div>
+      <h3 style="color: var(--cyan); margin-bottom: 20px; font-family: monospace; font-size: 1.3rem;">jei turiu 5 saldainius bet suvalgiau 6 is kur atsirado 6?</h3>
+      <input type="text" id="level11Answer" placeholder="Įveskite atsakymą..." autocomplete="off" onkeypress="if(event.key === 'Enter') verifyLevel11()">
+      <button class="modal-btn" onclick="verifyLevel11()">ATRAKINTI LYGĮ</button>
+      <div id="level11Error" class="modal-error"></div>
+    </div>
+  </div>
+
   <div id="customContextMenu">
     <div class="ctx-item" onclick="triggerMenuAction('copy')">Kopijuoti kodą <span class="ctx-shortcut">Ctrl+C</span></div>
     <div class="ctx-item" onclick="triggerMenuAction('clear')">Išvalyti atmintį <span class="ctx-shortcut">Del</span></div>
@@ -476,6 +496,9 @@
           <button class="level-btn donate-btn" onclick="openPayPalPopup()">💛 PALAIKYTI PROJEKTĄ</button>
 
           <button class="level-btn riddle-btn" id="openRiddleBtn" onclick="openRiddleModal()">Iššifruoti Lygį 10</button>
+          
+          <button class="level-btn level-11-btn" id="openLevel11Btn" onclick="openLevel11Modal()">Iššifruoti Lygį 11</button>
+
           <button class="level-btn unlock-btn" id="unlockBtn" onclick="openAdminModal()">Gauti visus atsakymus nuo 9</button>
           
           <button id="btn-lygis-10" class="level-btn hidden-level" onclick="openLevel(10)" style="animation-delay: 0.1s;">Lygis 10</button>
@@ -523,19 +546,19 @@
     // MODULE 1: DATA CORE (Immutable Payload)
     // ============================================================================
     const __ENCRYPTED_PAYLOADS = {
-      4: `reikalingas lygis4\n\nslibinas = lygis4.slibinas\n\nkartok 6:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 5:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()`,
-      5: `reikalingas lygis5\n\nliepsna = lygis5.liepsna\nslibinas = lygis5.slibinas\nkomanda ugniesBurtas():\n kartok 4:\n  liepsna.pirmyn(8)\n  liepsna.dešinėn()\nugniesBurtas()\nugniesBurtas()\n\nslibinas.spruk()`,
-      6: `reikalingas lygis6\n\nprincas = lygis6.princas\nkaimas = lygis6.kaimas\n\ntekstas = princas.paklauskTeksto()\nif not tekstas or len(tekstas.strip()) == 0:\n    tekstas = "Ačiū"\n\nkaimas.iškelkUžrašą(tekstas)`,
-      7: `reikalingas žaidimas\n\nscena = žaidimas.duokSceną()\n\natsakymas = žaidimas.paklauskTeksto("Koks slaptažodis?")\n\nif atsakymas == "abcd":\n    scena.naudokPaveiksliuką("sveiki_atvyke.png")`,
-      8: `reikalingas lygis8\n\nprincas = lygis8.princas\ngynėjas = lygis8.gynėjas\n\nprincas.pirmyn(2)\n\nwhile gynėjas.gyvybėsTaškai > 0:\n    princas.kirsk()\n\nprincas.sakyk("Ar jau nugalėjau?")\nprincas.sakyk("Ar jau nugalėjau?")`,
-      9: `reikalingas lygis9\n\nsprogimas = lygis9.sprogimas\nfonas = lygis9.fonas\n\nblogietis = lygis9.sukurkBlogietį(x=20, y=400)\n\ndef nupieškSprogimą(x, y):\n    sprogimas.atsirask(x=x, y=y)\n\ndef susprogdinkBlogietį(x, y):\n    nupieškSprogimą(x, y)\n    blogietis.mirk()\n\nblogietis.pelęPaspaudus(susprogdinkBlogietį)\nfonas.pelęPaspaudus(nupieškSprogimą)`,
+      4: `reikalingas lygis4\n\nslibinas = lygis4.slibinas\n\nkartok 6:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 5:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\n\n# Padaryta jumpsipidy.online`,
+      5: `reikalingas lygis5\n\nliepsna = lygis5.liepsna\nslibinas = lygis5.slibinas\nkomanda ugniesBurtas():\n kartok 4:\n  liepsna.pirmyn(8)\n  liepsna.dešinėn()\nugniesBurtas()\nugniesBurtas()\n\nslibinas.spruk()\n\n# Padaryta jumpsipidy.online`,
+      6: `reikalingas lygis6\n\nprincas = lygis6.princas\nkaimas = lygis6.kaimas\n\ntekstas = princas.paklauskTeksto()\nif not tekstas or len(tekstas.strip()) == 0:\n    tekstas = "Ačiū"\n\nkaimas.iškelkUžrašą(tekstas)\n\n# Padaryta jumpsipidy.online`,
+      7: `reikalingas žaidimas\n\nscena = žaidimas.duokSceną()\n\natsakymas = žaidimas.paklauskTeksto("Koks slaptažodis?")\n\nif atsakymas == "abcd":\n    scena.naudokPaveiksliuką("sveiki_atvyke.png")\n\n# Padaryta jumpsipidy.online`,
+      8: `reikalingas lygis8\n\nprincas = lygis8.princas\ngynėjas = lygis8.gynėjas\n\nprincas.pirmyn(2)\n\nwhile gynėjas.gyvybėsTaškai > 0:\n    princas.kirsk()\n\nprincas.sakyk("Ar jau nugalėjau?")\nprincas.sakyk("Ar jau nugalėjau?")\n\n# Padaryta jumpsipidy.online`,
+      9: `reikalingas lygis9\n\nsprogimas = lygis9.sprogimas\nfonas = lygis9.fonas\n\nblogietis = lygis9.sukurkBlogietį(x=20, y=400)\n\ndef nupieškSprogimą(x, y):\n    sprogimas.atsirask(x=x, y=y)\n\ndef susprogdinkBlogietį(x, y):\n    nupieškSprogimą(x, y)\n    blogietis.mirk()\n\nblogietis.pelęPaspaudus(susprogdinkBlogietį)\nfonas.pelęPaspaudus(nupieškSprogimą)\n\n# Padaryta jumpsipidy.online`,
       
       // UNLOCKED LEVELS
-      10: `reikalinga angis\nreikalingas žaidimas\n\nscena = žaidimas.Scena(plotis=800, aukštis=800)\nscena.naudokFoną('pav/pilis/fejos_mene.png')\n\nveidrodis  = žaidimas.Dekoracija('pav/pilis/veidrodis.png',  x=0,   y=510)\nlangas     = žaidimas.Dekoracija('pav/pilis/langas.png',     x=180, y=410)\nlempa      = žaidimas.Dekoracija('pav/pilis/lempa.png',      x=300, y=510)\nskrynia    = žaidimas.Dekoracija('pav/pilis/skrynia.png',    x=420, y=510)\nherbas     = žaidimas.Dekoracija('pav/pilis/herbas.png',     x=430, y=630)\npaveikslas = žaidimas.Dekoracija('pav/pilis/paveikslas.png', x=530, y=630)\nužuolaidos = žaidimas.Dekoracija('pav/pilis/uzuolaidos.png', x=670, y=510)\n\ndef padarykPerkeliama(obj):\n    def paspaudus(x, y):\n        obj.prisikabinkPriePelės()\n    def atleidus(x, y):\n        obj.atsikabinkNuoPelės()\n    obj.pelęPaspaudus(paspaudus)\n    obj.pelęAtleidus(atleidus)\n\npadarykPerkeliama(veidrodis)\npadarykPerkeliama(langas)\npadarykPerkeliama(lempa)\npadarykPerkeliama(skrynia)\npadarykPerkeliama(herbas)\npadarykPerkeliama(paveikslas)\npadarykPerkeliama(užuolaidos)`,
-      11: `reikalingas lygis11\nreikalingas žaidimas\n\nžmogausTaškai = 0\nslibinoTaškai = 0\n\nžmogus = žaidimas.Dekoracija('pav/zmogus1.png', 1, 100)\nslibinas = žaidimas.Dekoracija('pav/slibinas1.png', 400, 100)\n\nžmogausPasirinkimas = žaidimas.paklauskTeksto("a - akmuo \\n ž - žirklės \\n p - popierius")\n\njei žmogausPasirinkimas == 'a':\n    žmogus.naudokPaveiksliuką('pav/zmogus_akmuo.png')\n    slibinoPasirinkimas = 'p'\njei žmogausPasirinkimas == 'ž':\n    žmogus.naudokPaveiksliuką('pav/zmogus_zirkles.png')\n    slibinoPasirinkimas = 'a'\njei žmogausPasirinkimas == 'p':\n    žmogus.naudokPaveiksliuką('pav/zmogus_popierius.png')\n    slibinoPasirinkimas = 'ž'\n\njei slibinoPasirinkimas == 'a':\n    slibinas.naudokPaveiksliuką('pav/slibinas_akmuo.png')\njei slibinoPasirinkimas == 'ž':\n    slibinas.naudokPaveiksliuką('pav/slibinas_zirkles.png')\njei slibinoPasirinkimas == 'p':\n    slibinas.naudokPaveiksliuką('pav/slibinas_popierius.png')\n\njei žmogausPasirinkimas == 'a':\n    jei slibinoPasirinkimas == 'ž':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'p':\n        slibinoTaškai = slibinoTaškai + 1\n\njei žmogausPasirinkimas == 'p': \n    jei slibinoPasirinkimas == 'a':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'ž':\n        slibinoTaškai = slibinoTaškai + 1\n\njei žmogausPasirinkimas == 'ž': \n    jei slibinoPasirinkimas == 'p':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'a':\n        slibinoTaškai = slibinoTaškai + 1\n\nžaidimas.sakyk("Slibinas ", slibinoTaškai, ": Žmogus ", žmogausTaškai)`,
-      12: `reikalingas lygis12\nreikalingas žaidimas\n\nprincas = lygis12.princas\n\nkomanda pirmyn(mygtukas):\n    princas.pirmyn()\n\nkomanda atgal(mygtukas):\n    princas.atgal()\n\nkomanda kairėn(mygtukas):\n    princas.kairėn()\n\nkomanda dešinėn(mygtukas):\n    princas.dešinėn()\n\nkomanda kirsk(mygtukas):\n    princas.kirsk()\n\nkomanda stop(mygtukas):\n    princas.stok()\n\nžaidimas.mygtukąPaspaudus('w', pirmyn)\nžaidimas.mygtukąPaspaudus('s', atgal)\nžaidimas.mygtukąPaspaudus('a', kairėn)\nžaidimas.mygtukąPaspaudus('d', dešinėn)\nžaidimas.mygtukąPaspaudus(' ', kirsk)\n\nžaidimas.mygtukąAtleidus(stop)`,
-      13: `reikalingas lygis13\n\nfėja = lygis13.fėja\n\nburtųLentyna = [\n    lygis13.expectoPatronum,\n    lygis13.lumos,\n    lygis13.accio,\n    lygis13.alohomora,\n    lygis13.obliviate,\n    lygis13.aberto,\n    lygis13.expelliarmus,\n    lygis13.impedimenta\n]\n\nburtoNumeris = fėja.paklauskSkaičiaus('kelintą burtą išbandom? Įvesk jo numerį 0-7')\n\npasirinktasBurtas = burtųLentyna[burtoNumeris]\npasirinktasBurtas.vykdyk()`,
-      14: `reikalinga angis\nreikalingas žaidimas\nreikalinga burtai\nreikalinga herojai\n\nžaidimas.duokSceną().nustatykDydį(plotis=1500, aukštis=1500)\nžaidimas.naudokFoną('finalas.png')\n\nfėja = herojai.fėja\nfėja.atsirask(x = 100, y = 100)\nfėja.žiūrėk(laipsniai = 315)\n\nprincas = herojai.princas\nprincas.atsirask(x = 1300, y = 100)\nprincas.žiūrėk(laipsniai = 205)\n\nslibinas = herojai.slibinas\nslibinas.atsirask(x = 450, y = 1000)\nslibinas.žiūrėk(laipsniai = 45)\n\npelkiųValdovas = herojai.pelkiųValdovas\npelkiųValdovas.atsirask(x = 1300, y = 1000)\npelkiųValdovas.žiūrėk(laipsniai = 135)\n\nkomanda slibinasEinaLinkPelės(pelėsX, pelėsY):\n    slibinas.keliaukĮ(pelėsX, pelėsY)\n    \nžaidimas.pelęPaspaudus(slibinasEinaLinkPelės)\n\nkomanda princasEinaPirmyn(mygtukas):\n    princas.pirmyn()\n\nkomanda princasEinaAtgal(mygtukas):\n    princas.atgal()\n\nkomanda princasSukasiKairėn(mygtukas):\n    princas.kairėn()\n    \nkomanda princasSukasiDešinėn(mygtukas):\n    princas.dešinėn()\n\nkomanda princasStoja(mygtukas):\n    princas.stok()\n\nkomanda princasKerta(mygtukas):\n    princas.kirsk()\n       \nžaidimas.mygtukąPaspaudus('w', princasEinaPirmyn)\nžaidimas.mygtukąPaspaudus('s', princasEinaAtgal)\nžaidimas.mygtukąPaspaudus('a', princasSukasiKairėn)\nžaidimas.mygtukąPaspaudus('d', princasSukasiDešinėn)\nžaidimas.mygtukąPaspaudus(' ', princasKerta)\nžaidimas.mygtukąAtleidus('<betKuris>', princasStoja)\n\nburtųLentyna = [\n    burtai.expectoPatronum, burtai.lumos, burtai.accio, burtai.alohomora, burtai.obliviate, burtai.aberto, burtai.expelliarmus, burtai.impedimenta\n]\n\nkomanda paspaustasSkaitmensMygtukas(mygtukas):\n    burtoNumeris = int(mygtukas)\n    atrinktasBurtas = burtųLentyna[burtoNumeris]\n    fėja.burk(burtas = atrinktasBurtas, taikinys=pelkiųValdovas)\n\nžaidimas.mygtukąPaspaudus('0', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('1', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('2', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('3', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('4', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('5', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('6', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('7', paspaustasSkaitmensMygtukas)\n\nfėjosGyvybė   = 10\nslibinoGyvybė = 10\nprincoGyvybė  = 10\npelkiųValdovoGyvybė = 270\n\nšvieslentė = žaidimas.Tekstas(x= 0, y=1400, spalva=0xFFFFFF, dydis=50)\n\npelkiųValdovas.pulk()\n\nžaidimasBaigtas = 'ne'\n\nkol žaidimasBaigtas == 'ne':\n\n    jei pelkiųValdovas.arSužeidė(fėja):\n        fėjosGyvybė = fėjosGyvybė - 3\n        \n    jei pelkiųValdovas.arSužeidė(slibinas):\n        slibinoGyvybė = slibinoGyvybė - 3\n\n    jei pelkiųValdovas.arSužeidė(princas):\n        princoGyvybė = princoGyvybė - 1\n\n    jei princas.arSužeidė(pelkiųValdovas):\n        pelkiųValdovoGyvybė = pelkiųValdovoGyvybė - 10\n\n    jei fėja.arSužeidė(pelkiųValdovas):\n        pelkiųValdovoGyvybė = pelkiųValdovoGyvybė - 30\n\n    jei fėjosGyvybė < 0:\n        fėja.mirk()\n        žaidimasBaigtas = 'taip'    \n\n    jei slibinoGyvybė < 0:\n        slibinas.mirk()\n        žaidimasBaigtas = 'taip'\n\n    jei princoGyvybė < 0:\n        princas.mirk()\n        žaidimasBaigtas = 'taip'\n\n    jei pelkiųValdovoGyvybė < 0:\n        pelkiųValdovas.mirk()\n        žaidimasBaigtas = 'taip'\n        \n    švieslentė.rodykTekstą(\"s:\", slibinoGyvybė, \" p:\", princoGyvybė, \" f:\", fėjosGyvybė, \" PV:\", pelkiųValdovoGyvybė)\n\nangis.taikykFiltrą(contrast = 1.5, sepia = 1, vintage = 1)\nžaidimas.Tekstas(\"žaidimas baigtas!\", x=300, y=350, spalva=0xFFFFFF, dydis=100)\n\njei pelkiųValdovoGyvybė > 0:\n    žaidimas.Tekstas(\"Pelkių Valdovas laimėjo :(\", x=200, y=550, spalva=0xFFFFFF, dydis=110)\n\njei pelkiųValdovoGyvybė <= 0:\n    žaidimas.Tekstas(\"PERGALĖ\", x=200, y=550, spalva=0xFFFFFF, dydis=110)`
+      10: `reikalinga angis\nreikalingas žaidimas\n\nscena = žaidimas.Scena(plotis=800, aukštis=800)\nscena.naudokFoną('pav/pilis/fejos_mene.png')\n\nveidrodis  = žaidimas.Dekoracija('pav/pilis/veidrodis.png',  x=0,   y=510)\nlangas     = žaidimas.Dekoracija('pav/pilis/langas.png',     x=180, y=410)\nlempa      = žaidimas.Dekoracija('pav/pilis/lempa.png',      x=300, y=510)\nskrynia    = žaidimas.Dekoracija('pav/pilis/skrynia.png',    x=420, y=510)\nherbas     = žaidimas.Dekoracija('pav/pilis/herbas.png',     x=430, y=630)\npaveikslas = žaidimas.Dekoracija('pav/pilis/paveikslas.png', x=530, y=630)\nužuolaidos = žaidimas.Dekoracija('pav/pilis/uzuolaidos.png', x=670, y=510)\n\ndef padarykPerkeliama(obj):\n    def paspaudus(x, y):\n        obj.prisikabinkPriePelės()\n    def atleidus(x, y):\n        obj.atsikabinkNuoPelės()\n    obj.pelęPaspaudus(paspaudus)\n    obj.pelęAtleidus(atleidus)\n\npadarykPerkeliama(veidrodis)\npadarykPerkeliama(langas)\npadarykPerkeliama(lempa)\npadarykPerkeliama(skrynia)\npadarykPerkeliama(herbas)\npadarykPerkeliama(paveikslas)\npadarykPerkeliama(užuolaidos)\n\n# Padaryta jumpsipidy.online`,
+      11: `reikalingas lygis11\nreikalingas žaidimas\n\nžmogausTaškai = 0\nslibinoTaškai = 0\n\nžmogus = žaidimas.Dekoracija('pav/zmogus1.png', 1, 100)\nslibinas = žaidimas.Dekoracija('pav/slibinas1.png', 400, 100)\n\nžmogausPasirinkimas = žaidimas.paklauskTeksto("a - akmuo \\n ž - žirklės \\n p - popierius")\n\njei žmogausPasirinkimas == 'a':\n    žmogus.naudokPaveiksliuką('pav/zmogus_akmuo.png')\n    slibinoPasirinkimas = 'p'\njei žmogausPasirinkimas == 'ž':\n    žmogus.naudokPaveiksliuką('pav/zmogus_zirkles.png')\n    slibinoPasirinkimas = 'a'\njei žmogausPasirinkimas == 'p':\n    žmogus.naudokPaveiksliuką('pav/zmogus_popierius.png')\n    slibinoPasirinkimas = 'ž'\n\njei slibinoPasirinkimas == 'a':\n    slibinas.naudokPaveiksliuką('pav/slibinas_akmuo.png')\njei slibinoPasirinkimas == 'ž':\n    slibinas.naudokPaveiksliuką('pav/slibinas_zirkles.png')\njei slibinoPasirinkimas == 'p':\n    slibinas.naudokPaveiksliuką('pav/slibinas_popierius.png')\n\njei žmogausPasirinkimas == 'a':\n    jei slibinoPasirinkimas == 'ž':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'p':\n        slibinoTaškai = slibinoTaškai + 1\n\njei žmogausPasirinkimas == 'p': \n    jei slibinoPasirinkimas == 'a':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'ž':\n        slibinoTaškai = slibinoTaškai + 1\n\njei žmogausPasirinkimas == 'ž': \n    jei slibinoPasirinkimas == 'p':\n        žmogausTaškai = žmogausTaškai + 1\n    jei slibinoPasirinkimas == 'a':\n        slibinoTaškai = slibinoTaškai + 1\n\nžaidimas.sakyk("Slibinas ", slibinoTaškai, ": Žmogus ", žmogausTaškai)\n\n# Padaryta jumpsipidy.online`,
+      12: `reikalingas lygis12\nreikalingas žaidimas\n\nprincas = lygis12.princas\n\nkomanda pirmyn(mygtukas):\n    princas.pirmyn()\n\nkomanda atgal(mygtukas):\n    princas.atgal()\n\nkomanda kairėn(mygtukas):\n    princas.kairėn()\n\nkomanda dešinėn(mygtukas):\n    princas.dešinėn()\n\nkomanda kirsk(mygtukas):\n    princas.kirsk()\n\nkomanda stop(mygtukas):\n    princas.stok()\n\nžaidimas.mygtukąPaspaudus('w', pirmyn)\nžaidimas.mygtukąPaspaudus('s', atgal)\nžaidimas.mygtukąPaspaudus('a', kairėn)\nžaidimas.mygtukąPaspaudus('d', dešinėn)\nžaidimas.mygtukąPaspaudus(' ', kirsk)\n\nžaidimas.mygtukąAtleidus(stop)\n\n# Padaryta jumpsipidy.online`,
+      13: `reikalingas lygis13\n\nfėja = lygis13.fėja\n\nburtųLentyna = [\n    lygis13.expectoPatronum,\n    lygis13.lumos,\n    lygis13.accio,\n    lygis13.alohomora,\n    lygis13.obliviate,\n    lygis13.aberto,\n    lygis13.expelliarmus,\n    lygis13.impedimenta\n]\n\nburtoNumeris = fėja.paklauskSkaičiaus('kelintą burtą išbandom? Įvesk jo numerį 0-7')\n\npasirinktasBurtas = burtųLentyna[burtoNumeris]\npasirinktasBurtas.vykdyk()\n\n# Padaryta jumpsipidy.online`,
+      14: `reikalinga angis\nreikalingas žaidimas\nreikalinga burtai\nreikalinga herojai\n\nžaidimas.duokSceną().nustatykDydį(plotis=1500, aukštis=1500)\nžaidimas.naudokFoną('finalas.png')\n\nfėja = herojai.fėja\nfėja.atsirask(x = 100, y = 100)\nfėja.žiūrėk(laipsniai = 315)\n\nprincas = herojai.princas\nprincas.atsirask(x = 1300, y = 100)\nprincas.žiūrėk(laipsniai = 205)\n\nslibinas = herojai.slibinas\nslibinas.atsirask(x = 450, y = 1000)\nslibinas.žiūrėk(laipsniai = 45)\n\npelkiųValdovas = herojai.pelkiųValdovas\npelkiųValdovas.atsirask(x = 1300, y = 1000)\npelkiųValdovas.žiūrėk(laipsniai = 135)\n\nkomanda slibinasEinaLinkPelės(pelėsX, pelėsY):\n    slibinas.keliaukĮ(pelėsX, pelėsY)\n    \nžaidimas.pelęPaspaudus(slibinasEinaLinkPelės)\n\nkomanda princasEinaPirmyn(mygtukas):\n    princas.pirmyn()\n\nkomanda princasEinaAtgal(mygtukas):\n    princas.atgal()\n\nkomanda princasSukasiKairėn(mygtukas):\n    princas.kairėn()\n    \nkomanda princasSukasiDešinėn(mygtukas):\n    princas.dešinėn()\n\nkomanda princasStoja(mygtukas):\n    princas.stok()\n\nkomanda princasKerta(mygtukas):\n    princas.kirsk()\n       \nžaidimas.mygtukąPaspaudus('w', princasEinaPirmyn)\nžaidimas.mygtukąPaspaudus('s', princasEinaAtgal)\nžaidimas.mygtukąPaspaudus('a', princasSukasiKairėn)\nžaidimas.mygtukąPaspaudus('d', princasSukasiDešinėn)\nžaidimas.mygtukąPaspaudus(' ', princasKerta)\nžaidimas.mygtukąAtleidus('<betKuris>', princasStoja)\n\nburtųLentyna = [\n    burtai.expectoPatronum, burtai.lumos, burtai.accio, burtai.alohomora, burtai.obliviate, burtai.aberto, burtai.expelliarmus, burtai.impedimenta\n]\n\nkomanda paspaustasSkaitmensMygtukas(mygtukas):\n    burtoNumeris = int(mygtukas)\n    atrinktasBurtas = burtųLentyna[burtoNumeris]\n    fėja.burk(burtas = atrinktasBurtas, taikinys=pelkiųValdovas)\n\nžaidimas.mygtukąPaspaudus('0', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('1', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('2', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('3', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('4', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('5', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('6', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('7', paspaustasSkaitmensMygtukas)\n\nfėjosGyvybė   = 10\nslibinoGyvybė = 10\nprincoGyvybė  = 10\npelkiųValdovoGyvybė = 270\n\nšvieslentė = žaidimas.Tekstas(x= 0, y=1400, spalva=0xFFFFFF, dydis=50)\n\npelkiųValdovas.pulk()\n\nžaidimasBaigtas = 'ne'\n\nkol žaidimasBaigtas == 'ne':\n\n    jei pelkiųValdovas.arSužeidė(fėja):\n        fėjosGyvybė = fėjosGyvybė - 3\n        \n    jei pelkiųValdovas.arSužeidė(slibinas):\n        slibinoGyvybė = slibinoGyvybė - 3\n\n    jei pelkiųValdovas.arSužeidė(princas):\n        princoGyvybė = princoGyvybė - 1\n\n    jei princas.arSužeidė(pelkiųValdovas):\n        pelkiųValdovoGyvybė = pelkiųValdovoGyvybė - 10\n\n    jei fėja.arSužeidė(pelkiųValdovas):\n        pelkiųValdovoGyvybė = pelkiųValdovoGyvybė - 30\n\n    jei fėjosGyvybė < 0:\n        fėja.mirk()\n        žaidimasBaigtas = 'taip'    \n\n    jei slibinoGyvybė < 0:\n        slibinas.mirk()\n        žaidimasBaigtas = 'taip'\n\n    jei princoGyvybė < 0:\n        princas.mirk()\n        žaidimasBaigtas = 'taip'\n\n    jei pelkiųValdovoGyvybė < 0:\n        pelkiųValdovas.mirk()\n        žaidimasBaigtas = 'taip'\n        \n    švieslentė.rodykTekstą(\"s:\", slibinoGyvybė, \" p:\", princoGyvybė, \" f:\", fėjosGyvybė, \" PV:\", pelkiųValdovoGyvybė)\n\nangis.taikykFiltrą(contrast = 1.5, sepia = 1, vintage = 1)\nžaidimas.Tekstas(\"žaidimas baigtas!\", x=300, y=350, spalva=0xFFFFFF, dydis=100)\n\njei pelkiųValdovoGyvybė > 0:\n    žaidimas.Tekstas(\"Pelkių Valdovas laimėjo :(\", x=200, y=550, spalva=0xFFFFFF, dydis=110)\n\njei pelkiųValdovoGyvybė <= 0:\n    žaidimas.Tekstas(\"PERGALĖ\", x=200, y=550, spalva=0xFFFFFF, dydis=110)\n\n# Padaryta jumpsipidy.online`
     };
 
     // ============================================================================
@@ -674,7 +697,7 @@
       if (lockdownActive) return;
 
       const code = adminCodeInput.value;
-      if (code === "7851") {
+      if (code === "1980") {
         adminError.style.color = "#22c55e";
         adminError.textContent = "PRIEIGA PATVIRTINTA. Nigeris...";
         adminAttempts = 0; // Reset attempts on success
@@ -774,6 +797,7 @@
         
         unlockBtn.style.display = "none";
         document.getElementById('openRiddleBtn').style.display = "none"; 
+        document.getElementById('openLevel11Btn').style.display = "none"; 
         
         const hiddenLevels = document.querySelectorAll('.hidden-level');
         hiddenLevels.forEach(btn => { btn.classList.add('revealed'); });
@@ -835,7 +859,13 @@
           
           document.getElementById('btn-lygis-10').classList.add('revealed');
           document.getElementById('openRiddleBtn').style.display = "none"; 
-          document.getElementById('levelRangeLabel').innerHTML = "Lygiai: 4 → 10 <span style='color:var(--purple);'>[PARTIAL UNLOCK]</span>";
+          
+          // Update the label only if it hasn't been updated to 11 yet
+          const currentLabel = document.getElementById('levelRangeLabel').innerText;
+          if (!currentLabel.includes("11")) {
+            document.getElementById('levelRangeLabel').innerHTML = "Lygiai: 4 → 10 <span style='color:var(--purple);'>[PARTIAL UNLOCK]</span>";
+          }
+          
           showCopyMessage("10 LYGIS ATRAKINTAS!");
         }, 1000);
 
@@ -852,6 +882,55 @@
         }
       }
     }
+
+    // ============================================================================
+    // MODULE 3.6: LEVEL 11 PROTOCOL
+    // ============================================================================
+    const level11Error = document.getElementById('level11Error');
+    const level11Input = document.getElementById('level11Answer');
+
+    function openLevel11Modal() {
+      openModal('level11Modal');
+      level11Input.value = '';
+      level11Error.innerHTML = '';
+      level11Input.focus();
+    }
+
+    function closeLevel11Modal() {
+      closeModal('level11Modal');
+    }
+
+    function verifyLevel11() {
+      let answer = level11Input.value.toLowerCase().trim();
+      
+      // CHANGE "padalinta" TO YOUR DESIRED ANSWER HERE
+      if (answer === "padalinta") {
+        level11Error.style.color = "#22c55e";
+        level11Error.textContent = "ATSAKYMAS TEISINGAS. 11 LYGIS ATRAKINTAS.";
+        
+        setTimeout(() => {
+          closeLevel11Modal();
+          document.body.style.filter = "url(#glitch-filter)";
+          setTimeout(() => document.body.style.filter = "none", 200);
+          
+          document.getElementById('btn-lygis-11').classList.add('revealed');
+          document.getElementById('openLevel11Btn').style.display = "none"; 
+          
+          // Update the label
+          document.getElementById('levelRangeLabel').innerHTML = "Lygiai: 4 → 11 <span style='color:var(--accent-pink);'>[PARTIAL UNLOCK]</span>";
+          
+          showCopyMessage("11 LYGIS ATRAKINTAS!");
+        }, 1000);
+
+      } else {
+        level11Error.style.color = "#ff3333";
+        level11Error.textContent = "Neteisingas atsakymas. Prieiga atmesta.";
+        
+        document.querySelector('#level11Modal .modal-box').style.animation = "glitchSkew 0.3s";
+        setTimeout(() => { document.querySelector('#level11Modal .modal-box').style.animation = ""; }, 300);
+      }
+    }
+
 
     // ============================================================================
     // MODULE 4: INSANE VARIABLE-SPEED IDE TYPEWRITER & AST SYNTAX PARSER
