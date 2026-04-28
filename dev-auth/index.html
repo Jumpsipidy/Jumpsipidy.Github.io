@@ -122,7 +122,7 @@
     .auth-btn.vip-btn { background: var(--purple); color: #fff; }
     .auth-btn.vip-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff;}
 
-    .auth-error { margin-top: 15px; font-weight: bold; min-height: 20px; font-family: monospace; font-size: 0.9rem;}
+    .auth-error { color: #ff3333; margin-top: 15px; font-weight: bold; min-height: 20px; font-family: monospace; font-size: 0.9rem;}
 
     #mainApp { display: none; opacity: 0; transition: opacity 1.5s ease-in-out; }
 
@@ -329,8 +329,9 @@
           <button class="level-btn" onclick="openLevel(10)">Lygis 10</button>
           <button class="level-btn" onclick="openLevel(11)">Lygis 11</button>
           <button class="level-btn" onclick="openLevel(12)">Lygis 12</button>
-          <button class="level-btn" onclick="openLevel(13)">Lygis 13</button>
-          <button class="level-btn" onclick="openLevel(14)">Lygis 14</button>
+          
+          <button class="level-btn" id="dev-btn-13" onclick="openLevel(13)">Lygis 13</button>
+          <button class="level-btn" id="dev-btn-14" onclick="openLevel(14)">Lygis 14</button>
         </div>
 
         <div class="content">
@@ -522,11 +523,17 @@
             document.getElementById('statusPill').style.borderColor = "var(--purple)";
             document.getElementById('statusPill').innerHTML = `<span class="pulse-dot" style="background: var(--purple); box-shadow: 0 0 10px var(--purple);"></span>Sistemos Būsena: VIP GUEST`;
             
+            document.getElementById('levelRangeLabel').innerHTML = "Lygiai: 4 → 12 <span style='color:var(--purple);'>[PARTIAL UNLOCK]</span>";
+
             document.getElementById('authorTitle').style.color = "var(--purple)";
             document.getElementById('authorTitle').textContent = "VIP STATUSAS SUTEIKTAS";
-            document.getElementById('authorDesc').textContent = "Tau suteikta išskirtinė prieiga prie visų lygių.";
+            document.getElementById('authorDesc').textContent = "Tau suteikta prieiga prie lygių iki 12.";
             
             document.getElementById('logoRing').style.borderTopColor = "var(--purple)";
+
+            // HIDE LEVELS 13 AND 14 FOR VIP GUESTS
+            document.getElementById('dev-btn-13').style.display = 'none';
+            document.getElementById('dev-btn-14').style.display = 'none';
           }
 
           document.getElementById('dev-auth-gatekeeper').style.display = 'none';
@@ -691,6 +698,7 @@
     document.addEventListener("keydown", (e) => {
       if (document.activeElement.tagName === 'INPUT') return;
       if (document.getElementById('mainApp').style.display !== 'none') {
+        // Updated specific key listeners to only fire valid levels
         if (['4','5','6','7','8','9'].includes(e.key)) { openLevel(e.key); }
         if (e.ctrlKey && e.key === 'c' && _rawBuffer) {
           if(window.getSelection().toString() === "") { e.preventDefault(); copyCode(); }
