@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jumpsipidy official page</title>
+  <title>Angis Atsakymai (iš Elijaus)</title>
   <style>
     /* ======================================================================
        CORE THEME VARIABLES (ORIGINAL DARK THEME)
@@ -341,6 +341,33 @@
 </head>
 <body>
 
+  <!-- ========================================================= -->
+  <!-- EMERGENCY BLOCK SCREEN (PROFESSIONAL ERROR) -->
+  <!-- TO DISABLE THIS LATER: Change "display: flex;" to "display: none;" on the line below -->
+  <!-- ========================================================= -->
+  <div id="emergency-block-screen" style="position: fixed; inset: 0; background: #030712; z-index: 999999999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 50px 40px; text-align: center; max-width: 600px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); backdrop-filter: blur(10px);">
+      <!-- Clean Error Icon -->
+      <svg style="width: 64px; height: 64px; fill: none; stroke: #94a3b8; stroke-width: 1.5; margin-bottom: 24px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+      </svg>
+      
+      <h1 style="color: #f8fafc; font-size: 2.2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: 0.5px;">503: Access Denied</h1>
+      
+      <p style="color: #94a3b8; font-size: 1.15rem; line-height: 1.7;">
+        <strong>Error:</strong> Elijo authorizacija užblokuota.<br>
+        <span style="color: #cbd5e1;">jumpsipidy.online laikinai uždaryta.</span>
+      </p>
+      
+      <div style="margin-top: 35px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; color: #475569; font-family: monospace; text-align: center;">
+        ERR_CODE: ELIJAS_AUTH_FAILED<br>
+        TIMESTAMP: <span id="error-timestamp"></span>
+      </div>
+    </div>
+  </div>
+  <script>document.getElementById('error-timestamp').innerText = new Date().toUTCString();</script>
+  <!-- ========================================================= -->
+
   <svg class="svg-filters">
     <defs>
       <filter id="glitch-filter">
@@ -435,8 +462,8 @@
     <div class="modal-box">
       <span class="close-modal" onclick="closeModal('level11Modal')">&times;</span>
       <h2 style="color: var(--accent-pink);">LYGIO 11 AUTORIZACIJA</h2>
-      <div class="riddle-warning" style="color: var(--accent-pink);">manipulacinis klausimas</div>
-      <h3 style="color: var(--cyan); margin-bottom: 20px; font-family: monospace; font-size: 1.3rem;">jei turiu 5 saldainius bet suvalgiau 6 is kur atsirado 6?</h3>
+      <div class="riddle-warning" style="color: var(--accent-pink);">DĖMESIO: Prieiga prie 11 lygio yra griežtai ribojama.</div>
+      <h3 style="color: var(--cyan); margin-bottom: 20px; font-family: monospace; font-size: 1.3rem;">Koks yra tavo slaptas klausimas lygio 11 atrakinimui?</h3>
       <input type="text" id="level11Answer" placeholder="Įveskite atsakymą..." autocomplete="off" onkeypress="if(event.key === 'Enter') verifyLevel11()">
       <button class="modal-btn" onclick="verifyLevel11()">ATRAKINTI LYGĮ</button>
       <div id="level11Error" class="modal-error"></div>
@@ -697,7 +724,7 @@
       if (lockdownActive) return;
 
       const code = adminCodeInput.value;
-      if (code === "7851") {
+      if (code === "1980") {
         adminError.style.color = "#22c55e";
         adminError.textContent = "PRIEIGA PATVIRTINTA. Nigeris...";
         adminAttempts = 0; // Reset attempts on success
@@ -903,8 +930,8 @@
     function verifyLevel11() {
       let answer = level11Input.value.toLowerCase().trim();
       
-      // CHANGE "padalinta" TO YOUR DESIRED ANSWER HERE
-      if (answer === "padalinta") {
+      // CHANGE "tavoatsakymas" TO YOUR DESIRED ANSWER HERE
+      if (answer === "tavoatsakymas") {
         level11Error.style.color = "#22c55e";
         level11Error.textContent = "ATSAKYMAS TEISINGAS. 11 LYGIS ATRAKINTAS.";
         
