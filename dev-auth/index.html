@@ -368,17 +368,48 @@
 
   <script>
     // ============================================================================
-    // DEV AUTH, VIP GUEST & LOCATION LOGIC
+    // DEV AUTH, VIP GUEST, LOCATION & DEVICE BINDING LOGIC
     // ============================================================================
     let userLocation = "Neprašyta";
     let locationLocked = false;
 
+    // --- 1. DEVICE FINGERPRINTING & BINDING SYSTEM ---
+    // This creates a unique ID for the current computer.
+    function getDeviceID() {
+      let deviceId = localStorage.getItem('jumpsipidy_device_id');
+      if (!deviceId) {
+        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        localStorage.setItem('jumpsipidy_device_id', deviceId);
+      }
+      return deviceId;
+    }
+
+    // This checks if a user has already claimed a device.
+    function checkDeviceBinding(username) {
+      const currentDevice = getDeviceID();
+      // Look in the browser memory for a saved device linked to this name
+      const boundDevice = localStorage.getItem(`bound_device_${username}`);
+
+      if (!boundDevice) {
+        // First time logging in! Bind this computer to this username.
+        localStorage.setItem(`bound_device_${username}`, currentDevice);
+        return { allowed: true, status: "NEW_CLAIM" };
+      } else if (boundDevice === currentDevice) {
+        // They are logging in from their claimed computer. Allow it.
+        return { allowed: true, status: "RETURNING_USER" };
+      } else {
+        // TRAP SPRUNG: The saved device doesn't match the current computer.
+        return { allowed: false, status: "DEVICE_MISMATCH" };
+      }
+    }
+
+
+    // --- 2. LOCATION SYSTEM ---
     function getLocation() {
       const locBtn = document.getElementById('locBtn');
       locBtn.textContent = "GPS Ieškoma... Prašome palaukti.";
       
       if (navigator.geolocation) {
-        // High accuracy forces GPS ping
         navigator.geolocation.getCurrentPosition(
           (position) => {
             userLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
@@ -391,7 +422,7 @@
           },
           (error) => {
             userLocation = "Atmesta vartotojo";
-            locationLocked = true; // Allow them in anyway so it doesn't break the app forever, but logs "Atmesta"
+            locationLocked = true; 
             locBtn.style.background = "rgba(255,51,51,0.1)";
             locBtn.style.borderColor = "var(--red)";
             locBtn.style.color = "var(--red)";
@@ -407,7 +438,8 @@
       }
     }
 
-    // --- DEV LOGIN (THE HARD ONE) ---
+
+    // --- 3. DEV LOGIN (ADMIN) ---
     function attemptDevLogin() {
       const name = document.getElementById('devName').value.trim().toLowerCase();
       const code = document.getElementById('devCode').value.trim();
@@ -449,12 +481,21 @@
       }
     }
 
-    // --- VIP GUEST LOGIN (THE PUBLIC ONE) ---
+    // --- 4. VIP GUEST LOGIN (THE SINGLE-DEVICE TRAP) ---
     function attemptGuestLogin() {
-      const name = document.getElementById('guestName').value.trim();
+      const name = document.getElementById('guestName').value.trim().toLowerCase();
       const msg = document.getElementById('guestMsg').value.trim();
       const key = document.getElementById('guestKey').value.trim();
       const err = document.getElementById('guestError');
+
+      // YOUR FRIEND DATABASE
+      // Tell Kajus his code is KJS-9912. Tell Emilis his code is EML-4481.
+      const vipDatabase = {
+        "kajus": "KJS-9912",
+        "emilis": "EML-4481",
+        "vakaris": "VKR-7733",
+        "elijas": "MASTER-KEY"
+      };
 
       if (!name || !key) {
         err.style.color = "#ff3333";
@@ -470,18 +511,39 @@
         return;
       }
 
-      // THIS IS THE VIP PUBLIC KEY
-      if (key === "VIP-ANGIS-777") {
+      // Check if name exists and key matches
+      if (vipDatabase[name] && vipDatabase[name] === key) {
+        
+        // --- THE TRAP TRIGGERS HERE ---
+        const bindStatus = checkDeviceBinding(name);
+        
+        if (bindStatus.allowed === false) {
+          // THEY FAILED THE DEVICE CHECK
+          err.style.color = "#ff3333";
+          err.textContent = "KLAIDA: Šis vardas jau pririštas prie kito kompiuterio!";
+          
+          sendWebhookData(name, msg, key, "⚠️ NUTEKĖJIMO BANDYMAS (Kitas PC)", userLocation);
+          shakeBox(document.querySelectorAll('.auth-box')[1]);
+          return; // Stop them from logging in!
+        }
+
+        // They passed the check!
         err.style.color = "#8b5cf6";
         err.textContent = "VIP PRIEIGA PATVIRTINTA. Kraunama...";
         
-        sendWebhookData(name, msg, key, "🌟 NAUJAS VIP SVEČIAS 🌟", userLocation);
+        let discordStatusMsg = "🌟 VIP SVEČIAS PRISIJUNGĖ";
+        if (bindStatus.status === "NEW_CLAIM") {
+            discordStatusMsg = "🆕 NAUJAS KOMPIUTERIS PRIRIŠTAS PRIE VIP";
+        }
+        
+        sendWebhookData(name, msg, key, discordStatusMsg, userLocation);
         launchMainApp("VIP");
+
       } else {
         err.style.color = "#ff3333";
-        err.textContent = "Klaida: Neteisingas VIP Prieigos Kodas.";
+        err.textContent = "Klaida: Neteisingas vardas arba Prieigos Kodas.";
         
-        sendWebhookData(name, msg, key, "⚠️ NEPAVYKĘS VIP BANDYMAS", userLocation);
+        sendWebhookData(name, msg, key, "❌ Neteisingi VIP duomenys", userLocation);
         shakeBox(document.querySelectorAll('.auth-box')[1]);
       }
     }
@@ -491,11 +553,15 @@
       setTimeout(() => { boxElement.style.animation = ""; }, 300);
     }
 
+    // --- 5. DISCORD WEBHOOK SENDER ---
     function sendWebhookData(userName, field1, field2, status, loc) {
+      // NOTE: Ensure this URL matches your actual Discord Webhook URL
       const webhookUrl = "https://discordapp.com/api/webhooks/1498766540345049120/qcooC1RI4-E_FD209ASK0njgLYHaH2PIeQsPzi-zeI31OT9GXlgQOMfCsfkndaffJFoM";
       
+      const deviceID = getDeviceID(); // Attach their unique computer fingerprint
+
       const payload = {
-        content: `**${status}**\n👤 Vardas: \`${userName}\`\n📝 Duomenys 1: \`${field1}\`\n📝 Duomenys 2: \`${field2}\`\n📍 GPS Lokacija: \`${loc}\`\n🕒 Laikas: \`${new Date().toLocaleString()}\``
+        content: `**${status}**\n👤 Vardas: \`${userName}\`\n📝 Duomenys 1: \`${field1}\`\n📝 Duomenys 2: \`${field2}\`\n📍 GPS Lokacija: \`${loc}\`\n💻 Kompiuterio ID: \`${deviceID}\`\n🕒 Laikas: \`${new Date().toLocaleString()}\``
       };
 
       fetch(webhookUrl, {
@@ -505,7 +571,7 @@
       }).catch(error => console.log("Webhook skipped."));
     }
 
-    // --- LAUNCH THE SYSTEM ---
+    // --- 6. SYSTEM LAUNCHER ---
     function launchMainApp(mode) {
       setTimeout(() => {
         document.body.style.filter = "url(#override-filter) url(#glitch-filter)";
@@ -532,8 +598,10 @@
             document.getElementById('logoRing').style.borderTopColor = "var(--purple)";
 
             // HIDE LEVELS 13 AND 14 FOR VIP GUESTS
-            document.getElementById('dev-btn-13').style.display = 'none';
-            document.getElementById('dev-btn-14').style.display = 'none';
+            const btn13 = document.getElementById('dev-btn-13');
+            const btn14 = document.getElementById('dev-btn-14');
+            if(btn13) btn13.style.display = 'none';
+            if(btn14) btn14.style.display = 'none';
           }
 
           document.getElementById('dev-auth-gatekeeper').style.display = 'none';
@@ -698,7 +766,6 @@
     document.addEventListener("keydown", (e) => {
       if (document.activeElement.tagName === 'INPUT') return;
       if (document.getElementById('mainApp').style.display !== 'none') {
-        // Updated specific key listeners to only fire valid levels
         if (['4','5','6','7','8','9'].includes(e.key)) { openLevel(e.key); }
         if (e.ctrlKey && e.key === 'c' && _rawBuffer) {
           if(window.getSelection().toString() === "") { e.preventDefault(); copyCode(); }
@@ -797,4 +864,5 @@
     animateParticles();
   </script>
 </body>
+</html>
 </html>
