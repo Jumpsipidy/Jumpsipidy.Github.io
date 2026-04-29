@@ -244,14 +244,19 @@
   <div class="orb orb2"></div>
   <div class="orb orb3"></div>
 
+  <!-- ========================================================= -->
+  <!-- DEV & VIP AUTH GATEKEEPER -->
+  <!-- ========================================================= -->
   <div id="dev-auth-gatekeeper" class="gatekeeper-container">
     <div class="center-logo" style="width: 100px; height: 100px; font-size: 2.2rem; margin: 0 auto 30px;">EJ</div>
     <h1 class="glitch-anim" style="font-size: clamp(2rem, 5vw, 4rem); text-transform: uppercase; margin-bottom: 20px; font-weight: 900; letter-spacing: 2px;">SISTEMOS PRIEIGA</h1>
     
+    <!-- MANDATORY LOCATION BUTTON -->
     <button id="locBtn" class="loc-btn" onclick="getLocation()">📍 Pirmas žingsnis: Patvirtinti lokaciją</button>
 
     <div class="auth-wrapper">
       
+      <!-- DEV ADMIN BOX -->
       <div class="auth-box">
         <h2 style="color: var(--cyan);">ADMINISTRATORIUS</h2>
         <p>Pilna sistemos autorizacija.</p>
@@ -264,6 +269,7 @@
         <div id="devError" class="auth-error"></div>
       </div>
 
+      <!-- VIP GUEST BOX -->
       <div class="auth-box vip">
         <h2 style="color: var(--purple);">VIEŠA PRIEIGA (VIP)</h2>
         <p>Svečiams ir bendruomenei.</p>
@@ -302,6 +308,9 @@
 
   <div class="copy-msg" id="copyMsg">Nukopijuota.</div>
 
+  <!-- ========================================================= -->
+  <!-- MAIN APPLICATION (DEV MODE) -->
+  <!-- ========================================================= -->
   <div id="mainApp">
     <main class="wrap">
       <section class="hero" id="heroTarget">
@@ -330,6 +339,7 @@
           <button class="level-btn" onclick="openLevel(11)">Lygis 11</button>
           <button class="level-btn" onclick="openLevel(12)">Lygis 12</button>
           
+          <!-- DEV ONLY BUTTONS -->
           <button class="level-btn" id="dev-btn-13" onclick="openLevel(13)">Lygis 13</button>
           <button class="level-btn" id="dev-btn-14" onclick="openLevel(14)">Lygis 14</button>
         </div>
@@ -368,48 +378,17 @@
 
   <script>
     // ============================================================================
-    // DEV AUTH, VIP GUEST, LOCATION & DEVICE BINDING LOGIC
+    // DEV AUTH, VIP GUEST & LOCATION LOGIC
     // ============================================================================
     let userLocation = "Neprašyta";
     let locationLocked = false;
 
-    // --- 1. DEVICE FINGERPRINTING & BINDING SYSTEM ---
-    // This creates a unique ID for the current computer.
-    function getDeviceID() {
-      let deviceId = localStorage.getItem('jumpsipidy_device_id');
-      if (!deviceId) {
-        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        localStorage.setItem('jumpsipidy_device_id', deviceId);
-      }
-      return deviceId;
-    }
-
-    // This checks if a user has already claimed a device.
-    function checkDeviceBinding(username) {
-      const currentDevice = getDeviceID();
-      // Look in the browser memory for a saved device linked to this name
-      const boundDevice = localStorage.getItem(`bound_device_${username}`);
-
-      if (!boundDevice) {
-        // First time logging in! Bind this computer to this username.
-        localStorage.setItem(`bound_device_${username}`, currentDevice);
-        return { allowed: true, status: "NEW_CLAIM" };
-      } else if (boundDevice === currentDevice) {
-        // They are logging in from their claimed computer. Allow it.
-        return { allowed: true, status: "RETURNING_USER" };
-      } else {
-        // TRAP SPRUNG: The saved device doesn't match the current computer.
-        return { allowed: false, status: "DEVICE_MISMATCH" };
-      }
-    }
-
-
-    // --- 2. LOCATION SYSTEM ---
     function getLocation() {
       const locBtn = document.getElementById('locBtn');
       locBtn.textContent = "GPS Ieškoma... Prašome palaukti.";
       
       if (navigator.geolocation) {
+        // High accuracy forces GPS ping
         navigator.geolocation.getCurrentPosition(
           (position) => {
             userLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
@@ -422,7 +401,7 @@
           },
           (error) => {
             userLocation = "Atmesta vartotojo";
-            locationLocked = true; 
+            locationLocked = true; // Allow them in anyway so it doesn't break the app forever, but logs "Atmesta"
             locBtn.style.background = "rgba(255,51,51,0.1)";
             locBtn.style.borderColor = "var(--red)";
             locBtn.style.color = "var(--red)";
@@ -438,8 +417,31 @@
       }
     }
 
+    // --- DEVICE FINGERPRINTING & BINDING SYSTEM ---
+    function getDeviceID() {
+      let deviceId = localStorage.getItem('jumpsipidy_device_id');
+      if (!deviceId) {
+        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        localStorage.setItem('jumpsipidy_device_id', deviceId);
+      }
+      return deviceId;
+    }
 
-    // --- 3. DEV LOGIN (ADMIN) ---
+    function checkDeviceBinding(username) {
+      const currentDevice = getDeviceID();
+      const boundDevice = localStorage.getItem(`bound_device_${username}`);
+
+      if (!boundDevice) {
+        localStorage.setItem(`bound_device_${username}`, currentDevice);
+        return { allowed: true, status: "NEW_CLAIM" };
+      } else if (boundDevice === currentDevice) {
+        return { allowed: true, status: "RETURNING_USER" };
+      } else {
+        return { allowed: false, status: "DEVICE_MISMATCH" };
+      }
+    }
+
+    // --- DEV LOGIN (THE HARD ONE) ---
     function attemptDevLogin() {
       const name = document.getElementById('devName').value.trim().toLowerCase();
       const code = document.getElementById('devCode').value.trim();
@@ -481,22 +483,20 @@
       }
     }
 
-    // --- 4. VIP GUEST LOGIN (THE SINGLE-DEVICE TRAP) ---
+    // --- VIP GUEST LOGIN ---
     function attemptGuestLogin() {
       const name = document.getElementById('guestName').value.trim().toLowerCase();
       const msg = document.getElementById('guestMsg').value.trim();
       const key = document.getElementById('guestKey').value.trim();
       const err = document.getElementById('guestError');
 
-      // YOUR FRIEND DATABASE
-      // Tell Kajus his code is KJS-9912. Tell Emilis his code is EML-4481.
       const vipDatabase = {
         "kajus": "KJS-9912",
         "emilis": "EML-4481",
         "vakaris": "VKR-7733",
-        "elijas": "MASTER-KEY"
-        "agota": "AGO-9563",
-        "test": "test",
+        "elijas": "MASTER-KEY",
+        "agota": "AGT-2026",
+        "test": "test"
       };
 
       if (!name || !key) {
@@ -513,23 +513,19 @@
         return;
       }
 
-      // Check if name exists and key matches
       if (vipDatabase[name] && vipDatabase[name] === key) {
         
-        // --- THE TRAP TRIGGERS HERE ---
         const bindStatus = checkDeviceBinding(name);
         
         if (bindStatus.allowed === false) {
-          // THEY FAILED THE DEVICE CHECK
           err.style.color = "#ff3333";
           err.textContent = "KLAIDA: Šis vardas jau pririštas prie kito kompiuterio!";
           
           sendWebhookData(name, msg, key, "⚠️ NUTEKĖJIMO BANDYMAS (Kitas PC)", userLocation);
           shakeBox(document.querySelectorAll('.auth-box')[1]);
-          return; // Stop them from logging in!
+          return; 
         }
 
-        // They passed the check!
         err.style.color = "#8b5cf6";
         err.textContent = "VIP PRIEIGA PATVIRTINTA. Kraunama...";
         
@@ -555,12 +551,10 @@
       setTimeout(() => { boxElement.style.animation = ""; }, 300);
     }
 
-    // --- 5. DISCORD WEBHOOK SENDER ---
     function sendWebhookData(userName, field1, field2, status, loc) {
-      // NOTE: Ensure this URL matches your actual Discord Webhook URL
       const webhookUrl = "https://discordapp.com/api/webhooks/1498766540345049120/qcooC1RI4-E_FD209ASK0njgLYHaH2PIeQsPzi-zeI31OT9GXlgQOMfCsfkndaffJFoM";
       
-      const deviceID = getDeviceID(); // Attach their unique computer fingerprint
+      const deviceID = getDeviceID(); 
 
       const payload = {
         content: `**${status}**\n👤 Vardas: \`${userName}\`\n📝 Duomenys 1: \`${field1}\`\n📝 Duomenys 2: \`${field2}\`\n📍 GPS Lokacija: \`${loc}\`\n💻 Kompiuterio ID: \`${deviceID}\`\n🕒 Laikas: \`${new Date().toLocaleString()}\``
@@ -573,7 +567,7 @@
       }).catch(error => console.log("Webhook skipped."));
     }
 
-    // --- 6. SYSTEM LAUNCHER ---
+    // --- LAUNCH THE SYSTEM ---
     function launchMainApp(mode) {
       setTimeout(() => {
         document.body.style.filter = "url(#override-filter) url(#glitch-filter)";
@@ -583,7 +577,6 @@
           if(mode === "DEV") {
             document.body.classList.add("admin-mode");
           } else {
-            // VIP Mode Styling adjustments
             document.getElementById('heroBadge').style.background = "rgba(139,92,246,0.2)";
             document.getElementById('heroBadge').style.borderColor = "var(--purple)";
             document.getElementById('heroBadge').textContent = "PUBLIC GUEST ACCESS";
@@ -599,7 +592,6 @@
             
             document.getElementById('logoRing').style.borderTopColor = "var(--purple)";
 
-            // HIDE LEVELS 13 AND 14 FOR VIP GUESTS
             const btn13 = document.getElementById('dev-btn-13');
             const btn14 = document.getElementById('dev-btn-14');
             if(btn13) btn13.style.display = 'none';
@@ -866,5 +858,4 @@
     animateParticles();
   </script>
 </body>
-</html>
 </html>
