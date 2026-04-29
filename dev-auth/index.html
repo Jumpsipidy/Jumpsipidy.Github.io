@@ -145,6 +145,11 @@
     .toolbar { display:flex; gap:14px; justify-content:space-between; align-items:center; padding:18px 24px 0; flex-wrap:wrap; position: relative; z-index: 2;}
     .toolbar-left { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .pill { padding:9px 14px; border-radius:999px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.10); color:#dbeafe; font-weight:800; font-size:.92rem; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
+    
+    /* SECRET ADMIN BUTTON */
+    #adminPanelBtn { display:none; cursor:pointer; border-color: #ffaa00; color: #ffaa00; background: rgba(255,170,0,0.1); transition: 0.3s; }
+    #adminPanelBtn:hover { background: rgba(255,170,0,0.3); box-shadow: 0 0 15px rgba(255,170,0,0.5); }
+
     .pulse-dot { width:10px; height:10px; display:inline-block; margin-right:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 0 rgba(34,197,94,.6); animation:pulse 1.8s infinite; vertical-align:middle; transition: background 1s ease;}
     @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)} 70%{box-shadow:0 0 0 15px rgba(34,197,94,0)} 100%{box-shadow:0 0 0 0 rgba(34,197,94,0)} }
     
@@ -196,7 +201,7 @@
     .ctx-shortcut { color: var(--muted); font-size: 0.75rem; font-family: monospace;}
     .ctx-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0; }
 
-    .copy-msg { position:fixed; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:rgba(2,6,23,.95); color:white; border:1px solid rgba(255,255,255,.15); padding:14px 24px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.8); opacity:0; pointer-events:none; transition:.3s cubic-bezier(0.16, 1, 0.3, 1); z-index:9999; font-weight:800; letter-spacing: 1px;}
+    .copy-msg { position:fixed; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:rgba(2,6,23,.95); color:white; border:1px solid rgba(255,255,255,.15); padding:14px 24px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.8); opacity:0; pointer-events:none; transition:.3s cubic-bezier(0.16, 1, 0.3, 1); z-index:999999; font-weight:800; letter-spacing: 1px;}
     .copy-msg.show { opacity:1; transform:translateX(-50%) translateY(0); }
     
     .overlay { position:fixed; inset:0; background:radial-gradient(circle at center,rgba(17,24,39,.8),rgba(2,6,23,.95)); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s ease; backdrop-filter:blur(10px);}
@@ -313,7 +318,7 @@
   <div class="copy-msg" id="copyMsg">Nukopijuota.</div>
 
   <!-- ========================================================= -->
-  <!-- MAIN APPLICATION (DEV MODE) -->
+  <!-- MAIN APPLICATION -->
   <!-- ========================================================= -->
   <div id="mainApp">
     <main class="wrap">
@@ -328,6 +333,10 @@
           <div class="toolbar-left">
             <div class="pill" id="statusPill" style="border-color: #ff0055;"><span class="pulse-dot" id="pulseDot" style="background: #ff0055; box-shadow: 0 0 10px #ff0055;"></span>Sistemos Būsena: DEV OVERRIDE</div>
             <div class="pill" id="levelRangeLabel">Lygiai: 4 → 14 <span style='color:var(--cyan);'>[ALL UNLOCKED]</span></div>
+            
+            <!-- SECRET ADMIN BUTTON (HIDDEN FOR GUESTS) -->
+            <button id="adminPanelBtn" class="pill" onclick="toggleAdminModal()">🎛️ ATIDARYTI ADMIN PULTĄ</button>
+            
           </div>
           <div class="pill uptime-display">UPTIME: <span id="uptimeCounter">00:00:00</span></div>
         </div>
@@ -380,6 +389,33 @@
     </main>
   </div>
 
+  <!-- ========================================================= -->
+  <!-- THE SECRET ADMIN DASHBOARD MODAL -->
+  <!-- ========================================================= -->
+  <div class="overlay" id="adminModal" style="z-index: 99998;">
+    <div class="panel" style="width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; background: rgba(10,0,5,0.95); border-color: #ffaa00; box-shadow: 0 0 50px rgba(255,170,0,0.3);">
+      <div class="panel-head" style="border-bottom-color: #ffaa00; background: rgba(255,170,0,0.1);">
+        <h2 style="color: #ffaa00;">SISTEMOS ADMINISTRATORIAUS PULTAS</h2>
+        <button class="action-btn" onclick="toggleAdminModal()" style="color: #000; background: #ffaa00;">Uždaryti</button>
+      </div>
+      <div style="padding: 20px;">
+        <table style="width: 100%; text-align: left; border-collapse: collapse; font-family: monospace;">
+          <thead>
+            <tr style="border-bottom: 1px solid #ffaa00; color: #ffaa00;">
+              <th style="padding: 10px;">VARTOTOJAS</th>
+              <th style="padding: 10px;">ĮRENGINIO ID</th>
+              <th style="padding: 10px;">VEIKSMAI</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+            <!-- JavaScript will magically populate this list -->
+            <tr><td colspan="3" style="text-align: center; padding: 20px;">Kraunama iš Firebase...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ============================================================================
     // FIREBASE INITIALIZATION
@@ -421,18 +457,19 @@
         const snapshot = await dbRef.child(`devices/${username}`).get();
         
         if (snapshot.exists()) {
-          // This user has already claimed a device globally
           const boundDevice = snapshot.val();
           
+          // NEW CHECK: HAS THE ADMIN BANNED THEM?
+          if (boundDevice === "BANNED") {
+              return { allowed: false, status: "BANNED_BY_ADMIN" };
+          }
+          
           if (boundDevice === currentDevice) {
-            // The person logging in is on the original claimed computer
             return { allowed: true, status: "RETURNING_USER" };
           } else {
-            // SOMEONE LEAKED IT! Mismatch between cloud device and this device.
             return { allowed: false, status: "DEVICE_MISMATCH" };
           }
         } else {
-          // FIRST TIME EVER LOGGING IN! Save this computer to the cloud globally.
           await db.ref(`devices/${username}`).set(currentDevice);
           return { allowed: true, status: "NEW_CLAIM" };
         }
@@ -551,7 +588,6 @@
 
       if (vipDatabase[name] && vipDatabase[name] === key) {
         
-        // --- ASYNC CLOUD CHECK TRIGGERS HERE ---
         err.style.color = "#22d3ee";
         err.textContent = "Tikrinama duomenų bazė...";
         
@@ -562,16 +598,18 @@
           
           if(bindStatus.status === "DB_ERROR") {
              err.textContent = "KLAIDA: Nepavyko prisijungti prie debesies.";
+          } else if (bindStatus.status === "BANNED_BY_ADMIN") {
+             // THE NEW BAN MESSAGE
+             err.textContent = "KLAIDA: ADMINISTRATORIUS JUS UŽBLOKAVO.";
           } else {
              err.textContent = "KLAIDA: Šis vardas jau pririštas prie kito kompiuterio!";
           }
           
-          sendWebhookData(name, msg, key, "⚠️ NUTEKĖJIMO BANDYMAS (Kitas PC)", userLocation);
+          sendWebhookData(name, msg, key, `⚠️ NUTEKĖJIMO BANDYMAS (${bindStatus.status})`, userLocation);
           shakeBox(document.querySelectorAll('.auth-box')[1]);
           return; 
         }
 
-        // They passed the cloud check!
         err.style.color = "#8b5cf6";
         err.textContent = "VIP PRIEIGA PATVIRTINTA. Kraunama...";
         
@@ -600,7 +638,6 @@
     // --- 5. DISCORD WEBHOOK SENDER ---
     function sendWebhookData(userName, field1, field2, status, loc) {
       const webhookUrl = "https://discordapp.com/api/webhooks/1498766540345049120/qcooC1RI4-E_FD209ASK0njgLYHaH2PIeQsPzi-zeI31OT9GXlgQOMfCsfkndaffJFoM";
-      
       const deviceID = getDeviceID(); 
 
       const payload = {
@@ -623,6 +660,8 @@
           
           if(mode === "DEV") {
             document.body.classList.add("admin-mode");
+            // SHOW THE SECRET ADMIN DASHBOARD BUTTON ONLY TO THE DEV
+            document.getElementById('adminPanelBtn').style.display = 'inline-block';
           } else {
             // VIP Mode Styling adjustments
             document.getElementById('heroBadge').style.background = "rgba(139,92,246,0.2)";
@@ -659,7 +698,67 @@
     }
 
     // ============================================================================
-    // MODULE 1: DATA CORE (Immutable Payload)
+    // THE SECRET ADMIN DASHBOARD LOGIC (BAN / RESET)
+    // ============================================================================
+    function toggleAdminModal() {
+      const modal = document.getElementById('adminModal');
+      if (modal.classList.contains('show')) {
+        modal.classList.remove('show');
+        db.ref('devices').off('value'); // Stop listening to save data when closed
+      } else {
+        modal.classList.add('show');
+        startLiveAdminData(); // Start listening for live hackers!
+      }
+    }
+
+    function startLiveAdminData() {
+      const tbody = document.getElementById('adminTableBody');
+      tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding: 20px;'>Siunčiami duomenys iš Firebase...</td></tr>";
+
+      // .on('value') MEANS IT UPDATES LIVE!
+      db.ref('devices').on('value', (snapshot) => {
+        tbody.innerHTML = ""; // Clear table
+        const data = snapshot.val();
+        
+        if (!data) {
+          tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding: 20px;'>Jokių aktyvių įrenginių.</td></tr>";
+          return;
+        }
+
+        for (const [user, deviceId] of Object.entries(data)) {
+          const isBanned = deviceId === "BANNED";
+          const idColor = isBanned ? "#ff3333" : "#22c55e";
+          
+          tbody.innerHTML += `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <td style="padding: 14px; font-size: 1.1rem; color: #fff; text-transform: uppercase;">${user}</td>
+              <td style="padding: 14px; color: ${idColor};">${deviceId}</td>
+              <td style="padding: 14px; display: flex; gap: 10px;">
+                <button onclick="adminResetUser('${user}')" style="background: rgba(34,211,238,0.1); border: 1px solid #22d3ee; color: #22d3ee; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: monospace; font-weight: bold; transition: 0.2s;">🔄 RESET</button>
+                ${!isBanned ? `<button onclick="adminBanUser('${user}')" style="background: rgba(255,51,51,0.1); border: 1px solid #ff3333; color: #ff3333; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: monospace; font-weight: bold; transition: 0.2s;">🚫 BAN</button>` : ''}
+              </td>
+            </tr>
+          `;
+        }
+      });
+    }
+
+    async function adminResetUser(user) {
+      if(confirm(`Ar tikrai nori IŠTRINTI įrenginį vartotojui [ ${user.toUpperCase()} ]? Jie galės prisijungti su nauju kompiuteriu.`)) {
+        await db.ref(`devices/${user}`).remove();
+        showCopyMessage(`${user.toUpperCase()} įrenginys ištrintas!`);
+      }
+    }
+
+    async function adminBanUser(user) {
+      if(confirm(`Ar tikrai nori PERMANENTLY UŽBLOKUOTI [ ${user.toUpperCase()} ]?`)) {
+        await db.ref(`devices/${user}`).set("BANNED");
+        showCopyMessage(`${user.toUpperCase()} UŽBLOKUOTAS!`);
+      }
+    }
+
+    // ============================================================================
+    // PAYLOADS & UI
     // ============================================================================
     const __ENCRYPTED_PAYLOADS = {
       4: `reikalingas lygis4\n\nslibinas = lygis4.slibinas\n\nkartok 6:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 5:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\n\n# Padaryta jumpsipidy.online`,
