@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jumpsipidy | DEV & VIP AUTH</title>
+  
+  <!-- FIREBASE CLOUD LIBRARIES -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
+
   <style>
     /* ======================================================================
        CORE THEME VARIABLES
@@ -251,7 +256,6 @@
     <div class="center-logo" style="width: 100px; height: 100px; font-size: 2.2rem; margin: 0 auto 30px;">EJ</div>
     <h1 class="glitch-anim" style="font-size: clamp(2rem, 5vw, 4rem); text-transform: uppercase; margin-bottom: 20px; font-weight: 900; letter-spacing: 2px;">SISTEMOS PRIEIGA</h1>
     
-    <!-- MANDATORY LOCATION BUTTON -->
     <button id="locBtn" class="loc-btn" onclick="getLocation()">📍 Pirmas žingsnis: Patvirtinti lokaciją</button>
 
     <div class="auth-wrapper">
@@ -375,53 +379,66 @@
       <div class="footer">2026 and Elijas | <span class="insane-text">Override Active</span></div>
     </main>
   </div>
-<script>
+
+  <script>
     // ============================================================================
-    // DEV AUTH, VIP GUEST & LOCATION LOGIC
+    // FIREBASE INITIALIZATION
+    // ============================================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyCkbot0c9-YEV6RQM6AISQ2LEuHEPnh6Do",
+      authDomain: "jumpsipidy-auth.firebaseapp.com",
+      databaseURL: "https://jumpsipidy-auth-default-rtdb.firebaseio.com", 
+      projectId: "jumpsipidy-auth",
+      storageBucket: "jumpsipidy-auth.firebasestorage.app",
+      messagingSenderId: "605960608013",
+      appId: "1:605960608013:web:649746a00dc0a17c747844"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ============================================================================
+    // DEV AUTH, VIP GUEST, LOCATION & DEVICE BINDING LOGIC
     // ============================================================================
     let userLocation = "Neprašyta";
     let locationLocked = false;
 
-    // --- 1. DEVICE FINGERPRINTING & BINDING SYSTEM (STRICT MODE) ---
+    // --- 1. DEVICE FINGERPRINTING & BINDING SYSTEM (GLOBAL CLOUD DB) ---
     function getDeviceID() {
       let deviceId = localStorage.getItem('jumpsipidy_device_id');
       if (!deviceId) {
-        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 12).toUpperCase();
+        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         localStorage.setItem('jumpsipidy_device_id', deviceId);
       }
       return deviceId;
     }
 
-    function checkDeviceBinding(username) {
+    async function checkFirebaseDeviceBinding(username) {
       const currentDevice = getDeviceID();
-      // We look for a specific lock file for this user
-      const userLockFile = localStorage.getItem(`locked_to_${username}`);
+      const dbRef = db.ref();
 
-      if (!userLockFile) {
-        // TRAP LOGIC: If they don't have a lock file on THIS computer, we must assume
-        // they are trying to log in from a new device.
-        // But wait! Is this their *first* time ever?
-        // Since we have no backend, we allow the FIRST login on any computer to create the lock.
-        // TO PREVENT MULTIPLE CLAIMS: We look at a global flag.
+      try {
+        const snapshot = await dbRef.child(`devices/${username}`).get();
         
-        const hasClaimedAnyAccount = localStorage.getItem('has_claimed_any_vip');
-        
-        if(hasClaimedAnyAccount) {
-            // This computer has already claimed an account. It cannot claim another!
-            return { allowed: false, status: "DEVICE_ALREADY_USED_FOR_DIFFERENT_ACCOUNT" };
+        if (snapshot.exists()) {
+          // This user has already claimed a device globally
+          const boundDevice = snapshot.val();
+          
+          if (boundDevice === currentDevice) {
+            // The person logging in is on the original claimed computer
+            return { allowed: true, status: "RETURNING_USER" };
+          } else {
+            // SOMEONE LEAKED IT! Mismatch between cloud device and this device.
+            return { allowed: false, status: "DEVICE_MISMATCH" };
+          }
+        } else {
+          // FIRST TIME EVER LOGGING IN! Save this computer to the cloud globally.
+          await db.ref(`devices/${username}`).set(currentDevice);
+          return { allowed: true, status: "NEW_CLAIM" };
         }
-
-        // It's a clean computer. Let them claim this account.
-        localStorage.setItem(`locked_to_${username}`, currentDevice);
-        localStorage.setItem('has_claimed_any_vip', 'true');
-        return { allowed: true, status: "NEW_CLAIM" };
-        
-      } else if (userLockFile === currentDevice) {
-        // They are logging in from their claimed computer. Allow it.
-        return { allowed: true, status: "RETURNING_USER" };
-      } else {
-        // TRAP SPRUNG: They have a lock file, but the device ID mutated (impossible unless tampered).
-        return { allowed: false, status: "DEVICE_TAMPERED" };
+      } catch (error) {
+        console.error("Database connection failed:", error);
+        return { allowed: false, status: "DB_ERROR" };
       }
     }
 
@@ -459,15 +476,14 @@
       }
     }
 
-
-    // --- 3. DEV LOGIN (ADMIN - NO DEVICE LIMITS) ---
+    // --- 3. DEV LOGIN (ADMIN) ---
     function attemptDevLogin() {
       const name = document.getElementById('devName').value.trim().toLowerCase();
       const code = document.getElementById('devCode').value.trim();
       const api = document.getElementById('apiKey').value.trim();
       const err = document.getElementById('devError');
       
-      const whitelist = ["elijas"]; // ONLY YOU CAN BE ADMIN
+      const whitelist = ["elijas", "agota", "eleja", "arune", "vakaris", "kajus", "kajukas", "emilis", "nojus", "emilija", "vilte", "leja"];
 
       if (!name || !code || !api) {
         err.style.color = "#ff3333";
@@ -491,20 +507,19 @@
         err.style.color = "#22c55e";
         err.textContent = "PRIEIGA PATVIRTINTA. Kraunama...";
         
-        // Admins bypass device checks!
-        sendWebhookData(name, code, api, "✅ SEKMINGAS DEV (ADMIN) PRISIJUNGIMAS", userLocation);
+        sendWebhookData(name, code, api, "✅ SEKMINGAS DEV PRISIJUNGIMAS", userLocation);
         launchMainApp("DEV");
       } else {
         err.style.color = "#ff3333";
-        err.textContent = "Klaida: Duomenys neteisingi arba neturite ADMIN teisių.";
+        err.textContent = "Klaida: Duomenys neteisingi arba jūsų nėra sąraše.";
         
         sendWebhookData(name, code, api, "❌ NEPAVYKĘS DEV BANDYMAS", userLocation);
         shakeBox(document.querySelectorAll('.auth-box')[0]);
       }
     }
 
-    // --- 4. VIP GUEST LOGIN (STRICT DEVICE LOCK) ---
-    function attemptGuestLogin() {
+    // --- 4. VIP GUEST LOGIN (THE CLOUD TRAP) ---
+    async function attemptGuestLogin() {
       const name = document.getElementById('guestName').value.trim().toLowerCase();
       const msg = document.getElementById('guestMsg').value.trim();
       const key = document.getElementById('guestKey').value.trim();
@@ -515,6 +530,7 @@
         "kajus": "KJS-9912",
         "emilis": "EML-4481",
         "vakaris": "VKR-7733",
+        "elijas": "MASTER-KEY",
         "agota": "AGT-2026",
         "test": "test"
       };
@@ -535,23 +551,27 @@
 
       if (vipDatabase[name] && vipDatabase[name] === key) {
         
-        // --- THE STRICT TRAP TRIGGERS HERE ---
-        const bindStatus = checkDeviceBinding(name);
+        // --- ASYNC CLOUD CHECK TRIGGERS HERE ---
+        err.style.color = "#22d3ee";
+        err.textContent = "Tikrinama duomenų bazė...";
+        
+        const bindStatus = await checkFirebaseDeviceBinding(name);
         
         if (bindStatus.allowed === false) {
           err.style.color = "#ff3333";
           
-          if (bindStatus.status === "DEVICE_ALREADY_USED_FOR_DIFFERENT_ACCOUNT") {
-              err.textContent = "KLAIDA: Iš šio kompiuterio jau buvo prisijungta su kitu VIP vardu. Vienas kompiuteris = Vienas vartotojas!";
+          if(bindStatus.status === "DB_ERROR") {
+             err.textContent = "KLAIDA: Nepavyko prisijungti prie debesies.";
           } else {
-              err.textContent = "KLAIDA: Sistemos pažeidimas. Jūsų įrenginys užblokuotas.";
+             err.textContent = "KLAIDA: Šis vardas jau pririštas prie kito kompiuterio!";
           }
           
-          sendWebhookData(name, msg, key, `⚠️ NUTEKĖJIMO/KLASTOJIMO BANDYMAS (${bindStatus.status})`, userLocation);
+          sendWebhookData(name, msg, key, "⚠️ NUTEKĖJIMO BANDYMAS (Kitas PC)", userLocation);
           shakeBox(document.querySelectorAll('.auth-box')[1]);
           return; 
         }
 
+        // They passed the cloud check!
         err.style.color = "#8b5cf6";
         err.textContent = "VIP PRIEIGA PATVIRTINTA. Kraunama...";
         
@@ -639,7 +659,7 @@
     }
 
     // ============================================================================
-    // REST OF THE CODE REMAINS THE SAME (PAYLOADS, UI LOGIC, ETC.)
+    // MODULE 1: DATA CORE (Immutable Payload)
     // ============================================================================
     const __ENCRYPTED_PAYLOADS = {
       4: `reikalingas lygis4\n\nslibinas = lygis4.slibinas\n\nkartok 6:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 5:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\n\n# Padaryta jumpsipidy.online`,
