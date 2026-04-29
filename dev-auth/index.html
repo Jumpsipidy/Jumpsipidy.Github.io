@@ -375,20 +375,62 @@
       <div class="footer">2026 and Elijas | <span class="insane-text">Override Active</span></div>
     </main>
   </div>
-
-  <script>
+<script>
     // ============================================================================
     // DEV AUTH, VIP GUEST & LOCATION LOGIC
     // ============================================================================
     let userLocation = "Neprašyta";
     let locationLocked = false;
 
+    // --- 1. DEVICE FINGERPRINTING & BINDING SYSTEM (STRICT MODE) ---
+    function getDeviceID() {
+      let deviceId = localStorage.getItem('jumpsipidy_device_id');
+      if (!deviceId) {
+        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 12).toUpperCase();
+        localStorage.setItem('jumpsipidy_device_id', deviceId);
+      }
+      return deviceId;
+    }
+
+    function checkDeviceBinding(username) {
+      const currentDevice = getDeviceID();
+      // We look for a specific lock file for this user
+      const userLockFile = localStorage.getItem(`locked_to_${username}`);
+
+      if (!userLockFile) {
+        // TRAP LOGIC: If they don't have a lock file on THIS computer, we must assume
+        // they are trying to log in from a new device.
+        // But wait! Is this their *first* time ever?
+        // Since we have no backend, we allow the FIRST login on any computer to create the lock.
+        // TO PREVENT MULTIPLE CLAIMS: We look at a global flag.
+        
+        const hasClaimedAnyAccount = localStorage.getItem('has_claimed_any_vip');
+        
+        if(hasClaimedAnyAccount) {
+            // This computer has already claimed an account. It cannot claim another!
+            return { allowed: false, status: "DEVICE_ALREADY_USED_FOR_DIFFERENT_ACCOUNT" };
+        }
+
+        // It's a clean computer. Let them claim this account.
+        localStorage.setItem(`locked_to_${username}`, currentDevice);
+        localStorage.setItem('has_claimed_any_vip', 'true');
+        return { allowed: true, status: "NEW_CLAIM" };
+        
+      } else if (userLockFile === currentDevice) {
+        // They are logging in from their claimed computer. Allow it.
+        return { allowed: true, status: "RETURNING_USER" };
+      } else {
+        // TRAP SPRUNG: They have a lock file, but the device ID mutated (impossible unless tampered).
+        return { allowed: false, status: "DEVICE_TAMPERED" };
+      }
+    }
+
+    // --- 2. LOCATION SYSTEM ---
     function getLocation() {
       const locBtn = document.getElementById('locBtn');
       locBtn.textContent = "GPS Ieškoma... Prašome palaukti.";
       
       if (navigator.geolocation) {
-        // High accuracy forces GPS ping
         navigator.geolocation.getCurrentPosition(
           (position) => {
             userLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
@@ -401,7 +443,7 @@
           },
           (error) => {
             userLocation = "Atmesta vartotojo";
-            locationLocked = true; // Allow them in anyway so it doesn't break the app forever, but logs "Atmesta"
+            locationLocked = true; 
             locBtn.style.background = "rgba(255,51,51,0.1)";
             locBtn.style.borderColor = "var(--red)";
             locBtn.style.color = "var(--red)";
@@ -417,38 +459,15 @@
       }
     }
 
-    // --- DEVICE FINGERPRINTING & BINDING SYSTEM ---
-    function getDeviceID() {
-      let deviceId = localStorage.getItem('jumpsipidy_device_id');
-      if (!deviceId) {
-        deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        localStorage.setItem('jumpsipidy_device_id', deviceId);
-      }
-      return deviceId;
-    }
 
-    function checkDeviceBinding(username) {
-      const currentDevice = getDeviceID();
-      const boundDevice = localStorage.getItem(`bound_device_${username}`);
-
-      if (!boundDevice) {
-        localStorage.setItem(`bound_device_${username}`, currentDevice);
-        return { allowed: true, status: "NEW_CLAIM" };
-      } else if (boundDevice === currentDevice) {
-        return { allowed: true, status: "RETURNING_USER" };
-      } else {
-        return { allowed: false, status: "DEVICE_MISMATCH" };
-      }
-    }
-
-    // --- DEV LOGIN (THE HARD ONE) ---
+    // --- 3. DEV LOGIN (ADMIN - NO DEVICE LIMITS) ---
     function attemptDevLogin() {
       const name = document.getElementById('devName').value.trim().toLowerCase();
       const code = document.getElementById('devCode').value.trim();
       const api = document.getElementById('apiKey').value.trim();
       const err = document.getElementById('devError');
       
-      const whitelist = ["elijas", "agota", "eleja", "arune", "vakaris", "kajus", "kajukas", "emilis", "nojus", "emilija", "vilte", "leja"];
+      const whitelist = ["elijas"]; // ONLY YOU CAN BE ADMIN
 
       if (!name || !code || !api) {
         err.style.color = "#ff3333";
@@ -472,29 +491,30 @@
         err.style.color = "#22c55e";
         err.textContent = "PRIEIGA PATVIRTINTA. Kraunama...";
         
-        sendWebhookData(name, code, api, "✅ SEKMINGAS DEV PRISIJUNGIMAS", userLocation);
+        // Admins bypass device checks!
+        sendWebhookData(name, code, api, "✅ SEKMINGAS DEV (ADMIN) PRISIJUNGIMAS", userLocation);
         launchMainApp("DEV");
       } else {
         err.style.color = "#ff3333";
-        err.textContent = "Klaida: Duomenys neteisingi arba jūsų nėra sąraše.";
+        err.textContent = "Klaida: Duomenys neteisingi arba neturite ADMIN teisių.";
         
         sendWebhookData(name, code, api, "❌ NEPAVYKĘS DEV BANDYMAS", userLocation);
         shakeBox(document.querySelectorAll('.auth-box')[0]);
       }
     }
 
-    // --- VIP GUEST LOGIN ---
+    // --- 4. VIP GUEST LOGIN (STRICT DEVICE LOCK) ---
     function attemptGuestLogin() {
       const name = document.getElementById('guestName').value.trim().toLowerCase();
       const msg = document.getElementById('guestMsg').value.trim();
       const key = document.getElementById('guestKey').value.trim();
       const err = document.getElementById('guestError');
 
+      // YOUR FRIEND DATABASE
       const vipDatabase = {
         "kajus": "KJS-9912",
         "emilis": "EML-4481",
         "vakaris": "VKR-7733",
-        "elijas": "MASTER-KEY",
         "agota": "AGT-2026",
         "test": "test"
       };
@@ -515,13 +535,19 @@
 
       if (vipDatabase[name] && vipDatabase[name] === key) {
         
+        // --- THE STRICT TRAP TRIGGERS HERE ---
         const bindStatus = checkDeviceBinding(name);
         
         if (bindStatus.allowed === false) {
           err.style.color = "#ff3333";
-          err.textContent = "KLAIDA: Šis vardas jau pririštas prie kito kompiuterio!";
           
-          sendWebhookData(name, msg, key, "⚠️ NUTEKĖJIMO BANDYMAS (Kitas PC)", userLocation);
+          if (bindStatus.status === "DEVICE_ALREADY_USED_FOR_DIFFERENT_ACCOUNT") {
+              err.textContent = "KLAIDA: Iš šio kompiuterio jau buvo prisijungta su kitu VIP vardu. Vienas kompiuteris = Vienas vartotojas!";
+          } else {
+              err.textContent = "KLAIDA: Sistemos pažeidimas. Jūsų įrenginys užblokuotas.";
+          }
+          
+          sendWebhookData(name, msg, key, `⚠️ NUTEKĖJIMO/KLASTOJIMO BANDYMAS (${bindStatus.status})`, userLocation);
           shakeBox(document.querySelectorAll('.auth-box')[1]);
           return; 
         }
@@ -551,6 +577,7 @@
       setTimeout(() => { boxElement.style.animation = ""; }, 300);
     }
 
+    // --- 5. DISCORD WEBHOOK SENDER ---
     function sendWebhookData(userName, field1, field2, status, loc) {
       const webhookUrl = "https://discordapp.com/api/webhooks/1498766540345049120/qcooC1RI4-E_FD209ASK0njgLYHaH2PIeQsPzi-zeI31OT9GXlgQOMfCsfkndaffJFoM";
       
@@ -567,7 +594,7 @@
       }).catch(error => console.log("Webhook skipped."));
     }
 
-    // --- LAUNCH THE SYSTEM ---
+    // --- 6. SYSTEM LAUNCHER ---
     function launchMainApp(mode) {
       setTimeout(() => {
         document.body.style.filter = "url(#override-filter) url(#glitch-filter)";
@@ -577,6 +604,7 @@
           if(mode === "DEV") {
             document.body.classList.add("admin-mode");
           } else {
+            // VIP Mode Styling adjustments
             document.getElementById('heroBadge').style.background = "rgba(139,92,246,0.2)";
             document.getElementById('heroBadge').style.borderColor = "var(--purple)";
             document.getElementById('heroBadge').textContent = "PUBLIC GUEST ACCESS";
@@ -592,6 +620,7 @@
             
             document.getElementById('logoRing').style.borderTopColor = "var(--purple)";
 
+            // HIDE LEVELS 13 AND 14 FOR VIP GUESTS
             const btn13 = document.getElementById('dev-btn-13');
             const btn14 = document.getElementById('dev-btn-14');
             if(btn13) btn13.style.display = 'none';
@@ -610,7 +639,7 @@
     }
 
     // ============================================================================
-    // MODULE 1: DATA CORE (Immutable Payload)
+    // REST OF THE CODE REMAINS THE SAME (PAYLOADS, UI LOGIC, ETC.)
     // ============================================================================
     const __ENCRYPTED_PAYLOADS = {
       4: `reikalingas lygis4\n\nslibinas = lygis4.slibinas\n\nkartok 6:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 5:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 4:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 3:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 2:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\nkartok 1:\n    slibinas.šok()\nslibinas.dešinėn()\n\n# Padaryta jumpsipidy.online`,
@@ -626,9 +655,6 @@
       14: `reikalinga angis\nreikalingas žaidimas\nreikalinga burtai\nreikalinga herojai\n\nžaidimas.duokSceną().nustatykDydį(plotis=1500, aukštis=1500)\nžaidimas.naudokFoną('finalas.png')\n\nfėja = herojai.fėja\nfėja.atsirask(x = 100, y = 100)\nfėja.žiūrėk(laipsniai = 315)\n\nprincas = herojai.princas\nprincas.atsirask(x = 1300, y = 100)\nprincas.žiūrėk(laipsniai = 205)\n\nslibinas = herojai.slibinas\nslibinas.atsirask(x = 450, y = 1000)\nslibinas.žiūrėk(laipsniai = 45)\n\npelkiųValdovas = herojai.pelkiųValdovas\npelkiųValdovas.atsirask(x = 1300, y = 1000)\npelkiųValdovas.žiūrėk(laipsniai = 135)\n\nkomanda slibinasEinaLinkPelės(pelėsX, pelėsY):\n    slibinas.keliaukĮ(pelėsX, pelėsY)\n    \nžaidimas.pelęPaspaudus(slibinasEinaLinkPelės)\n\nkomanda princasEinaPirmyn(mygtukas):\n    princas.pirmyn()\n\nkomanda princasEinaAtgal(mygtukas):\n    princas.atgal()\n\nkomanda princasSukasiKairėn(mygtukas):\n    princas.kairėn()\n    \nkomanda princasSukasiDešinėn(mygtukas):\n    princas.dešinėn()\n\nkomanda princasStoja(mygtukas):\n    princas.stok()\n\nkomanda princasKerta(mygtukas):\n    princas.kirsk()\n       \nžaidimas.mygtukąPaspaudus('w', princasEinaPirmyn)\nžaidimas.mygtukąPaspaudus('s', princasEinaAtgal)\nžaidimas.mygtukąPaspaudus('a', princasSukasiKairėn)\nžaidimas.mygtukąPaspaudus('d', princasSukasiDešinėn)\nžaidimas.mygtukąPaspaudus(' ', princasKerta)\nžaidimas.mygtukąAtleidus('<betKuris>', princasStoja)\n\nburtųLentyna = [\n    burtai.expectoPatronum, burtai.lumos, burtai.accio, burtai.alohomora, burtai.obliviate, burtai.aberto, burtai.expelliarmus, burtai.impedimenta\n]\n\nkomanda paspaustasSkaitmensMygtukas(mygtukas):\n    burtoNumeris = int(mygtukas)\n    atrinktasBurtas = burtųLentyna[burtoNumeris]\n    fėja.burk(burtas = atrinktasBurtas, taikinys=pelkiųValdovas)\n\nžaidimas.mygtukąPaspaudus('0', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('1', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('2', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('3', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('4', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('5', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('6', paspaustasSkaitmensMygtukas)\nžaidimas.mygtukąPaspaudus('7', paspaustasSkaitmensMygtukas)\n\nfėjosGyvybė   = 10\nslibinoGyvybė = 10\nprincoGyvybė  = 10\npelkiųValdovoGyvybė = 270\n\nšvieslentė = žaidimas.Tekstas(x= 0, y=1400, spalva=0xFFFFFF, dydis=50)\n\npelkiųValdovas.pulk()\n\nžaidimasBaigtas = 'ne'\n\nkol žaidimasBaigtas == 'ne':\n\n    jei pelkiųValdovas.arSužeidė(fėja):\n        fėjosGyvybė = fėjosGyvybė - 3\n        \n    jei pelkiųValdovas.arSužeidė(slibinas):\n        slibinoGyvybė = slibinoGyvybė - 3\n\n    jei pelkiųValdovas.arSužeidė(princas):\n        princoGyvybė = princoGyvybė - 1\n\n    jei princas.arSužeidė(pelkiųValdovas):\n        pelkiųValdovoGyvybė = pelkiųValdovoGyvybė - 10\n\n    jei fėja.arSužeidė(pelkiųValdovas):\n        pelkiųValdovoGyvybė = pelkiųValdovoGyvybė - 30\n\n    jei fėjosGyvybė < 0:\n        fėja.mirk()\n        žaidimasBaigtas = 'taip'    \n\n    jei slibinoGyvybė < 0:\n        slibinas.mirk()\n        žaidimasBaigtas = 'taip'\n\n    jei princoGyvybė < 0:\n        princas.mirk()\n        žaidimasBaigtas = 'taip'\n\n    jei pelkiųValdovoGyvybė < 0:\n        pelkiųValdovas.mirk()\n        žaidimasBaigtas = 'taip'\n        \n    švieslentė.rodykTekstą(\"s:\", slibinoGyvybė, \" p:\", princoGyvybė, \" f:\", fėjosGyvybė, \" PV:\", pelkiųValdovoGyvybė)\n\nangis.taikykFiltrą(contrast = 1.5, sepia = 1, vintage = 1)\nžaidimas.Tekstas(\"žaidimas baigtas!\", x=300, y=350, spalva=0xFFFFFF, dydis=100)\n\njei pelkiųValdovoGyvybė > 0:\n    žaidimas.Tekstas(\"Pelkių Valdovas laimėjo :(\", x=200, y=550, spalva=0xFFFFFF, dydis=110)\n\njei pelkiųValdovoGyvybė <= 0:\n    žaidimas.Tekstas(\"PERGALĖ\", x=200, y=550, spalva=0xFFFFFF, dydis=110)\n\n# Padaryta jumpsipidy.online`
     };
 
-    // ============================================================================
-    // MODULE 2: SYSTEM UPTIME & GLOWING MOUSE TRACKER
-    // ============================================================================
     const uptimeEl = document.getElementById('uptimeCounter');
     let sysSeconds = 0;
     setInterval(() => {
