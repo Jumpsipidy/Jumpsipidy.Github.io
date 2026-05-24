@@ -1,1 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ElijasGPT — AI Page Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════ TOKENS ═══════════════════════ */
+:root{
+  --cream:#F7F5F0;
+  --cream2:#EDEAE3;
+  --ink:#1A1814;
+  --ink2:#3D3A35;
+  --muted:#8A8680;
+  --muted2:#C4C0BA;
+  --dark:#111009;
+  --dark2:#1C1A14;
+  --dark3:#232119;
+  --amber:#C8861A;
+  --amber-light:#E8A83A;
+  --amber-glow:rgba(200,134,26,.15);
+  --border-light:rgba(26,24,20,.08);
+  --border-dark:rgba(247,245,240,.09);
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-in-out:cubic-bezier(.4,0,.2,1);
+}
+
+/* ═══════════════════════ RESET ═══════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{
+  background:var(--cream);color:var(--ink);
+  font-family:var(--sans);overflow-x:hidden;
+  selection-background:var(--amber);
+}
+::selection{background:rgba(200,134,26,.18);color:var(--ink)}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* ═══════════════════════ SCROLLBAR ═══════════════════════ */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--cream)}
+::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:99px}
+
+/* ═══════════════════════ LANG CONTROL ═══════════════════════ */
+[data-lt]{display:none}
+body.lt [data-en]{display:none!important}
+body.lt [data-lt]{display:revert!important}
+body.lt [data-lt].blk{display:block!important}
+body.lt [data-lt].flex{display:flex!important}
+
+/* ═══════════════════════ NAV ═══════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem;
+  background:rgba(247,245,240,.85);
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border-bottom:1px solid var(--border-light);
+  transition:background .3s;
+}
+.nav-logo{
+  font-family:var(--serif);font-size:1.25rem;
+  letter-spacing:-.01em;color:var(--ink);
+}
+.nav-logo em{font-style:normal;color:var(--amber)}
+.nav-center{
+  display:flex;gap:2.5rem;
+  position:absolute;left:50%;transform:translateX(-50%);
+}
+.nav-center a{
+  font-size:.82rem;font-weight:500;
+  letter-spacing:.02em;color:var(--muted);
+  transition:color .2s;padding:.2rem 0;
+  border-bottom:1px solid transparent;
+}
+.nav-center a:hover{color:var(--ink);border-color:var(--amber)}
+
+/* ── LANG PILL ── */
+.lang-pill{
+  display:flex;background:var(--cream2);
+  border:1px solid var(--border-light);
+  border-radius:99px;padding:3px;
+  position:relative;gap:2px;
+}
+.lang-pill button{
+  font-family:var(--sans);font-size:.75rem;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:.28rem .85rem;border:none;background:none;
+  cursor:pointer;color:var(--muted);
+  border-radius:99px;transition:color .2s;
+  position:relative;z-index:1;
+}
+.lang-pill button.active{color:var(--ink)}
+.lang-pill .pill-bg{
+  position:absolute;top:3px;bottom:3px;left:3px;
+  width:calc(50% - 3px);background:#fff;
+  border-radius:99px;
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
+  transition:transform .25s var(--ease-in-out);
+}
+.lang-pill.lt .pill-bg{transform:translateX(100%)}
+
+/* ═══════════════════════ HERO ═══════════════════════ */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:9rem 2rem 6rem;
+  position:relative;overflow:hidden;
+}
+/* Mesh gradient background */
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 40%, rgba(200,134,26,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 60%, rgba(200,134,26,.05) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 50% at 50% 100%, rgba(26,24,20,.03) 0%, transparent 60%);
+  pointer-events:none;
+}
+/* Subtle grid lines */
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border-light) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  pointer-events:none;opacity:.5;
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-size:.75rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--amber);
+  margin-bottom:2rem;
+  animation:rise .9s .1s var(--ease-out) both;
+}
+.hero-eyebrow::before,
+.hero-eyebrow::after{
+  content:'';height:1px;width:28px;background:var(--amber);opacity:.5;
+}
+
+.hero-h1{
+  font-family:var(--serif);
+  font-size:clamp(3.2rem,8vw,6.5rem);
+  line-height:1.0;
+  letter-spacing:-.03em;
+  text-align:center;
+  max-width:820px;
+  animation:rise .9s .25s var(--ease-out) both;
+}
+.hero-h1 .line-italic{
+  display:block;font-style:italic;
+  background:linear-gradient(135deg,var(--amber),var(--amber-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-sub{
+  max-width:520px;text-align:center;
+  font-size:1.05rem;line-height:1.75;
+  color:var(--ink2);font-weight:300;
+  margin:2rem 0 3rem;
+  animation:rise .9s .4s var(--ease-out) both;
+}
+
+.hero-actions{
+  display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
+  animation:rise .9s .55s var(--ease-out) both;
+}
+
+.btn-primary{
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.85rem 2.2rem;
+  background:var(--ink);color:var(--cream);
+  border-radius:.5rem;font-family:var(--sans);
+  font-size:.88rem;font-weight:600;letter-spacing:.01em;
+  border:none;cursor:pointer;
+  transition:background .2s,transform .2s,box-shadow .2s;
+  box-shadow:0 4px 20px rgba(26,24,20,.2);
+  position:relative;overflow:hidden;
+}
+.btn-primary::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 60%);
+}
+.btn-primary:hover{
+  background:var(--dark);
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(26,24,20,.3);
+}
+.btn-primary svg{flex-shrink:0}
+
+.btn-outline{
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.85rem 2rem;
+  background:transparent;color:var(--ink2);
+  border:1px solid var(--border-light);
+  border-radius:.5rem;font-family:var(--sans);
+  font-size:.88rem;font-weight:500;letter-spacing:.01em;
+  cursor:pointer;transition:border-color .2s,background .2s,transform .2s;
+}
+.btn-outline:hover{
+  border-color:var(--amber);background:var(--amber-glow);
+  transform:translateY(-2px);
+}
+
+.scroll-indicator{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  animation:rise .9s .8s var(--ease-out) both;
+  cursor:pointer;
+}
+.scroll-indicator span{
+  font-size:.7rem;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+}
+.scroll-mouse{
+  width:22px;height:34px;border:1.5px solid var(--muted2);
+  border-radius:11px;display:flex;justify-content:center;
+  padding-top:5px;
+}
+.scroll-mouse::before{
+  content:'';width:3px;height:7px;
+  background:var(--amber);border-radius:99px;
+  animation:scrollBob 2s infinite;
+}
+
+/* ═══════════════════════ INTRO RIBBON ═══════════════════════ */
+.ribbon{
+  background:var(--ink);color:rgba(247,245,240,.45);
+  padding:1.4rem 0;overflow:hidden;
+  position:relative;z-index:2;
+  border-top:1px solid rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.ribbon-track{
+  display:flex;gap:3.5rem;white-space:nowrap;
+  animation:marquee 28s linear infinite;
+  font-size:.8rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+}
+.ribbon-track span{color:rgba(247,245,240,.2)}
+.ribbon-item{display:inline-flex;align-items:center;gap:.9rem}
+.ribbon-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--amber);opacity:.7;
+  flex-shrink:0;
+}
+
+/* ═══════════════════════ SECTION SCAFFOLD ═══════════════════════ */
+.section{padding:7rem 2rem;position:relative}
+.section.dark{background:var(--dark);color:var(--cream)}
+.section.dark-2{background:var(--dark2);color:var(--cream)}
+.section.cream-2{background:var(--cream2)}
+.container{max-width:1080px;margin:0 auto}
+.container-sm{max-width:720px;margin:0 auto}
+.container-xs{max-width:560px;margin:0 auto}
+
+.overline{
+  font-size:.72rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--amber);
+  margin-bottom:1.1rem;
+}
+.section-title{
+  font-family:var(--serif);
+  font-size:clamp(2rem,4.5vw,3.2rem);
+  line-height:1.1;letter-spacing:-.025em;
+  margin-bottom:1.2rem;
+}
+.section-title em{font-style:italic;color:var(--amber)}
+.section-body{
+  font-size:1rem;line-height:1.8;
+  color:var(--ink2);font-weight:300;max-width:480px;
+}
+.dark .section-body,.dark-2 .section-body{color:rgba(247,245,240,.55)}
+
+/* ═══════════════════════ FEATURE BENTO ═══════════════════════ */
+.bento{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:1.2px;
+  background:var(--border-light);
+  border:1px solid var(--border-light);
+  border-radius:1.4rem;overflow:hidden;
+  margin-top:4rem;
+}
+.bento-cell{
+  background:var(--cream);padding:2.8rem;
+  transition:background .3s;
+}
+.bento-cell:hover{background:#FDFCFA}
+.bento-cell.c8{grid-column:span 8}
+.bento-cell.c4{grid-column:span 4}
+.bento-cell.c6{grid-column:span 6}
+.bento-cell.c5{grid-column:span 5}
+.bento-cell.c7{grid-column:span 7}
+.bento-cell.c12{grid-column:span 12}
+
+.cell-icon{
+  width:44px;height:44px;border-radius:.7rem;
+  background:var(--cream2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;margin-bottom:1.4rem;
+  border:1px solid var(--border-light);
+}
+.bento-cell h3{
+  font-family:var(--serif);font-size:1.2rem;
+  letter-spacing:-.02em;margin-bottom:.6rem;
+}
+.bento-cell p{
+  font-size:.88rem;line-height:1.75;
+  color:var(--muted);font-weight:400;
+}
+.bento-cell.accent-bg{
+  background:var(--ink);color:var(--cream);
+}
+.bento-cell.accent-bg:hover{background:var(--dark2)}
+.bento-cell.accent-bg p{color:rgba(247,245,240,.5)}
+.bento-cell.amber-bg{
+  background:linear-gradient(140deg,#FDF3E0,#F9E4B7);
+}
+.bento-cell.amber-bg:hover{background:linear-gradient(140deg,#FDF3E0,#F5DCA0)}
+.bento-cell.amber-bg .cell-icon{background:rgba(200,134,26,.12)}
+
+/* big visual cell */
+.cell-visual{
+  grid-column:span 12;
+  background:var(--dark);
+  padding:0;overflow:hidden;
+  min-height:280px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+
+/* ═══════════════════════ HOW IT WORKS ═══════════════════════ */
+.how-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:5rem;align-items:center;
+  max-width:1080px;margin:0 auto;
+}
+.how-steps{display:flex;flex-direction:column;gap:.5rem}
+.how-step{
+  display:flex;gap:1.4rem;
+  padding:1.6rem;border-radius:1rem;
+  cursor:pointer;
+  transition:background .25s;
+  border:1px solid transparent;
+}
+.how-step:hover{background:rgba(200,134,26,.04);border-color:rgba(200,134,26,.1)}
+.how-step.active{
+  background:rgba(200,134,26,.06);
+  border-color:rgba(200,134,26,.18);
+}
+.how-num{
+  flex-shrink:0;
+  width:36px;height:36px;border-radius:50%;
+  border:1.5px solid var(--border-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:600;color:var(--muted);
+  transition:border-color .25s,color .25s,background .25s;
+}
+.how-step.active .how-num{
+  border-color:var(--amber);color:var(--amber);
+  background:var(--amber-glow);
+}
+.how-content h4{
+  font-family:var(--serif);font-size:1rem;
+  letter-spacing:-.01em;margin-bottom:.35rem;
+}
+.how-content p{font-size:.85rem;line-height:1.7;color:var(--muted)}
+
+/* How-it-works panel */
+.how-panel{
+  border-radius:1.4rem;overflow:hidden;
+  border:1px solid var(--border-light);
+  background:var(--dark);
+  position:sticky;top:100px;
+  box-shadow:0 40px 80px rgba(26,24,20,.12);
+}
+.panel-topbar{
+  background:var(--dark2);
+  padding:.75rem 1.2rem;
+  display:flex;align-items:center;gap:.75rem;
+  border-bottom:1px solid var(--border-dark);
+}
+.top-dots{display:flex;gap:.4rem}
+.td{width:10px;height:10px;border-radius:50%}
+.td1{background:#FF5F57}.td2{background:#FEBC2E}.td3{background:#28C840}
+.tab-bar{
+  display:flex;gap:.2rem;margin-left:auto;
+}
+.tab-item{
+  font-size:.72rem;font-weight:500;letter-spacing:.04em;
+  padding:.25rem .75rem;border-radius:.3rem;
+  color:rgba(247,245,240,.35);
+  transition:background .2s,color .2s;cursor:pointer;
+}
+.tab-item.active{
+  background:rgba(247,245,240,.08);
+  color:rgba(247,245,240,.8);
+}
+.panel-body{
+  padding:2rem;min-height:340px;
+  display:flex;align-items:center;justify-content:center;
+}
+.vis-wrap{width:100%;text-align:center;display:none}
+.vis-wrap.show{display:block}
+.vis-icon{font-size:2.8rem;margin-bottom:1rem;line-height:1}
+.vis-wrap h5{
+  font-family:var(--serif);font-size:1rem;
+  color:rgba(247,245,240,.85);margin-bottom:.5rem;
+}
+.vis-wrap p{
+  font-size:.83rem;line-height:1.7;
+  color:rgba(247,245,240,.4);
+  max-width:280px;margin:0 auto;
+}
+/* mock extension popup */
+.mock-popup{
+  background:#1E1C16;border:1px solid rgba(247,245,240,.08);
+  border-radius:.9rem;overflow:hidden;text-align:left;
+  max-width:300px;margin:0 auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.popup-header{
+  background:#252319;padding:.9rem 1.2rem;
+  display:flex;align-items:center;gap:.7rem;
+  border-bottom:1px solid rgba(247,245,240,.06);
+}
+.popup-header .logo{
+  font-family:var(--serif);font-size:.95rem;
+  color:var(--amber-light);
+}
+.popup-status{
+  margin-left:auto;display:flex;align-items:center;gap:.35rem;
+  font-size:.7rem;color:rgba(247,245,240,.35);
+}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#28C840}
+.popup-page{
+  padding:.6rem 1.2rem;font-size:.72rem;
+  color:rgba(247,245,240,.25);
+  border-bottom:1px solid rgba(247,245,240,.06);
+  font-family:monospace;
+}
+.popup-msg{
+  padding:.9rem 1.2rem;
+  font-size:.83rem;line-height:1.6;
+  color:rgba(247,245,240,.7);
+}
+.popup-msg strong{color:var(--amber-light);font-weight:600}
+.popup-input{
+  margin:.2rem 1.2rem .9rem;
+  display:flex;gap:.5rem;
+}
+.popup-input input{
+  flex:1;background:rgba(247,245,240,.06);
+  border:1px solid rgba(247,245,240,.1);
+  border-radius:.4rem;padding:.5rem .8rem;
+  font-size:.78rem;color:rgba(247,245,240,.7);
+  font-family:var(--sans);outline:none;
+}
+.popup-input button{
+  background:var(--amber);color:var(--ink);
+  border:none;padding:.5rem .9rem;border-radius:.4rem;
+  font-size:.78rem;font-weight:600;cursor:pointer;
+}
+.cursor-blink{
+  display:inline-block;width:2px;height:12px;
+  background:var(--amber);margin-left:1px;
+  animation:blink .9s infinite;vertical-align:middle;
+}
+.typing-text{font-size:.83rem;color:rgba(247,245,240,.55)}
+
+/* ═══════════════════════ INSTALL GUIDE ═══════════════════════ */
+.install-grid{
+  display:grid;grid-template-columns:1fr 1.1fr;
+  gap:4rem;align-items:start;
+  max-width:1080px;margin:0 auto;
+}
+.install-steps-list{display:flex;flex-direction:column;gap:.8rem;padding-top:.5rem}
+.i-step{
+  display:flex;gap:1.2rem;align-items:flex-start;
+  padding:1.4rem 1.5rem;
+  background:rgba(247,245,240,.03);
+  border:1px solid var(--border-dark);
+  border-radius:.9rem;cursor:pointer;
+  transition:border-color .25s,background .25s;
+}
+.i-step:hover{border-color:rgba(247,245,240,.12)}
+.i-step.active{
+  border-color:var(--amber);
+  background:rgba(200,134,26,.06);
+}
+.i-num{
+  flex-shrink:0;width:32px;height:32px;border-radius:50%;
+  border:1.5px solid rgba(247,245,240,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:600;color:rgba(247,245,240,.3);
+  transition:all .25s;
+}
+.i-step.active .i-num{
+  border-color:var(--amber);color:var(--amber);
+  background:rgba(200,134,26,.12);
+}
+.i-step.done .i-num{
+  border-color:#4ADE80;color:#4ADE80;
+  background:rgba(74,222,128,.1);
+}
+.i-step.done .i-num::before{content:'✓'}
+.i-text strong{
+  display:block;font-size:.88rem;font-weight:600;
+  color:rgba(247,245,240,.8);margin-bottom:.2rem;
+}
+.i-text span{font-size:.8rem;color:rgba(247,245,240,.35);line-height:1.6}
+
+.install-vis{position:sticky;top:100px}
+.i-screen{
+  background:var(--dark3);
+  border:1px solid var(--border-dark);
+  border-radius:1.2rem;overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+.i-bar{
+  background:#1C1A14;
+  padding:.75rem 1rem;
+  display:flex;align-items:center;gap:.75rem;
+  border-bottom:1px solid var(--border-dark);
+}
+.i-url{
+  flex:1;background:rgba(247,245,240,.05);
+  border-radius:.4rem;padding:.28rem .75rem;
+  font-size:.72rem;color:rgba(247,245,240,.35);
+  font-family:monospace;
+}
+.i-body{
+  padding:2.2rem;min-height:300px;
+  display:flex;align-items:center;justify-content:center;
+}
+.i-vis{display:none;text-align:center;width:100%}
+.i-vis.show{display:block}
+.i-vis .icon{font-size:2.5rem;margin-bottom:1rem}
+.i-vis h5{
+  font-family:var(--serif);font-size:1rem;
+  color:rgba(247,245,240,.8);margin-bottom:.5rem;
+}
+.i-vis p{
+  font-size:.8rem;color:rgba(247,245,240,.38);
+  line-height:1.7;max-width:240px;margin:0 auto;
+}
+/* step dots */
+.i-dots{
+  display:flex;gap:.5rem;justify-content:center;
+  margin-top:1.2rem;
+}
+.i-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(247,245,240,.1);
+  transition:background .25s,box-shadow .25s;
+}
+.i-dot.active{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.i-dot.done{background:rgba(74,222,128,.6)}
+
+/* mock dev-mode toggle */
+.dev-toggle-row{
+  display:inline-flex;align-items:center;gap:1rem;
+  background:rgba(247,245,240,.04);
+  border:1px solid rgba(247,245,240,.08);
+  border-radius:.6rem;padding:.7rem 1.2rem;
+  margin-top:1.2rem;
+}
+.dev-toggle-row span{font-size:.8rem;color:rgba(247,245,240,.5)}
+.pill-switch{
+  width:40px;height:22px;border-radius:11px;
+  background:#4ADE80;position:relative;
+  box-shadow:0 0 12px rgba(74,222,128,.4);
+  flex-shrink:0;
+}
+.pill-switch::after{
+  content:'';width:16px;height:16px;border-radius:50%;
+  background:#fff;position:absolute;top:3px;right:3px;
+}
+.load-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:#2563EB;color:#fff;
+  padding:.55rem 1.2rem;border-radius:.4rem;
+  font-size:.78rem;font-weight:600;margin-top:1.2rem;
+}
+
+/* ═══════════════════════ DOWNLOAD ═══════════════════════ */
+.download-hero{
+  padding:9rem 2rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.download-hero::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 60%, rgba(200,134,26,.1) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 30% 30%, rgba(247,245,240,.02) 0%, transparent 55%);
+  pointer-events:none;
+}
+.download-hero .overline{color:rgba(200,134,26,.8)}
+.download-hero .section-title{color:var(--cream);max-width:560px;margin:0 auto 1rem}
+.download-hero .section-body{
+  color:rgba(247,245,240,.45);margin:0 auto 2.8rem;text-align:center;
+}
+.dl-badges{
+  display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;
+  margin-top:2rem;
+}
+.dl-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(247,245,240,.06);
+  border:1px solid rgba(247,245,240,.08);
+  border-radius:99px;padding:.35rem 1rem;
+  font-size:.78rem;color:rgba(247,245,240,.45);
+}
+
+/* ═══════════════════════ DISCLAIMER BANNER ═══════════════════════ */
+.disclaimer{
+  background:rgba(200,134,26,.07);
+  border-top:1px solid rgba(200,134,26,.15);
+  border-bottom:1px solid rgba(200,134,26,.15);
+  padding:1.4rem 2rem;
+  display:flex;align-items:flex-start;gap:1rem;
+  max-width:860px;margin:0 auto 3rem;
+  border-radius:.9rem;
+}
+.disclaimer-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem}
+.disclaimer p{
+  font-size:.85rem;line-height:1.7;color:var(--ink2);
+}
+.disclaimer p strong{color:var(--amber);font-weight:600}
+.dark .disclaimer p{color:rgba(247,245,240,.6)}
+.dark .disclaimer p strong{color:var(--amber-light)}
+.dark .disclaimer{background:rgba(200,134,26,.06);border-color:rgba(200,134,26,.12)}
+
+/* ═══════════════════════ FOOTER ═══════════════════════ */
+footer{
+  background:var(--dark);
+  padding:2.5rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+  border-top:1px solid var(--border-dark);
+}
+.f-logo{font-family:var(--serif);font-size:1rem;color:rgba(247,245,240,.6)}
+.f-logo em{font-style:normal;color:var(--amber)}
+.f-copy{font-size:.78rem;color:rgba(247,245,240,.25);letter-spacing:.02em}
+
+/* ═══════════════════════ REVEAL ANIMATIONS ═══════════════════════ */
+.r{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out)}
+.r.in{opacity:1;transform:none}
+.r.d1{transition-delay:.08s}.r.d2{transition-delay:.16s}
+.r.d3{transition-delay:.24s}.r.d4{transition-delay:.32s}
+.r-left{opacity:0;transform:translateX(-28px);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out)}
+.r-left.in{opacity:1;transform:none}
+.r-right{opacity:0;transform:translateX(28px);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out)}
+.r-right.in{opacity:1;transform:none}
+.r-scale{opacity:0;transform:scale(.96);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out)}
+.r-scale.in{opacity:1;transform:none}
+
+/* ═══════════════════════ KEYFRAMES ═══════════════════════ */
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes scrollBob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(.88)}}
+@keyframes shimmer{
+  0%{background-position:-400px 0}
+  100%{background-position:400px 0}
+}
+
+/* ═══════════════════════ RESPONSIVE ═══════════════════════ */
+@media(max-width:900px){
+  .bento-cell.c8,.bento-cell.c4,.bento-cell.c6,.bento-cell.c5,.bento-cell.c7{grid-column:span 12}
+  .how-grid,.install-grid{grid-template-columns:1fr}
+  .how-panel,.install-vis{display:none}
+  nav .nav-center{display:none}
+}
+@media(max-width:600px){
+  .hero-h1{letter-spacing:-.02em}
+  .stats-row{flex-direction:column}
+  footer{flex-direction:column;text-align:center}
+  .dl-badges{gap:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav>
+  <div class="nav-logo">Elijas<em>GPT</em></div>
+  <div class="nav-center">
+    <a href="#features" data-en>Features</a>
+    <a href="#features" data-lt>Funkcijos</a>
+    <a href="#how" data-en>How it works</a>
+    <a href="#how" data-lt>Kaip veikia</a>
+    <a href="#install" data-en>Install guide</a>
+    <a href="#install" data-lt>Įdiegimas</a>
+  </div>
+  <div class="lang-pill" id="langPill">
+    <div class="pill-bg"></div>
+    <button class="active" onclick="setLang('en')">EN</button>
+    <button onclick="setLang('lt')">LT</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <p class="hero-eyebrow">
+    <span data-en>Chrome Extension · AI Page Assistant</span>
+    <span data-lt>Chrome Plėtinys · DI Puslapio Asistentas</span>
+  </p>
+  <h1 class="hero-h1">
+    <span data-en>Your browser,<br><span class="line-italic">finally intelligent</span></span>
+    <span data-lt>Tavo naršyklė,<br><span class="line-italic">pagaliau išmani</span></span>
+  </h1>
+  <p class="hero-sub" data-en>
+    ElijasGPT reads the page you're on and answers your questions about it —
+    instantly, accurately, and without you having to copy a single word.
+  </p>
+  <p class="hero-sub" data-lt>
+    ElijasGPT nuskaito puslapį, kurį naršai, ir atsako į tavo klausimus apie jį —
+    akimirksniu, tiksliai ir be jokio kopijavimo.
+  </p>
+  <div class="hero-actions">
+    <a href="ElijasGPT-helper.rar" download class="btn-primary" id="heroDl">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span data-en>Download for Chrome</span>
+      <span data-lt>Atsisiųsti Chrome</span>
+    </a>
+    <a href="#install" class="btn-outline" data-en>Installation guide</a>
+    <a href="#install" class="btn-outline" data-lt>Įdiegimo instrukcija</a>
+  </div>
+  <div class="scroll-indicator" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+    <span data-en>Explore</span>
+    <span data-lt>Žiūrėti</span>
+    <div class="scroll-mouse"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ RIBBON ═══════════════════ -->
+<div class="ribbon">
+  <div class="ribbon-track" id="ribbonTrack">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- ═══════════════════ FEATURES ═══════════════════ -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="container-sm" style="text-align:center;margin-bottom:0">
+      <p class="overline r" data-en>What it does</p>
+      <p class="overline r" data-lt>Ką ji daro</p>
+      <h2 class="section-title r d1" style="text-align:center;max-width:none" data-en>Intelligence that understands<br><em>your current page</em></h2>
+      <h2 class="section-title r d1" style="text-align:center;max-width:none" data-lt>Intelektas, kuris supranta<br><em>tavo dabartinį puslapį</em></h2>
+      <p class="section-body r d2" style="margin:0 auto 0;text-align:center;max-width:520px" data-en>
+        Open the extension on any webpage and ElijasGPT automatically reads the content —
+        you just ask questions. No copy-pasting, no switching tabs.
+      </p>
+      <p class="section-body r d2" style="margin:0 auto 0;text-align:center;max-width:520px" data-lt>
+        Atidaryk plėtinį bet kuriame puslapyje ir ElijasGPT automatiškai nuskaito turinį —
+        tu tiesiog užduodi klausimus. Jokio kopijavimo.
+      </p>
+    </div>
+
+    <!-- Disclaimer about memory -->
+    <div class="disclaimer r d3" style="margin-top:2.5rem">
+      <div class="disclaimer-icon">💡</div>
+      <p data-en>
+        <strong>Good to know:</strong> ElijasGPT analyses each page fresh. It does <strong>not</strong> remember what you asked on previous pages or in past sessions — every conversation starts clean. This keeps your browsing private and the answers focused on what's in front of you right now.
+      </p>
+      <p data-lt>
+        <strong>Svarbu žinoti:</strong> ElijasGPT kiekvieną kartą analizuoja puslapį iš naujo. Ji <strong>neprisimena</strong> ankstesnių pokalbių ar sesijų — kiekvienas pokalbis prasideda švariai. Tai užtikrina privatumą ir tikslius atsakymus.
+      </p>
+    </div>
+
+    <!-- Bento grid -->
+    <div class="bento r-scale d1" style="margin-top:2.5rem">
+
+      <!-- row 1 -->
+      <div class="bento-cell c8">
+        <div class="cell-icon">📖</div>
+        <h3 data-en>Reads the page for you</h3>
+        <h3 data-lt>Nuskaito puslapį už tave</h3>
+        <p data-en>The moment you open the panel, ElijasGPT automatically extracts and understands the full content of your current tab — articles, docs, product pages, anything.</p>
+        <p data-lt>Kai tik atidaro plėtinį, ElijasGPT automatiškai ištraukia ir supranta dabartinio skirtuko turinį — straipsnius, dokumentus, produktų puslapius, viską.</p>
+      </div>
+      <div class="bento-cell c4 accent-bg">
+        <div class="cell-icon" style="background:rgba(247,245,240,.06);border-color:rgba(247,245,240,.08)">⚡</div>
+        <h3 data-en>Instant answers</h3>
+        <h3 data-lt>Greiti atsakymai</h3>
+        <p data-en>Ask in plain language. Get a clear, direct answer — no searching, no scrolling.</p>
+        <p data-lt>Klausk paprastai. Gauk aiškų atsakymą — be paieškos, be slinkimo.</p>
+      </div>
+
+      <!-- row 2 -->
+      <div class="bento-cell c4 amber-bg">
+        <div class="cell-icon">🌐</div>
+        <h3 data-en>Works everywhere</h3>
+        <h3 data-lt>Veikia visur</h3>
+        <p data-en>News, Wikipedia, documentation, online stores, e-mails — if Chrome can open it, ElijasGPT can understand it.</p>
+        <p data-lt>Naujienos, Wikipedia, dokumentacija, internetinės parduotuvės — jei Chrome gali atidaryti, ElijasGPT supranta.</p>
+      </div>
+      <div class="bento-cell c4">
+        <div class="cell-icon">💬</div>
+        <h3 data-en>Conversational follow-ups</h3>
+        <h3 data-lt>Tolesni klausimai</h3>
+        <p data-en>Ask one question, then dig deeper with follow-ups — all within the same session, all about the same page.</p>
+        <p data-lt>Užduok klausimą, tada gilinkis toliau — visa tai vienos sesijos ribose.</p>
+      </div>
+      <div class="bento-cell c4">
+        <div class="cell-icon">🔒</div>
+        <h3 data-en>Session privacy</h3>
+        <h3 data-lt>Sesijos privatumas</h3>
+        <p data-en>Nothing is stored between sessions. Close the panel and everything resets — your history stays yours.</p>
+        <p data-lt>Niekas nesaugoma tarp sesijų. Uždaro plėtinį — viskas išsivalo.</p>
+      </div>
+
+      <!-- row 3 – visual demo cell -->
+      <div class="cell-visual c12">
+        <!-- animated mock popup -->
+        <div class="mock-popup" id="liveMock">
+          <div class="popup-header">
+            <div class="logo">ElijasGPT</div>
+            <div class="popup-status"><div class="status-dot"></div><span data-en>Reading page…</span><span data-lt>Skaitoma…</span></div>
+          </div>
+          <div class="popup-page" id="mockUrl">wikipedia.org/wiki/Artificial_intelligence</div>
+          <div class="popup-msg" id="mockAnswer">
+            <span data-en><strong>ElijasGPT:</strong> <span id="typeTarget"></span><span class="cursor-blink"></span></span>
+            <span data-lt><strong>ElijasGPT:</strong> <span id="typeTargetLT"></span><span class="cursor-blink"></span></span>
+          </div>
+          <div class="popup-input">
+            <input type="text" id="mockInput" placeholder="Ask about this page…" readonly/>
+            <button>↑</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
+<section class="section cream-2" id="how">
+  <div class="container">
+    <p class="overline r" style="text-align:center" data-en>Under the hood</p>
+    <p class="overline r" style="text-align:center" data-lt>Kaip tai veikia</p>
+    <h2 class="section-title r d1" style="text-align:center;max-width:none;margin-bottom:3.5rem" data-en>Three steps, zero effort</h2>
+    <h2 class="section-title r d1" style="text-align:center;max-width:none;margin-bottom:3.5rem" data-lt>Trys žingsniai, jokių pastangų</h2>
+
+    <div class="how-grid">
+      <div class="how-steps r-left">
+        <div class="how-step active" data-hstep="0" onclick="setHowStep(0)">
+          <div class="how-num">01</div>
+          <div class="how-content">
+            <h4 data-en>You open the extension</h4>
+            <h4 data-lt>Tu atidari plėtinį</h4>
+            <p data-en>Click the ElijasGPT icon in your Chrome toolbar. The panel slides open — no login, no setup, no waiting.</p>
+            <p data-lt>Spausk ElijasGPT ikoną Chrome įrankių juostoje. Skydelis atsidaro — be prisijungimo, be nustatymų.</p>
+          </div>
+        </div>
+        <div class="how-step" data-hstep="1" onclick="setHowStep(1)">
+          <div class="how-num">02</div>
+          <div class="how-content">
+            <h4 data-en>It reads your current page</h4>
+            <h4 data-lt>Ji nuskaito dabartinį puslapį</h4>
+            <p data-en>ElijasGPT automatically scans and processes the full content of whatever tab you're on. You don't lift a finger.</p>
+            <p data-lt>ElijasGPT automatiškai nuskaito ir apdoroja viso skirtuko turinį. Tu nieko neturi daryti.</p>
+          </div>
+        </div>
+        <div class="how-step" data-hstep="2" onclick="setHowStep(2)">
+          <div class="how-num">03</div>
+          <div class="how-content">
+            <h4 data-en>Ask anything about it</h4>
+            <h4 data-lt>Klausk bet ko apie tai</h4>
+            <p data-en>Type your question and get a clear answer grounded in the actual content of that page — accurate, relevant, instant.</p>
+            <p data-lt>Įvesk klausimą ir gauk aiškų atsakymą, pagrįstą tikruoju puslapio turiniu — tikslų, aktualų, akimirksnį.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="how-panel r-right">
+        <div class="panel-topbar">
+          <div class="top-dots"><div class="td td1"></div><div class="td td2"></div><div class="td td3"></div></div>
+          <div class="tab-bar">
+            <div class="tab-item active" data-tab="0" onclick="setHowStep(0)" data-en>Closed</div>
+            <div class="tab-item" data-tab="1" onclick="setHowStep(1)" data-en>Scanning</div>
+            <div class="tab-item" data-tab="2" onclick="setHowStep(2)" data-en>Answering</div>
+            <div class="tab-item active" data-tab="0" onclick="setHowStep(0)" data-lt>Uždarytas</div>
+            <div class="tab-item" data-tab="1" onclick="setHowStep(1)" data-lt>Nuskaito</div>
+            <div class="tab-item" data-tab="2" onclick="setHowStep(2)" data-lt>Atsako</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="vis-wrap show" id="hv0">
+            <div class="vis-icon">🧩</div>
+            <h5 data-en>ElijasGPT is ready</h5>
+            <h5 data-lt>ElijasGPT paruoštas</h5>
+            <p data-en>The extension sits quietly in your toolbar until you need it. Click the icon on any page.</p>
+            <p data-lt>Plėtinys tyliai laukia įrankių juostoje. Spausk ikoną bet kuriame puslapyje.</p>
+          </div>
+          <div class="vis-wrap" id="hv1">
+            <div class="vis-icon">🔍</div>
+            <h5 data-en>Scanning page content…</h5>
+            <h5 data-lt>Skaitomas puslapio turinys…</h5>
+            <p data-en>ElijasGPT reads the full text, headings, and structure of your current page automatically.</p>
+            <p data-lt>ElijasGPT automatiškai nuskaito visą dabartinio puslapio tekstą ir struktūrą.</p>
+            <div style="margin-top:1.5rem;height:4px;background:rgba(247,245,240,.06);border-radius:2px;overflow:hidden">
+              <div style="height:100%;width:70%;background:linear-gradient(90deg,var(--amber),var(--amber-light));border-radius:2px;animation:shimmer 1.5s infinite;background-size:400px 100%"></div>
+            </div>
+          </div>
+          <div class="vis-wrap" id="hv2">
+            <div class="vis-icon">💬</div>
+            <h5 data-en>Ready to answer</h5>
+            <h5 data-lt>Paruošta atsakyti</h5>
+            <p data-en>Ask any question about what you're reading. ElijasGPT answers from the page — not from memory, not from guesswork.</p>
+            <p data-lt>Klausk apie tai, ką skaitai. ElijasGPT atsako iš puslapio turinio — ne iš atminties.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ INSTALL GUIDE ═══════════════════ -->
+<section class="section dark" id="install">
+  <div class="container">
+    <p class="overline r" style="text-align:center" data-en>Installation guide</p>
+    <p class="overline r" style="text-align:center" data-lt>Įdiegimo instrukcija</p>
+    <h2 class="section-title r d1" style="text-align:center;max-width:none;color:var(--cream);margin-bottom:.6rem" data-en>Set up in four steps</h2>
+    <h2 class="section-title r d1" style="text-align:center;max-width:none;color:var(--cream);margin-bottom:.6rem" data-lt>Įdiegimas per keturis žingsnius</h2>
+    <p class="r d2" style="text-align:center;font-size:.9rem;color:rgba(247,245,240,.4);margin-bottom:3.5rem" data-en>No Chrome Web Store needed — load directly from the folder.</p>
+    <p class="r d2" style="text-align:center;font-size:.9rem;color:rgba(247,245,240,.4);margin-bottom:3.5rem" data-lt>Chrome parduotuvės nereikia — įkelk tiesiai iš aplanko.</p>
+
+    <div class="install-grid">
+      <div class="install-steps-list r-left" id="iSteps">
+
+        <div class="i-step active" onclick="setIStep(0)">
+          <div class="i-num" id="in0">1</div>
+          <div class="i-text">
+            <strong data-en>Download the extension</strong>
+            <strong data-lt>Atsisiųsk plėtinį</strong>
+            <span data-en>Click the Download button to save <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">ElijasGPT-helper.rar</code> to your computer.</span>
+            <span data-lt>Spausk atsisiuntimo mygtuką ir išsaugok <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">ElijasGPT-helper.rar</code>.</span>
+          </div>
+        </div>
+
+        <div class="i-step" onclick="setIStep(1)">
+          <div class="i-num" id="in1">2</div>
+          <div class="i-text">
+            <strong data-en>Extract the RAR archive</strong>
+            <strong data-lt>Išskleisk RAR archyvą</strong>
+            <span data-en>Right-click the downloaded file → <em style="color:rgba(247,245,240,.6)">Extract Here</em>. Use WinRAR or 7-Zip. You'll get a folder — keep it somewhere you can find it.</span>
+            <span data-lt>Dešiniu mygtuku → <em style="color:rgba(247,245,240,.6)">Išskleisti čia</em>. Naudok WinRAR arba 7-Zip. Gausite aplanką — išsaugok jį pasiekiamoje vietoje.</span>
+          </div>
+        </div>
+
+        <div class="i-step" onclick="setIStep(2)">
+          <div class="i-num" id="in2">3</div>
+          <div class="i-text">
+            <strong data-en>Enable Developer Mode in Chrome</strong>
+            <strong data-lt>Įjunk kūrėjo režimą Chrome</strong>
+            <span data-en>Go to <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">chrome://extensions/</code> in your address bar. Toggle <em style="color:rgba(247,245,240,.6)">Developer mode</em> on in the top-right corner.</span>
+            <span data-lt>Adreso juostoje įvesk <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">chrome://extensions/</code>. Įjunk <em style="color:rgba(247,245,240,.6)">Kūrėjo režimą</em> viršutiniame dešiniame kampe.</span>
+          </div>
+        </div>
+
+        <div class="i-step" onclick="setIStep(3)">
+          <div class="i-num" id="in3">4</div>
+          <div class="i-text">
+            <strong data-en>Load the unpacked extension</strong>
+            <strong data-lt>Įkelk išskleistą plėtinį</strong>
+            <span data-en>Click the <em style="color:rgba(247,245,240,.6)">Load unpacked</em> button that appears, then select the folder you extracted. Done — ElijasGPT is live.</span>
+            <span data-lt>Spausk mygtuką <em style="color:rgba(247,245,240,.6)">Įkelti išskleistą</em> ir pasirink išskleistą aplanką. Atlikta — ElijasGPT veikia.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right panel -->
+      <div class="install-vis r-right">
+        <div class="i-screen">
+          <div class="i-bar">
+            <div class="top-dots"><div class="td td1"></div><div class="td td2"></div><div class="td td3"></div></div>
+            <div class="i-url" id="iUrl">Downloading ElijasGPT-helper.rar</div>
+          </div>
+          <div class="i-body">
+            <div class="i-vis show" id="iv0">
+              <div class="icon">📥</div>
+              <h5 data-en>Save the file</h5>
+              <h5 data-lt>Išsaugok failą</h5>
+              <p data-en>Your browser will download the <code style="color:var(--amber-light)">.rar</code> file. Check your Downloads folder.</p>
+              <p data-lt>Naršyklė atsisiųs <code style="color:var(--amber-light)">.rar</code> failą. Patikrink atsisiuntimų aplanką.</p>
+              <br>
+              <a href="ElijasGPT-helper.rar" download style="display:inline-flex;gap:.5rem;align-items:center;background:var(--cream);color:var(--ink);padding:.6rem 1.5rem;border-radius:.4rem;font-size:.8rem;font-weight:600;font-family:var(--sans)">
+                ⬇ <span data-en>Download now</span><span data-lt>Atsisiųsti</span>
+              </a>
+            </div>
+            <div class="i-vis" id="iv1">
+              <div class="icon">🗂️</div>
+              <h5 data-en>Extract the archive</h5>
+              <h5 data-lt>Išskleisk archyvą</h5>
+              <p data-en>Right-click <code style="color:var(--amber-light)">ElijasGPT-helper.rar</code> → Extract Here.<br>You'll see a folder appear alongside it.</p>
+              <p data-lt>Dešiniu mygtuku → Išskleisti čia.<br>Gausite aplanką šalia failo.</p>
+            </div>
+            <div class="i-vis" id="iv2">
+              <div class="icon">⚙️</div>
+              <h5>chrome://extensions/</h5>
+              <p data-en>Flip on Developer mode in the top-right corner of the extensions page.</p>
+              <p data-lt>Įjunk kūrėjo režimą viršutiniame dešiniame kampe.</p>
+              <div class="dev-toggle-row">
+                <span data-en>Developer mode</span>
+                <span data-lt>Kūrėjo režimas</span>
+                <div class="pill-switch"></div>
+              </div>
+            </div>
+            <div class="i-vis" id="iv3">
+              <div class="icon">🧩</div>
+              <h5 data-en>Load unpacked</h5>
+              <h5 data-lt>Įkelti išskleistą</h5>
+              <p data-en>Click Load unpacked, select the extracted folder, and ElijasGPT will appear in your toolbar instantly.</p>
+              <p data-lt>Spausk mygtuką, pasirink aplanką ir ElijasGPT iškart atsiras įrankių juostoje.</p>
+              <div class="load-btn">
+                <span>📂</span>
+                <span data-en>Load unpacked</span>
+                <span data-lt>Įkelti išskleistą</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="i-dots" id="iDots">
+          <div class="i-dot active" id="id0"></div>
+          <div class="i-dot" id="id1"></div>
+          <div class="i-dot" id="id2"></div>
+          <div class="i-dot" id="id3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DOWNLOAD CTA ═══════════════════ -->
+<section class="section dark-2 download-hero">
+  <p class="overline r" data-en>Free to use</p>
+  <p class="overline r" data-lt>Nemokama</p>
+  <h2 class="section-title r d1" data-en>Start understanding<br><em>any page, right now</em></h2>
+  <h2 class="section-title r d1" data-lt>Pradėk suprasti<br><em>bet kurį puslapį dabar</em></h2>
+  <p class="section-body r d2" data-en>Download ElijasGPT, follow the four-step guide above, and you'll be asking questions about any webpage within minutes.</p>
+  <p class="section-body r d2" data-lt>Atsisiųsk ElijasGPT, vadovaukis keturių žingsnių instrukcija ir per kelias minutes klausinėk apie bet kurį puslapį.</p>
+
+  <div class="r d3" style="margin-top:2.5rem">
+    <a href="ElijasGPT-helper.rar" download class="btn-primary" style="font-size:.95rem;padding:1rem 2.8rem" id="ctaDl">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span data-en>Download ElijasGPT-helper.rar</span>
+      <span data-lt>Atsisiųsti ElijasGPT-helper.rar</span>
+    </a>
+  </div>
+
+  <div class="dl-badges r d4">
+    <div class="dl-badge" data-en>🆓 Completely free</div>
+    <div class="dl-badge" data-lt>🆓 Visiškai nemokama</div>
+    <div class="dl-badge" data-en>🔒 No login required</div>
+    <div class="dl-badge" data-lt>🔒 Prisijungimas nereikalingas</div>
+    <div class="dl-badge" data-en>🧹 No data stored between sessions</div>
+    <div class="dl-badge" data-lt>🧹 Duomenys nesaugomi tarp sesijų</div>
+    <div class="dl-badge" data-en>⚡ Works on any webpage</div>
+    <div class="dl-badge" data-lt>⚡ Veikia bet kuriame puslapyje</div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="f-logo">Elijas<em>GPT</em></div>
+  <div class="f-copy" data-en>Chrome Extension · AI Page Assistant · Free</div>
+  <div class="f-copy" data-lt>Chrome Plėtinys · DI Puslapio Asistentas · Nemokama</div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════ -->
+<script>
+/* ── LANGUAGE ── */
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  const pill = document.getElementById('langPill');
+  pill.classList.toggle('lt', l === 'lt');
+  document.body.classList.toggle('lt', l === 'lt');
+  document.querySelectorAll('.lang-pill button').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && l==='en') || (i===1 && l==='lt'));
+  });
+  // update ribbon
+  buildRibbon();
+  // update mock input placeholder
+  document.getElementById('mockInput').placeholder = l === 'lt'
+    ? 'Klausk apie šį puslapį…' : 'Ask about this page…';
+}
+
+/* ── RIBBON ── */
+const ribbonItems = {
+  en: ['Reads any page automatically','Answers from page content only','No login required','Fresh context each session','Works on any website','Free Chrome extension','Session privacy by design','Ask in plain language'],
+  lt: ['Nuskaito puslapį automatiškai','Atsakymai tik iš puslapio','Prisijungimo nereikia','Kiekviena sesija – švari','Veikia bet kuriame puslapyje','Nemokamas Chrome plėtinys','Sesijų privatumas','Klausk paprastai']
+};
+function buildRibbon() {
+  const track = document.getElementById('ribbonTrack');
+  const items = ribbonItems[lang];
+  // double for seamless loop
+  let html = '';
+  for (let r = 0; r < 2; r++) {
+    items.forEach(t => {
+      html += `<span class="ribbon-item"><span class="ribbon-dot"></span>${t}</span>`;
+    });
+  }
+  track.innerHTML = html;
+}
+buildRibbon();
+
+/* ── HOW IT WORKS STEPS ── */
+function setHowStep(n) {
+  document.querySelectorAll('.how-step').forEach((el,i) => el.classList.toggle('active', i===n));
+  document.querySelectorAll('.vis-wrap').forEach((el,i) => el.classList.toggle('show', i===n));
+  document.querySelectorAll('.tab-item').forEach(el => {
+    el.classList.toggle('active', +el.dataset.tab === n);
+  });
+}
+
+/* ── INSTALL STEPS ── */
+const iUrls = [
+  'Downloading ElijasGPT-helper.rar…',
+  'File Explorer — Right-click → Extract Here',
+  'chrome://extensions/',
+  'chrome://extensions/'
+];
+function setIStep(n) {
+  document.querySelectorAll('.i-step').forEach((el,i) => {
+    el.classList.toggle('active', i===n);
+    el.classList.toggle('done', i<n);
+  });
+  document.querySelectorAll('.i-vis').forEach((el,i) => el.classList.toggle('show', i===n));
+  document.getElementById('iUrl').textContent = iUrls[n];
+  for (let i=0;i<4;i++) {
+    const d = document.getElementById('id'+i);
+    if (i===n) { d.className='i-dot active'; }
+    else if (i<n) { d.className='i-dot done'; }
+    else { d.className='i-dot'; }
+    // number style
+    const num = document.getElementById('in'+i);
+    if (num) {
+      if (i<n) num.innerHTML = '✓';
+      else num.innerHTML = i+1;
+    }
+  }
+}
+
+/* ── TYPING DEMO (mock popup) ── */
+const demos = [
+  { url: 'wikipedia.org/wiki/Artificial_intelligence',
+    q: 'What is this article about?',
+    a: 'This article covers artificial intelligence — the theory and development of computer systems that perform tasks typically requiring human intelligence, such as visual perception, speech, and reasoning.' },
+  { url: 'docs.stripe.com/payments/accept-a-payment',
+    q: 'How do I accept a payment?',
+    a: 'This page explains how to accept a one-time payment using Stripe\'s API. You create a PaymentIntent server-side, confirm it client-side with Stripe.js, and handle the result with a webhook.' },
+  { url: 'nytimes.com/2026/05/24/technology/...',
+    q: 'What\'s the main point of this article?',
+    a: 'The article argues that recent advances in multimodal AI are shifting how developers think about user interfaces — moving from command-based inputs toward natural, conversational interactions.' }
+];
+const demosLT = [
+  { a: 'Šis straipsnis nagrinėja dirbtinį intelektą — kompiuterinių sistemų teoriją ir kūrimą, atliekančių užduotis, kurioms paprastai reikia žmogaus intelekto.' },
+  { a: 'Šiame puslapyje paaiškinama, kaip priimti vienkartinį mokėjimą naudojant Stripe API. Serverio pusėje sukuriate PaymentIntent, patvirtinate jį kliento pusėje.' },
+  { a: 'Straipsnis teigia, kad naujausios pažangos daugiamodaliniame DI keičia kūrėjų požiūrį į vartotojo sąsajas — nuo komandinių įvesties prie natūralios.' }
+];
+let demoIdx = 0, typeTimer = null, eraseTimer = null;
+
+function typeText(targetId, text, cb) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+  el.textContent = '';
+  let i = 0;
+  clearInterval(typeTimer);
+  typeTimer = setInterval(() => {
+    el.textContent += text[i++];
+    if (i >= text.length) { clearInterval(typeTimer); if (cb) setTimeout(cb, 2800); }
+  }, 22);
+}
+
+function runDemo() {
+  const d = demos[demoIdx % demos.length];
+  const dlt = demosLT[demoIdx % demosLT.length];
+  document.getElementById('mockUrl').textContent = d.url;
+  const inp = document.getElementById('mockInput');
+  inp.value = '';
+  // type question into input
+  let i2 = 0;
+  const qtimer = setInterval(() => {
+    inp.value += d.q[i2++];
+    if (i2 >= d.q.length) {
+      clearInterval(qtimer);
+      setTimeout(() => {
+        inp.value = '';
+        typeText('typeTarget', d.a, () => {
+          typeText('typeTargetLT', dlt.a, () => {
+            demoIdx++;
+            setTimeout(runDemo, 1200);
+          });
+          // actually just run next
+          demoIdx++;
+          setTimeout(runDemo, 3500);
+        });
+      }, 600);
+    }
+  }, 55);
+}
+
+// Start demo after a moment
+setTimeout(runDemo, 1400);
+
+/* ── SCROLL REVEAL ── */
+const rObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.r,.r-left,.r-right,.r-scale').forEach(el => rObs.observe(el));
+
+/* ── PARALLAX HERO ── */
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  const h1 = document.querySelector('.hero-h1');
+  const sub = document.querySelector('.hero-sub');
+  if (h1) h1.style.transform = `translateY(${y*.18}px)`;
+  if (sub) sub.style.transform = `translateY(${y*.1}px)`;
+  // fade out hero content
+  const hero = document.querySelector('.hero');
+  if (hero) {
+    const opacity = Math.max(0, 1 - y / (hero.offsetHeight * .6));
+    ['.hero-eyebrow','.hero-h1','.hero-sub','.hero-actions'].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.style.opacity = opacity;
+    });
+  }
+});
+
+/* ── RIPPLE ── */
+document.querySelectorAll('.btn-primary').forEach(btn => {
+  btn.addEventListener('click', e => {
+    const r = document.createElement('span');
+    const rect = btn.getBoundingClientRect();
+    const sz = Math.max(rect.width, rect.height) * 2;
+    r.style.cssText = `position:absolute;width:${sz}px;height:${sz}px;left:${e.clientX-rect.left-sz/2}px;top:${e.clientY-rect.top-sz/2}px;border-radius:50%;background:rgba(255,255,255,.15);transform:scale(0);animation:rise .5s ease-out;pointer-events:none;`;
+    btn.appendChild(r);
+    r.style.animation = 'none';
+    r.offsetHeight;
+    r.style.cssText += 'transform:scale(1);opacity:0;transition:transform .5s ease-out,opacity .5s ease-out;';
+    setTimeout(() => r.remove(), 600);
+  });
+});
+</script>
+</body>
+</html>
 
