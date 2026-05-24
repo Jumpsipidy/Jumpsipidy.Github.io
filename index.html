@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jumpsipidy.online</title>
+    <title>Jumpsipidy.online | Professional Hub</title>
+    <!-- Using a professional, clean font from Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS: Core Variables */
+        /* CSS: Modern, Clean Variables */
         :root {
-            --cyan: #00f0ff;
-            --purple: #7000ff;
-            --pink: #ff00c8;
-            --bg: #050505;
-            --text: #ffffff;
+            --bg-base: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f5f5f7;
+            --text-muted: #a1a1a6;
+            --accent-1: #007aff; /* Professional Blue */
+            --accent-2: #8a2be2; /* Soft Purple */
         }
 
         body, html {
@@ -19,293 +24,281 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Courier New', Courier, monospace; /* Hacker font vibe */
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             overflow: hidden;
-            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* 3D Moving Neon Grid Background */
-        .grid-container {
+        /* Ambient "Aurora" Background Animation */
+        .ambient-bg {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
             overflow: hidden;
-            z-index: -2;
-        }
-        
-        .grid {
-            position: absolute;
-            bottom: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.3) 2px, transparent 2px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.3) 2px, transparent 2px);
-            background-size: 50px 50px;
-            transform: rotateX(60deg) translateY(0);
-            animation: gridMove 3s linear infinite;
-        }
-
-        @keyframes gridMove {
-            0% { transform: rotateX(60deg) translateY(0); }
-            100% { transform: rotateX(60deg) translateY(50px); }
-        }
-
-        /* Dark fade at the top of the grid */
-        .vignette {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center 30%, transparent 10%, var(--bg) 70%);
             z-index: -1;
+            background: var(--bg-base);
         }
 
-        /* Language Screen */
+        .aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite alternate;
+        }
+
+        .aurora-1 {
+            top: -10%; left: 20%;
+            width: 50vw; height: 50vw;
+            background: var(--accent-1);
+        }
+
+        .aurora-2 {
+            bottom: -10%; right: 10%;
+            width: 40vw; height: 40vw;
+            background: var(--accent-2);
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 30px) scale(1.1); }
+            100% { transform: translate(-30px, 50px) scale(0.9); }
+        }
+
+        /* Language Selection Screen */
         #lang-screen {
-            position: fixed;
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 5, 0.9);
+            background: rgba(10, 10, 12, 0.7);
+            backdrop-filter: blur(20px); /* Frosted glass effect */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
 
-        .sys-text {
-            color: var(--cyan);
+        .lang-title {
             font-size: 1.5rem;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px var(--cyan);
-            animation: blink 1s step-end infinite;
+            font-weight: 300;
+            margin-bottom: 40px;
+            color: var(--text-main);
+            letter-spacing: 1px;
         }
 
-        @keyframes blink {
-            50% { opacity: 0; }
+        .lang-container {
+            display: flex;
+            gap: 20px;
         }
 
         .lang-btn {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--purple);
-            padding: 15px 40px;
-            margin: 15px;
-            font-size: 1.2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 12px 35px;
+            font-size: 1rem;
             font-family: inherit;
+            border-radius: 30px; /* Pill shape for modern look */
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-            transition: 0.3s;
-            box-shadow: 0 0 10px rgba(112, 0, 255, 0.2) inset;
+            transition: all 0.3s ease;
         }
 
         .lang-btn:hover {
-            background: rgba(112, 0, 255, 0.3);
-            border-color: var(--cyan);
-            box-shadow: 0 0 20px var(--cyan), 0 0 20px var(--cyan) inset;
-            text-shadow: 0 0 5px white;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         /* Main Hub */
         #main-hub {
-            display: none;
+            display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100%;
-            z-index: 10;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 1s ease-out;
-        }
-
-        /* Glitch Title Effect */
-        .glitch-title {
-            font-size: 4rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            position: relative;
-            color: white;
-            text-shadow: 0 0 20px var(--cyan);
-            margin-bottom: 50px;
-            font-family: 'Arial Black', sans-serif;
-            letter-spacing: 2px;
-        }
-
-        .glitch-title::before, .glitch-title::after {
-            content: 'Jumpsipidy.online';
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            background: var(--bg);
+            max-width: 800px;
+            padding: 40px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease 0.3s;
+            pointer-events: none; /* Disabled until visible */
         }
 
-        .glitch-title::before {
-            left: 3px;
-            text-shadow: -2px 0 var(--pink);
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        .hub-header {
+            text-align: center;
+            margin-bottom: 50px;
         }
 
-        .glitch-title::after {
-            left: -3px;
-            text-shadow: -2px 0 var(--cyan);
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        .hub-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #a1a1a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        @keyframes glitch-anim {
-            0% { clip: rect(10px, 9999px, 44px, 0); }
-            20% { clip: rect(80px, 9999px, 12px, 0); }
-            40% { clip: rect(32px, 9999px, 90px, 0); }
-            60% { clip: rect(98px, 9999px, 40px, 0); }
-            80% { clip: rect(15px, 9999px, 70px, 0); }
-            100% { clip: rect(65px, 9999px, 20px, 0); }
-        }
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(65px, 9999px, 100px, 0); }
-            20% { clip: rect(15px, 9999px, 80px, 0); }
-            40% { clip: rect(98px, 9999px, 20px, 0); }
-            60% { clip: rect(32px, 9999px, 90px, 0); }
-            80% { clip: rect(80px, 9999px, 44px, 0); }
-            100% { clip: rect(10px, 9999px, 12px, 0); }
+        .hub-subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            margin-top: 10px;
         }
 
-        /* Cyberpunk App Buttons */
-        .app-btn {
+        /* Modern App Cards (Replaces standard buttons) */
+        .app-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .app-card {
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 350px;
-            padding: 20px;
-            margin: 15px 0;
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid rgba(0, 240, 255, 0.3);
-            color: var(--cyan);
+            justify-content: space-between;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 25px 30px;
             text-decoration: none;
-            font-family: 'Arial Black', sans-serif;
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .app-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-name {
             font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            transition: 0.3s;
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            font-weight: 500;
+            margin-bottom: 5px;
         }
 
-        .app-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 20px; height: 4px;
-            background: var(--pink);
-            box-shadow: 0 0 10px var(--pink);
-            transition: width 0.3s ease;
+        .app-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 300;
         }
 
-        .app-btn:hover {
-            background: rgba(0, 240, 255, 0.1);
-            border-color: var(--cyan);
-            color: white;
-            text-shadow: 0 0 10px var(--cyan);
-            transform: translateX(10px);
-            box-shadow: -10px 0 20px rgba(0, 240, 255, 0.2);
+        .app-arrow {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: transform 0.3s ease, color 0.3s ease;
         }
 
-        .app-btn:hover::after {
-            width: 100%;
-        }
-
-        .btn-purple {
-            border-color: rgba(112, 0, 255, 0.5);
-            color: #b97bff;
-        }
-        
-        .btn-purple:hover {
-            background: rgba(112, 0, 255, 0.1);
-            border-color: var(--purple);
-            box-shadow: -10px 0 20px rgba(112, 0, 255, 0.3);
-            text-shadow: 0 0 10px var(--purple);
+        .app-card:hover .app-arrow {
+            transform: translateX(5px);
+            color: var(--text-main);
         }
 
     </style>
 </head>
 <body>
 
-    <!-- 3D Moving Background -->
-    <div class="grid-container">
-        <div class="grid"></div>
-        <div class="vignette"></div>
+    <!-- Ambient Background -->
+    <div class="ambient-bg">
+        <div class="aurora aurora-1"></div>
+        <div class="aurora aurora-2"></div>
     </div>
 
-    <!-- Startup Language Screen -->
+    <!-- Minimalist Language Screen -->
     <div id="lang-screen">
-        <div class="sys-text">SYSTEM_INIT // SELECT_LANGUAGE_</div>
-        <div>
-            <button class="lang-btn" onclick="startSystem('en')">[ ENG ]</button>
-            <button class="lang-btn" onclick="startSystem('lt')">[ LTU ]</button>
+        <div class="lang-title">Select your language</div>
+        <div class="lang-container">
+            <button class="lang-btn" onclick="startApp('en')">English</button>
+            <button class="lang-btn" onclick="startApp('lt')">Lietuviškai</button>
         </div>
     </div>
 
-    <!-- Main Hub -->
+    <!-- Main Professional Hub -->
     <div id="main-hub">
         
-        <!-- Glitching Title -->
-        <div class="glitch-title">Jumpsipidy.online</div>
+        <div class="hub-header">
+            <h1 class="hub-title">Jumpsipidy.online</h1>
+            <div class="hub-subtitle" id="hub-subtitle">Personal Portfolio & App Hub</div>
+        </div>
 
-        <!-- Buttons -->
-        <a href="https://jumpsipidy.online/jumpsipidy" class="app-btn" id="btn-portfolio">
-            Jumpsipidy Portfolio
-        </a>
+        <div class="app-grid">
+            <!-- Portfolio Card -->
+            <a href="https://jumpsipidy.online/jumpsipidy" class="app-card">
+                <div class="app-info">
+                    <span class="app-name" id="name-portfolio">Portfolio</span>
+                    <span class="app-desc" id="desc-portfolio">View my latest work and projects</span>
+                </div>
+                <span class="app-arrow">→</span>
+            </a>
 
-        <a href="https://ai-document-builder-659410443561.europe-west2.run.app" class="app-btn btn-purple" id="btn-doc-builder">
-            AI Document Builder
-        </a>
+            <!-- AI Document Builder Card -->
+            <a href="https://ai-document-builder-659410443561.europe-west2.run.app" class="app-card">
+                <div class="app-info">
+                    <span class="app-name" id="name-doc">AI Document Builder</span>
+                    <span class="app-desc" id="desc-doc">Generate professional documents instantly</span>
+                </div>
+                <span class="app-arrow">→</span>
+            </a>
+        </div>
 
     </div>
 
-    <!-- Javascript Logic -->
+    <!-- Logic for Language & Animations -->
     <script>
-        const translations = {
+        const content = {
             en: {
-                portfolio: "JUMPSIPIDY PORTFOLIO",
-                docBuilder: "AI DOCUMENT BUILDER"
+                subtitle: "Personal Portfolio & App Hub",
+                portfolioName: "Jumpsipidy Portfolio",
+                portfolioDesc: "View my latest work and projects",
+                docName: "AI Document Builder",
+                docDesc: "Generate professional documents instantly"
             },
             lt: {
-                portfolio: "JUMPSIPIDY PORTFOLIO", 
-                docBuilder: "AI DOKUMENTŲ KŪRĖJAS"
+                subtitle: "Asmeninis Portfolio ir Programų Centras",
+                portfolioName: "Jumpsipidy Portfolio",
+                portfolioDesc: "Peržiūrėkite mano naujausius darbus ir projektus",
+                docName: "AI Dokumentų Kūrėjas",
+                docDesc: "Akimirksniu kurkite profesionalius dokumentus"
             }
         };
 
-        function startSystem(lang) {
+        function startApp(lang) {
+            // 1. Update text based on chosen language
+            document.getElementById('hub-subtitle').innerText = content[lang].subtitle;
+            document.getElementById('name-portfolio').innerText = content[lang].portfolioName;
+            document.getElementById('desc-portfolio').innerText = content[lang].portfolioDesc;
+            document.getElementById('name-doc').innerText = content[lang].docName;
+            document.getElementById('desc-doc').innerText = content[lang].docDesc;
+
+            // 2. Smoothly hide language screen
             const langScreen = document.getElementById('lang-screen');
-            const mainHub = document.getElementById('main-hub');
-
-            // Apply translations instantly
-            document.getElementById('btn-portfolio').innerText = translations[lang].portfolio;
-            document.getElementById('btn-doc-builder').innerText = translations[lang].docBuilder;
-
-            // Cool zoom out and fade effect for the language screen
-            langScreen.style.transform = 'scale(1.5)';
             langScreen.style.opacity = '0';
             
+            // 3. Smoothly reveal the main hub
             setTimeout(() => {
-                langScreen.style.display = 'none';
+                langScreen.style.visibility = 'hidden'; // Removes it from clicking area
                 
-                // Pop in the main hub
-                mainHub.style.display = 'flex';
-                // Trigger a small delay so the CSS transition catches the change
-                setTimeout(() => {
-                    mainHub.style.opacity = '1';
-                    mainHub.style.transform = 'scale(1)';
-                }, 50);
-                
-            }, 800); // Matches the CSS transition time
+                const mainHub = document.getElementById('main-hub');
+                mainHub.style.opacity = '1';
+                mainHub.style.transform = 'translateY(0)';
+                mainHub.style.pointerEvents = 'auto'; // Re-enables clicking
+            }, 500); // Wait for the fade out to almost finish
         }
     </script>
 
