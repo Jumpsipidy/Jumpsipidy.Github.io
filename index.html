@@ -1,313 +1,506 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jumpsipidy.online | Professional Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* CSS: Modern, Clean Variables */
-        :root {
-            --bg-base: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f5f5f7;
-            --text-muted: #a1a1a6;
-            --accent-1: #007aff; /* Professional Blue */
-            --accent-2: #8a2be2; /* Soft Purple */
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jumpsipidy.online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-        /* Ambient "Aurora" Background Animation */
-        .ambient-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            overflow: hidden;
-            z-index: -1;
-            background: var(--bg-base);
-        }
+:root{
+  --bg:#0c0c0e;
+  --surface:#111113;
+  --line:rgba(255,255,255,0.07);
+  --line-mid:rgba(255,255,255,0.12);
+  --line-bright:rgba(255,255,255,0.22);
+  --text:#f0ede8;
+  --text-mid:#8b8882;
+  --text-dim:#4a4845;
+  --gold:#c9a96e;
+  --gold-dim:rgba(201,169,110,0.15);
+  --gold-glow:rgba(201,169,110,0.06);
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+}
 
-        .aurora {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-            animation: float 20s ease-in-out infinite alternate;
-        }
+html,body{
+  width:100%;height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  overflow:hidden;
+}
 
-        .aurora-1 {
-            top: -10%; left: 20%;
-            width: 50vw; height: 50vw;
-            background: var(--accent-1);
-        }
+/* ── GRAIN OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:0.025;
+  pointer-events:none;
+  z-index:999;
+}
 
-        .aurora-2 {
-            bottom: -10%; right: 10%;
-            width: 40vw; height: 40vw;
-            background: var(--accent-2);
-            animation-delay: -5s;
-        }
+/* ── AMBIENT LIGHT ── */
+.glow{
+  position:fixed;pointer-events:none;border-radius:50%;
+  filter:blur(100px);
+}
+.glow-a{
+  width:500px;height:500px;
+  top:-150px;left:-100px;
+  background:radial-gradient(circle,rgba(201,169,110,0.08) 0%,transparent 70%);
+}
+.glow-b{
+  width:600px;height:600px;
+  bottom:-200px;right:-150px;
+  background:radial-gradient(circle,rgba(100,120,200,0.06) 0%,transparent 70%);
+}
 
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(50px, 30px) scale(1.1); }
-            100% { transform: translate(-30px, 50px) scale(0.9); }
-        }
+/* ── LANG SCREEN ── */
+#lang-screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:500;
+  transition:opacity 0.9s cubic-bezier(0.4,0,0.2,1);
+}
 
-        /* Language Selection Screen */
-        #lang-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 12, 0.7);
-            backdrop-filter: blur(20px); /* Frosted glass effect */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
+.lang-wordmark{
+  font-family:var(--serif);
+  font-size:clamp(2rem,5vw,3.5rem);
+  letter-spacing:-0.02em;
+  color:var(--text);
+  margin-bottom:8px;
+  opacity:0;
+  animation:fadeUp 1s 0.2s cubic-bezier(0.4,0,0.2,1) forwards;
+}
 
-        .lang-title {
-            font-size: 1.5rem;
-            font-weight: 300;
-            margin-bottom: 40px;
-            color: var(--text-main);
-            letter-spacing: 1px;
-        }
+.lang-rule{
+  width:40px;height:1px;
+  background:var(--gold);
+  margin:0 auto 40px;
+  opacity:0;
+  animation:fadeUp 1s 0.4s cubic-bezier(0.4,0,0.2,1) forwards;
+}
 
-        .lang-container {
-            display: flex;
-            gap: 20px;
-        }
+.lang-label{
+  font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-mid);
+  margin-bottom:24px;
+  opacity:0;
+  animation:fadeUp 1s 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+}
 
-        .lang-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            padding: 12px 35px;
-            font-size: 1rem;
-            font-family: inherit;
-            border-radius: 30px; /* Pill shape for modern look */
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.lang-btns{
+  display:flex;gap:12px;
+  opacity:0;
+  animation:fadeUp 1s 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
+}
 
-        .lang-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
+.lang-btn{
+  background:transparent;
+  border:1px solid var(--line-mid);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:13px;letter-spacing:0.08em;
+  padding:12px 32px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.lang-btn::before{
+  content:'';
+  position:absolute;inset:0;
+  background:var(--gold-dim);
+  transform:translateY(100%);
+  transition:transform 0.3s ease;
+}
+.lang-btn:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+}
+.lang-btn:hover::before{transform:translateY(0)}
+.lang-btn span{position:relative;z-index:1}
 
-        /* Main Hub */
-        #main-hub {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 800px;
-            padding: 40px;
-            box-sizing: border-box;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease 0.3s;
-            pointer-events: none; /* Disabled until visible */
-        }
+/* ── MAIN HUB ── */
+#main-hub{
+  position:fixed;inset:0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  opacity:0;visibility:hidden;
+  transition:opacity 0.9s cubic-bezier(0.4,0,0.2,1);
+}
 
-        .hub-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
+#main-hub.visible{opacity:1;visibility:visible}
 
-        .hub-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: -1px;
-            background: linear-gradient(to right, #fff, #a1a1a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+/* LEFT PANEL */
+.panel-left{
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  padding:clamp(32px,5vw,64px);
+  border-right:1px solid var(--line);
+  position:relative;
+  overflow:hidden;
+}
 
-        .hub-subtitle {
-            font-size: 1rem;
-            font-weight: 300;
-            color: var(--text-muted);
-            margin-top: 10px;
-        }
+.panel-left::after{
+  content:'';
+  position:absolute;
+  top:0;bottom:0;right:-1px;
+  width:1px;
+  background:linear-gradient(to bottom,transparent,var(--gold) 30%,var(--gold) 70%,transparent);
+  opacity:0.3;
+}
 
-        /* Modern App Cards (Replaces standard buttons) */
-        .app-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
-            max-width: 500px;
-        }
+.left-top{}
 
-        .app-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 25px 30px;
-            text-decoration: none;
-            color: var(--text-main);
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:32px;
+  opacity:0;
+}
+.badge::before{
+  content:'';width:24px;height:1px;background:var(--gold);
+}
 
-        .app-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
+.main-title{
+  font-family:var(--serif);
+  font-size:clamp(2.8rem,5.5vw,5rem);
+  line-height:1.0;
+  letter-spacing:-0.03em;
+  color:var(--text);
+  margin-bottom:24px;
+  opacity:0;
+}
 
-        .app-info {
-            display: flex;
-            flex-direction: column;
-        }
+.main-title em{
+  font-style:italic;
+  color:var(--gold);
+}
 
-        .app-name {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
+.subtitle{
+  font-size:14px;
+  font-weight:300;
+  color:var(--text-mid);
+  line-height:1.7;
+  max-width:340px;
+  opacity:0;
+}
 
-        .app-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 300;
-        }
+.left-bottom{
+  display:flex;flex-direction:column;gap:16px;
+}
 
-        .app-arrow {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
+.meta-row{
+  display:flex;align-items:center;gap:12px;
+  font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text-dim);
+  opacity:0;
+}
+.meta-row::before{content:'';width:16px;height:1px;background:var(--text-dim)}
 
-        .app-card:hover .app-arrow {
-            transform: translateX(5px);
-            color: var(--text-main);
-        }
+/* RIGHT PANEL */
+.panel-right{
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:clamp(32px,5vw,64px);
+  gap:0;
+}
 
-    </style>
+.section-label{
+  font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--text-dim);
+  margin-bottom:32px;
+  display:flex;align-items:center;gap:12px;
+  opacity:0;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* APP CARDS */
+.cards{display:flex;flex-direction:column}
+
+.app-card{
+  display:flex;align-items:center;
+  padding:24px 0;
+  border-bottom:1px solid var(--line);
+  text-decoration:none;
+  color:var(--text);
+  position:relative;
+  overflow:hidden;
+  opacity:0;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  cursor:pointer;
+}
+.app-card:first-child{border-top:1px solid var(--line)}
+
+.app-card::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--gold);
+  transform:scaleY(0);
+  transform-origin:bottom;
+  transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.app-card:hover::before{transform:scaleY(1)}
+
+.card-num{
+  font-family:var(--serif);
+  font-size:11px;
+  color:var(--text-dim);
+  width:36px;
+  flex-shrink:0;
+  transition:color 0.3s;
+}
+.app-card:hover .card-num{color:var(--gold)}
+
+.card-body{flex:1;padding:0 24px}
+
+.card-name{
+  font-size:17px;
+  font-weight:500;
+  letter-spacing:-0.01em;
+  margin-bottom:4px;
+  transition:color 0.3s;
+}
+.app-card:hover .card-name{color:var(--gold)}
+
+.card-desc{
+  font-size:12px;
+  font-weight:300;
+  color:var(--text-mid);
+  letter-spacing:0.01em;
+}
+
+.card-arrow{
+  width:36px;height:36px;
+  border:1px solid var(--line-mid);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.app-card:hover .card-arrow{
+  background:var(--gold);
+  border-color:var(--gold);
+}
+.card-arrow svg{
+  width:14px;height:14px;
+  stroke:var(--text-mid);
+  transition:stroke 0.3s, transform 0.3s;
+}
+.app-card:hover .card-arrow svg{
+  stroke:#0c0c0e;
+  transform:translate(2px,-2px);
+}
+
+/* HOVER BG FILL */
+.card-fill{
+  position:absolute;inset:0;
+  background:var(--gold-glow);
+  opacity:0;
+  transition:opacity 0.4s ease;
+}
+.app-card:hover .card-fill{opacity:1}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.anim{
+  animation:fadeUp 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:720px){
+  #main-hub{grid-template-columns:1fr;overflow-y:auto;overflow-x:hidden}
+  .panel-left{border-right:none;border-bottom:1px solid var(--line);padding:40px 28px 32px}
+  .panel-right{padding:32px 28px 48px}
+  .panel-left::after{display:none}
+}
+
+/* CURSOR DOT */
+.cursor-dot{
+  width:6px;height:6px;
+  background:var(--gold);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s,opacity 0.3s;
+  opacity:0;
+}
+</style>
 </head>
 <body>
 
-    <div class="ambient-bg">
-        <div class="aurora aurora-1"></div>
-        <div class="aurora aurora-2"></div>
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
+<div class="cursor-dot" id="cursor"></div>
+
+<!-- LANGUAGE SCREEN -->
+<div id="lang-screen">
+  <div class="lang-wordmark">Jumpsipidy</div>
+  <div class="lang-rule"></div>
+  <div class="lang-label">Select language</div>
+  <div class="lang-btns">
+    <button class="lang-btn" onclick="launch('en')"><span>English</span></button>
+    <button class="lang-btn" onclick="launch('lt')"><span>Lietuviškai</span></button>
+  </div>
+</div>
+
+<!-- MAIN HUB -->
+<div id="main-hub">
+
+  <div class="panel-left">
+    <div class="left-top">
+      <div class="badge" id="l-badge">Personal Hub</div>
+      <h1 class="main-title" id="l-title">
+        Elijas<br><em>Jumpsipidy</em>
+      </h1>
+      <p class="subtitle" id="l-sub">A curated collection of projects, tools and work — built with precision and care.</p>
     </div>
-
-    <div id="lang-screen">
-        <div class="lang-title">Select your language</div>
-        <div class="lang-container">
-            <button class="lang-btn" onclick="startApp('en')">English</button>
-            <button class="lang-btn" onclick="startApp('lt')">Lietuviškai</button>
-        </div>
+    <div class="left-bottom">
+      <div class="meta-row" id="l-meta1">jumpsipidy.online</div>
+      <div class="meta-row" id="l-meta2">Est. 2024</div>
     </div>
+  </div>
 
-    <div id="main-hub">
-        
-        <div class="hub-header">
-            <h1 class="hub-title">Jumpsipidy.online</h1>
-            <div class="hub-subtitle" id="hub-subtitle">Personal Portfolio & App Hub</div>
+  <div class="panel-right">
+    <div class="section-label" id="r-label">Projects & Tools</div>
+    <div class="cards">
+
+      <a href="https://jumpsipidy.online/jumpsipidy" class="app-card" id="card-1">
+        <div class="card-fill"></div>
+        <div class="card-num">01</div>
+        <div class="card-body">
+          <div class="card-name" id="n1">Portfolio</div>
+          <div class="card-desc" id="d1">View my latest work and projects</div>
         </div>
-
-        <div class="app-grid">
-            <a href="https://jumpsipidy.online/jumpsipidy" class="app-card">
-                <div class="app-info">
-                    <span class="app-name" id="name-portfolio">Portfolio</span>
-                    <span class="app-desc" id="desc-portfolio">View my latest work and projects</span>
-                </div>
-                <span class="app-arrow">→</span>
-            </a>
-
-            <a href="https://ai-document-builder-659410443561.europe-west2.run.app" class="app-card">
-                <div class="app-info">
-                    <span class="app-name" id="name-doc">AI Document Builder</span>
-                    <span class="app-desc" id="desc-doc">Generate professional documents instantly</span>
-                </div>
-                <span class="app-arrow">→</span>
-            </a>
-
-            <a href="https://jumpsipidy.online/ElijasGPT" class="app-card">
-                <div class="app-info">
-                    <span class="app-name" id="name-gpt">ElijasGPT</span>
-                    <span class="app-desc" id="desc-gpt">AI-powered helper and tools</span>
-                </div>
-                <span class="app-arrow">→</span>
-            </a>
+        <div class="card-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+          </svg>
         </div>
+      </a>
+
+      <a href="https://ai-document-builder-659410443561.europe-west2.run.app" class="app-card" id="card-2">
+        <div class="card-fill"></div>
+        <div class="card-num">02</div>
+        <div class="card-body">
+          <div class="card-name" id="n2">AI Document Builder</div>
+          <div class="card-desc" id="d2">Generate professional documents instantly</div>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </div>
+      </a>
+
+      <a href="https://jumpsipidy.online/ElijasGPT" class="app-card" id="card-3">
+        <div class="card-fill"></div>
+        <div class="card-num">03</div>
+        <div class="card-body">
+          <div class="card-name" id="n3">ElijasGPT</div>
+          <div class="card-desc" id="d3">AI-powered helper and tools</div>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </div>
+      </a>
 
     </div>
+  </div>
 
-    <script>
-        const content = {
-            en: {
-                subtitle: "Personal Portfolio & App Hub",
-                portfolioName: "Jumpsipidy Portfolio",
-                portfolioDesc: "View my latest work and projects",
-                docName: "AI Document Builder",
-                docDesc: "Generate professional documents instantly",
-                gptName: "ElijasGPT",
-                gptDesc: "AI-powered helper and tools"
-            },
-            lt: {
-                subtitle: "Asmeninis Portfolio ir Programų Centras",
-                portfolioName: "Jumpsipidy Portfolio",
-                portfolioDesc: "Peržiūrėkite mano naujausius darbus ir projektus",
-                docName: "AI Dokumentų Kūrėjas",
-                docDesc: "Akimirksniu kurkite profesionalius dokumentus",
-                gptName: "ElijasGPT",
-                gptDesc: "AI pagalbininkas ir įrankiai"
-            }
-        };
+</div>
 
-        function startApp(lang) {
-            // 1. Update text based on chosen language
-            document.getElementById('hub-subtitle').innerText = content[lang].subtitle;
-            document.getElementById('name-portfolio').innerText = content[lang].portfolioName;
-            document.getElementById('desc-portfolio').innerText = content[lang].portfolioDesc;
-            document.getElementById('name-doc').innerText = content[lang].docName;
-            document.getElementById('desc-doc').innerText = content[lang].docDesc;
-            document.getElementById('name-gpt').innerText = content[lang].gptName;
-            document.getElementById('desc-gpt').innerText = content[lang].gptDesc;
+<script>
+const T = {
+  en:{
+    badge:'Personal Hub',
+    subtitle:'A curated collection of projects, tools and work — built with precision and care.',
+    label:'Projects & Tools',
+    n1:'Portfolio',d1:'View my latest work and projects',
+    n2:'AI Document Builder',d2:'Generate professional documents instantly',
+    n3:'ElijasGPT',d3:'AI-powered helper and tools',
+  },
+  lt:{
+    badge:'Asmeninis Centras',
+    subtitle:'Projektų, įrankių ir darbų kolekcija — sukurta kruopščiai ir tiksliai.',
+    label:'Projektai ir Įrankiai',
+    n1:'Portfolio',d1:'Peržiūrėkite mano naujausius darbus',
+    n2:'AI Dokumentų Kūrėjas',d2:'Akimirksniu kurkite profesionalius dokumentus',
+    n3:'ElijasGPT',d3:'AI pagalbininkas ir įrankiai',
+  }
+};
 
-            // 2. Smoothly hide language screen
-            const langScreen = document.getElementById('lang-screen');
-            langScreen.style.opacity = '0';
-            
-            // 3. Smoothly reveal the main hub
-            setTimeout(() => {
-                langScreen.style.visibility = 'hidden'; 
-                
-                const mainHub = document.getElementById('main-hub');
-                mainHub.style.opacity = '1';
-                mainHub.style.transform = 'translateY(0)';
-                mainHub.style.pointerEvents = 'auto'; 
-            }, 500); 
-        }
-    </script>
+function launch(lang){
+  const c = T[lang];
+  document.getElementById('l-badge').textContent = c.badge;
+  document.getElementById('l-sub').textContent = c.subtitle;
+  document.getElementById('r-label').textContent = c.label;
+  document.getElementById('n1').textContent = c.n1;
+  document.getElementById('d1').textContent = c.d1;
+  document.getElementById('n2').textContent = c.n2;
+  document.getElementById('d2').textContent = c.d2;
+  document.getElementById('n3').textContent = c.n3;
+  document.getElementById('d3').textContent = c.d3;
 
+  const ls = document.getElementById('lang-screen');
+  ls.style.opacity = '0';
+  ls.style.pointerEvents = 'none';
+
+  setTimeout(()=>{
+    ls.style.display = 'none';
+    const hub = document.getElementById('main-hub');
+    hub.classList.add('visible');
+    animateIn();
+  }, 900);
+}
+
+function animateIn(){
+  const seq = [
+    {el:'l-badge',   delay:0},
+    {el:'l-title',   delay:120},
+    {el:'l-sub',     delay:240},
+    {el:'l-meta1',   delay:360},
+    {el:'l-meta2',   delay:420},
+    {el:'r-label',   delay:200},
+    {el:'card-1',    delay:320},
+    {el:'card-2',    delay:440},
+    {el:'card-3',    delay:560},
+  ];
+  seq.forEach(({el,delay})=>{
+    const node = document.getElementById(el);
+    if(!node) return;
+    setTimeout(()=>{
+      node.style.animationDelay = '0ms';
+      node.classList.add('anim');
+    }, delay);
+  });
+}
+
+/* Cursor dot */
+const dot = document.getElementById('cursor');
+document.addEventListener('mousemove', e=>{
+  dot.style.left = e.clientX+'px';
+  dot.style.top  = e.clientY+'px';
+  dot.style.opacity = '1';
+});
+document.addEventListener('mouseleave',()=>{ dot.style.opacity='0' });
+</script>
 </body>
 </html>
