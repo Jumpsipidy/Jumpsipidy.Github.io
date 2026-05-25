@@ -1201,7 +1201,7 @@ const downloadVersions = [
       "Optimized contextual token reading performance metrics across high density web surfaces"
     ],
     notesLT: [
-      "Pridėta nuolatinė šoninė integruota juosta, apsauganti nuo netikėto plėtinio užsidarymo spustelėjus už jo ribų „Chrome“ ir "Firefox" naršyklėje",
+      "Pridėta nuolatinė šoninė integruota juosta, apsauganti nuo netikėto plėtinio užsidarymo spustelėjus už jo ribų „Chrome“ ir \"Firefox\" naršyklėje",
       "Optimizuoti puslapio turinio nuskaitymo ir apdorojimo greičio parametrai"
     ],
     chromeLink: "https://github.com/Jumpsipidy/Jumpsipidy.Github.io/blob/main/ElijasGPT/ElijasGPT-helper-%20chromme%20v2.rar", // Filename strings/URL pathways for custom Chrome links
@@ -1531,10 +1531,24 @@ function runDemo() {
 /* ── SCROLL REVEAL TRIGGERS ENGINE ── */
 const rObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in'); }
+    if (e.isIntersecting) { 
+      e.target.classList.add('in'); 
+      rObs.unobserve(e.target);
+    }
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0, rootMargin: '0px 0px -15px 0px' });
+
 document.querySelectorAll('.r,.r-left,.r-right,.r-scale').forEach(el => rObs.observe(el));
+
+// Fail-safe to guarantee elements reveal on scroll even if they are taller than the viewport (bug fix)
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('.r:not(.in), .r-left:not(.in), .r-right:not(.in), .r-scale:not(.in)').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight) {
+      el.classList.add('in');
+      rObs.unobserve(el);
+    }
+  });
+}, { passive: true });
 
 /* ── PARALLAX HERO DECORATION UTILITIES ── */
 window.addEventListener('scroll', () => {
