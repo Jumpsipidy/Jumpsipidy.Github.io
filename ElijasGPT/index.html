@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lt">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -478,6 +478,40 @@ nav{
 }
 .typing-text{font-size:.83rem;color:rgba(247,245,240,.55)}
 
+/* ═══════════════════════ BROWSER INSTRUCTION TABS ═══════════════════════ */
+.browser-tab-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.btn-browser-tab {
+  background: rgba(247,245,240,.04);
+  border: 1px solid rgba(247,245,240,.08);
+  color: rgba(247,245,240,.45);
+  padding: .65rem 1.5rem;
+  border-radius: 99px;
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  transition: all .2s ease;
+}
+.btn-browser-tab:hover {
+  border-color: rgba(247,245,240,.2);
+  color: var(--cream);
+}
+.btn-browser-tab.active {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 4px 15px var(--amber-glow);
+}
+
 /* ═══════════════════════ INSTALL GUIDE ═══════════════════════ */
 .install-grid{
   display:grid;grid-template-columns:1fr 1.1fr;
@@ -644,6 +678,72 @@ nav{
 .dark .disclaimer p strong{color:var(--amber-light)}
 .dark .disclaimer{background:rgba(200,134,26,.06);border-color:rgba(200,134,26,.12)}
 
+/* ═══════════════════════ INTERACTIVE DOWNLOAD MODAL ═══════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(17, 16, 9, 0.6);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s var(--ease-out);
+  padding: 1.5rem;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal-card {
+  background: var(--dark2); color: var(--cream);
+  border: 1px solid var(--border-dark); border-radius: 1.5rem;
+  width: 100%; max-width: 620px; max-height: 85vh; overflow-y: auto;
+  padding: 2.5rem; position: relative;
+  transform: scale(0.96); transition: transform 0.4s var(--ease-out);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+.modal-overlay.open .modal-card { transform: scale(1); }
+.modal-close {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  background: rgba(247,245,240,0.06); border: none; color: var(--muted2);
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  transition: background 0.2s, color 0.2s;
+}
+.modal-close:hover { background: rgba(247,245,240,0.15); color: #fff; }
+.modal-title { font-family: var(--serif); font-size: 2rem; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+.modal-subtitle { font-size: 0.9rem; color: rgba(247,245,240,0.4); margin-bottom: 2rem; }
+
+.version-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.version-card {
+  background: rgba(247,245,240,0.02); border: 1px solid rgba(247,245,240,0.06);
+  border-radius: 1.2rem; padding: 1.6rem; transition: border-color 0.25s, background 0.25s;
+}
+.version-card:hover { border-color: rgba(200,134,26,0.3); background: rgba(247,245,240,0.04); }
+.v-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.85rem; }
+.v-title { font-family: var(--serif); font-size: 1.2rem; color: #fff; letter-spacing: -0.01em; }
+.v-badge {
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--amber-glow); color: var(--amber-light); border: 1px solid rgba(200,134,26,0.2);
+  padding: .2rem .65rem; border-radius: 99px;
+}
+.v-notes { list-style: none; margin-bottom: 1.4rem; font-size: 0.85rem; color: rgba(247,245,240,0.5); }
+.v-notes li { position: relative; padding-left: 1.1rem; margin-bottom: 0.4rem; line-height: 1.6; }
+.v-notes li::before { content: "•"; position: absolute; left: 0; color: var(--amber); font-size: 1.1rem; top: -1px; }
+
+.v-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media(max-width:480px){ .v-actions { grid-template-columns: 1fr; } }
+.btn-dl-option {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  font-family: var(--sans);
+}
+.btn-dl-chrome { background: var(--cream); color: var(--ink); border: none; }
+.btn-dl-chrome:hover { background: #fff; transform: translateY(-1px); }
+.btn-dl-firefox { background: transparent; color: var(--cream); border: 1px solid rgba(247,245,240,0.15); }
+.btn-dl-firefox:hover { border-color: #FF941A; background: rgba(255,148,26,0.08); transform: translateY(-1px); }
+
+/* Custom dynamic links downloaddable slot styling */
+.custom-slot-area {
+  margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed rgba(247,245,240,0.1);
+}
+
 /* ═══════════════════════ FOOTER ═══════════════════════ */
 footer{
   background:var(--dark);
@@ -694,10 +794,7 @@ footer{
 }
 </style>
 </head>
-<body>
-
-<!-- ═══════════════════ NAV ═══════════════════ -->
-<nav>
+<body class="lt"> <nav>
   <div class="nav-logo">Elijas<em>GPT</em></div>
   <div class="nav-center">
     <a href="#features" data-en>Features</a>
@@ -707,14 +804,13 @@ footer{
     <a href="#install" data-en>Install guide</a>
     <a href="#install" data-lt>Įdiegimas</a>
   </div>
-  <div class="lang-pill" id="langPill">
+  <div class="lang-pill lt" id="langPill">
     <div class="pill-bg"></div>
-    <button class="active" onclick="setLang('en')">EN</button>
-    <button onclick="setLang('lt')">LT</button>
+    <button onclick="setLang('en')">EN</button>
+    <button class="active" onclick="setLang('lt')">LT</button>
   </div>
 </nav>
 
-<!-- ═══════════════════ HERO ═══════════════════ -->
 <section class="hero">
   <p class="hero-eyebrow">
     <span data-en>Chrome Extension · AI Page Assistant</span>
@@ -733,10 +829,10 @@ footer{
     akimirksniu, tiksliai ir be jokio kopijavimo.
   </p>
   <div class="hero-actions">
-    <a href="ElijasGPT-helper.rar" download class="btn-primary" id="heroDl">
+    <a href="#" onclick="openDownloadModal(event)" class="btn-primary" id="heroDl">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span data-en>Download for Chrome</span>
-      <span data-lt>Atsisiųsti Chrome</span>
+      <span data-en>Download Now</span>
+      <span data-lt>Atsisiųsti dabar</span>
     </a>
     <a href="#install" class="btn-outline" data-en>Installation guide</a>
     <a href="#install" class="btn-outline" data-lt>Įdiegimo instrukcija</a>
@@ -748,14 +844,11 @@ footer{
   </div>
 </section>
 
-<!-- ═══════════════════ RIBBON ═══════════════════ -->
 <div class="ribbon">
   <div class="ribbon-track" id="ribbonTrack">
-    <!-- filled by JS -->
-  </div>
+    </div>
 </div>
 
-<!-- ═══════════════════ FEATURES ═══════════════════ -->
 <section class="section" id="features">
   <div class="container">
     <div class="container-sm" style="text-align:center;margin-bottom:0">
@@ -773,7 +866,6 @@ footer{
       </p>
     </div>
 
-    <!-- Disclaimer about memory -->
     <div class="disclaimer r d3" style="margin-top:2.5rem">
       <div class="disclaimer-icon">💡</div>
       <p data-en>
@@ -784,10 +876,8 @@ footer{
       </p>
     </div>
 
-    <!-- Bento grid -->
     <div class="bento r-scale d1" style="margin-top:2.5rem">
 
-      <!-- row 1 -->
       <div class="bento-cell c8">
         <div class="cell-icon">📖</div>
         <h3 data-en>Reads the page for you</h3>
@@ -803,7 +893,6 @@ footer{
         <p data-lt>Klausk paprastai. Gauk aiškų atsakymą — be paieškos, be slinkimo.</p>
       </div>
 
-      <!-- row 2 -->
       <div class="bento-cell c4 amber-bg">
         <div class="cell-icon">🌐</div>
         <h3 data-en>Works everywhere</h3>
@@ -826,9 +915,7 @@ footer{
         <p data-lt>Niekas nesaugoma tarp sesijų. Uždaro plėtinį — viskas išsivalo.</p>
       </div>
 
-      <!-- row 3 – visual demo cell -->
       <div class="cell-visual c12">
-        <!-- animated mock popup -->
         <div class="mock-popup" id="liveMock">
           <div class="popup-header">
             <div class="logo">ElijasGPT</div>
@@ -840,7 +927,7 @@ footer{
             <span data-lt><strong>ElijasGPT:</strong> <span id="typeTargetLT"></span><span class="cursor-blink"></span></span>
           </div>
           <div class="popup-input">
-            <input type="text" id="mockInput" placeholder="Ask about this page…" readonly/>
+            <input type="text" id="mockInput" placeholder="Klausk apie šį puslapį…" readonly/>
             <button>↑</button>
           </div>
         </div>
@@ -850,7 +937,6 @@ footer{
   </div>
 </section>
 
-<!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
 <section class="section cream-2" id="how">
   <div class="container">
     <p class="overline r" style="text-align:center" data-en>Under the hood</p>
@@ -932,15 +1018,25 @@ footer{
   </div>
 </section>
 
-<!-- ═══════════════════ INSTALL GUIDE ═══════════════════ -->
 <section class="section dark" id="install">
   <div class="container">
     <p class="overline r" style="text-align:center" data-en>Installation guide</p>
     <p class="overline r" style="text-align:center" data-lt>Įdiegimo instrukcija</p>
     <h2 class="section-title r d1" style="text-align:center;max-width:none;color:var(--cream);margin-bottom:.6rem" data-en>Set up in four steps</h2>
     <h2 class="section-title r d1" style="text-align:center;max-width:none;color:var(--cream);margin-bottom:.6rem" data-lt>Įdiegimas per keturis žingsnius</h2>
-    <p class="r d2" style="text-align:center;font-size:.9rem;color:rgba(247,245,240,.4);margin-bottom:3.5rem" data-en>No Chrome Web Store needed — load directly from the folder.</p>
-    <p class="r d2" style="text-align:center;font-size:.9rem;color:rgba(247,245,240,.4);margin-bottom:3.5rem" data-lt>Chrome parduotuvės nereikia — įkelk tiesiai iš aplanko.</p>
+    <p class="r d2" style="text-align:center;font-size:.9rem;color:rgba(247,245,240,.4);margin-bottom:2rem" data-en>Choose your browser to see specific local installation procedures.</p>
+    <p class="r d2" style="text-align:center;font-size:.9rem;color:rgba(247,245,240,.4);margin-bottom:2rem" data-lt>Pasirinkite savo naršyklę, kad pamatytumėte diegimo instrukciją.</p>
+
+    <div class="browser-tab-row r d2">
+      <button class="btn-browser-tab active" id="tabBtnChrome" onclick="switchInstallBrowser('chrome')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 8h8M12 16H4M4.6 9.4l6.4 3.7"/></svg>
+        <span>Google Chrome</span>
+      </button>
+      <button class="btn-browser-tab" id="tabBtnFirefox" onclick="switchInstallBrowser('firefox')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Mozilla Firefox</span>
+      </button>
+    </div>
 
     <div class="install-grid">
       <div class="install-steps-list r-left" id="iSteps">
@@ -948,77 +1044,63 @@ footer{
         <div class="i-step active" onclick="setIStep(0)">
           <div class="i-num" id="in0">1</div>
           <div class="i-text">
-            <strong data-en>Download the extension</strong>
-            <strong data-lt>Atsisiųsk plėtinį</strong>
-            <span data-en>Click the Download button to save <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">ElijasGPT-helper.rar</code> to your computer.</span>
-            <span data-lt>Spausk atsisiuntimo mygtuką ir išsaugok <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">ElijasGPT-helper.rar</code>.</span>
+            <strong id="stepTitle0">Download the extension</strong>
+            <span id="stepDesc0">Click download to save the extension bundle archive file.</span>
           </div>
         </div>
 
         <div class="i-step" onclick="setIStep(1)">
           <div class="i-num" id="in1">2</div>
           <div class="i-text">
-            <strong data-en>Extract the RAR archive</strong>
-            <strong data-lt>Išskleisk RAR archyvą</strong>
-            <span data-en>Right-click the downloaded file → <em style="color:rgba(247,245,240,.6)">Extract Here</em>. Use WinRAR or 7-Zip. You'll get a folder — keep it somewhere you can find it.</span>
-            <span data-lt>Dešiniu mygtuku → <em style="color:rgba(247,245,240,.6)">Išskleisti čia</em>. Naudok WinRAR arba 7-Zip. Gausite aplanką — išsaugok jį pasiekiamoje vietoje.</span>
+            <strong id="stepTitle1">Extract the RAR archive</strong>
+            <span id="stepDesc1">Unpack archive file contents into an accessible folder space.</span>
           </div>
         </div>
 
         <div class="i-step" onclick="setIStep(2)">
           <div class="i-num" id="in2">3</div>
           <div class="i-text">
-            <strong data-en>Enable Developer Mode in Chrome</strong>
-            <strong data-lt>Įjunk kūrėjo režimą Chrome</strong>
-            <span data-en>Go to <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">chrome://extensions/</code> in your address bar. Toggle <em style="color:rgba(247,245,240,.6)">Developer mode</em> on in the top-right corner.</span>
-            <span data-lt>Adreso juostoje įvesk <code style="color:var(--amber-light);background:rgba(200,134,26,.1);padding:.1rem .4rem;border-radius:.3rem;font-size:.75rem">chrome://extensions/</code>. Įjunk <em style="color:rgba(247,245,240,.6)">Kūrėjo režimą</em> viršutiniame dešiniame kampe.</span>
+            <strong id="stepTitle2">Enable Developer Mode</strong>
+            <span id="stepDesc2">Initialize internal settings environments.</span>
           </div>
         </div>
 
         <div class="i-step" onclick="setIStep(3)">
           <div class="i-num" id="in3">4</div>
           <div class="i-text">
-            <strong data-en>Load the unpacked extension</strong>
-            <strong data-lt>Įkelk išskleistą plėtinį</strong>
-            <span data-en>Click the <em style="color:rgba(247,245,240,.6)">Load unpacked</em> button that appears, then select the folder you extracted. Done — ElijasGPT is live.</span>
-            <span data-lt>Spausk mygtuką <em style="color:rgba(247,245,240,.6)">Įkelti išskleistą</em> ir pasirink išskleistą aplanką. Atlikta — ElijasGPT veikia.</span>
+            <strong id="stepTitle3">Load unpacked files</strong>
+            <span id="stepDesc3">Mount unpacked properties straight inside browser sessions.</span>
           </div>
         </div>
 
       </div>
 
-      <!-- Right panel -->
       <div class="install-vis r-right">
         <div class="i-screen">
           <div class="i-bar">
             <div class="top-dots"><div class="td td1"></div><div class="td td2"></div><div class="td td3"></div></div>
-            <div class="i-url" id="iUrl">Downloading ElijasGPT-helper.rar</div>
+            <div class="i-url" id="iUrl">chrome://extensions/</div>
           </div>
           <div class="i-body">
             <div class="i-vis show" id="iv0">
               <div class="icon">📥</div>
-              <h5 data-en>Save the file</h5>
-              <h5 data-lt>Išsaugok failą</h5>
-              <p data-en>Your browser will download the <code style="color:var(--amber-light)">.rar</code> file. Check your Downloads folder.</p>
-              <p data-lt>Naršyklė atsisiųs <code style="color:var(--amber-light)">.rar</code> failą. Patikrink atsisiuntimų aplanką.</p>
+              <h5 id="visTitle0">Save the file</h5>
+              <p id="visDesc0">Checking your download parameters...</p>
               <br>
-              <a href="ElijasGPT-helper.rar" download style="display:inline-flex;gap:.5rem;align-items:center;background:var(--cream);color:var(--ink);padding:.6rem 1.5rem;border-radius:.4rem;font-size:.8rem;font-weight:600;font-family:var(--sans)">
-                ⬇ <span data-en>Download now</span><span data-lt>Atsisiųsti</span>
+              <a href="#" onclick="openDownloadModal(event)" style="display:inline-flex;gap:.5rem;align-items:center;background:var(--cream);color:var(--ink);padding:.6rem 1.5rem;border-radius:.4rem;font-size:.8rem;font-weight:600;font-family:var(--sans)">
+                <span>⬇</span> <span data-en>Get ElijasGPT Bundle</span><span data-lt>Atsisiųsti ElijasGPT paketą</span>
               </a>
             </div>
             <div class="i-vis" id="iv1">
               <div class="icon">🗂️</div>
-              <h5 data-en>Extract the archive</h5>
-              <h5 data-lt>Išskleisk archyvą</h5>
-              <p data-en>Right-click <code style="color:var(--amber-light)">ElijasGPT-helper.rar</code> → Extract Here.<br>You'll see a folder appear alongside it.</p>
-              <p data-lt>Dešiniu mygtuku → Išskleisti čia.<br>Gausite aplanką šalia failo.</p>
+              <h5 id="visTitle1">Extract the archive</h5>
+              <p id="visDesc1">Extracting properties...</p>
             </div>
             <div class="i-vis" id="iv2">
               <div class="icon">⚙️</div>
-              <h5>chrome://extensions/</h5>
-              <p data-en>Flip on Developer mode in the top-right corner of the extensions page.</p>
-              <p data-lt>Įjunk kūrėjo režimą viršutiniame dešiniame kampe.</p>
-              <div class="dev-toggle-row">
+              <h5 id="visTitle2">System Panel</h5>
+              <p id="visDesc2">Parameters setup...</p>
+              <div class="dev-toggle-row" id="chromeToggleEl">
                 <span data-en>Developer mode</span>
                 <span data-lt>Kūrėjo režimas</span>
                 <div class="pill-switch"></div>
@@ -1026,14 +1108,11 @@ footer{
             </div>
             <div class="i-vis" id="iv3">
               <div class="icon">🧩</div>
-              <h5 data-en>Load unpacked</h5>
-              <h5 data-lt>Įkelti išskleistą</h5>
-              <p data-en>Click Load unpacked, select the extracted folder, and ElijasGPT will appear in your toolbar instantly.</p>
-              <p data-lt>Spausk mygtuką, pasirink aplanką ir ElijasGPT iškart atsiras įrankių juostoje.</p>
-              <div class="load-btn">
+              <h5 id="visTitle3">Load configuration</h5>
+              <p id="visDesc3">Final active initialization tracks...</p>
+              <div class="load-btn" id="guideLoadBtn">
                 <span>📂</span>
-                <span data-en>Load unpacked</span>
-                <span data-lt>Įkelti išskleistą</span>
+                <span id="guideBtnTxt">Load unpacked</span>
               </div>
             </div>
           </div>
@@ -1049,7 +1128,6 @@ footer{
   </div>
 </section>
 
-<!-- ═══════════════════ DOWNLOAD CTA ═══════════════════ -->
 <section class="section dark-2 download-hero">
   <p class="overline r" data-en>Free to use</p>
   <p class="overline r" data-lt>Nemokama</p>
@@ -1059,10 +1137,10 @@ footer{
   <p class="section-body r d2" data-lt>Atsisiųsk ElijasGPT, vadovaukis keturių žingsnių instrukcija ir per kelias minutes klausinėk apie bet kurį puslapį.</p>
 
   <div class="r d3" style="margin-top:2.5rem">
-    <a href="ElijasGPT-helper.rar" download class="btn-primary" style="font-size:.95rem;padding:1rem 2.8rem" id="ctaDl">
+    <a href="#" onclick="openDownloadModal(event)" class="btn-primary" style="font-size:.95rem;padding:1rem 2.8rem" id="ctaDl">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span data-en>Download ElijasGPT-helper.rar</span>
-      <span data-lt>Atsisiųsti ElijasGPT-helper.rar</span>
+      <span data-en>Download ElijasGPT Package</span>
+      <span data-lt>Atsisiųsti ElijasGPT paketą</span>
     </a>
   </div>
 
@@ -1078,19 +1156,174 @@ footer{
   </div>
 </section>
 
-<!-- ═══════════════════ FOOTER ═══════════════════ -->
 <footer>
   <div class="f-logo">Elijas<em>GPT</em></div>
   <div class="f-copy" data-en>Chrome Extension · AI Page Assistant · Free</div>
   <div class="f-copy" data-lt>Chrome Plėtinys · DI Puslapio Asistentas · Nemokama</div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════════
-     SCRIPTS
-═══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="downloadModal" onclick="if(event.target===this) closeDownloadModal()">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeDownloadModal()">&times;</button>
+    
+    <h3 class="modal-title" data-en>Select Version</h3>
+    <h3 class="modal-title" data-lt>Pasirinkite versiją</h3>
+    
+    <p class="modal-subtitle" data-en>Choose your targeted build release variant and your current active browser.</p>
+    <p class="modal-subtitle" data-lt>Pasirinkite norimą programos versiją bei naudojamą naršyklę.</p>
+    
+    <div class="version-list" id="modalVersionList"></div>
+    
+    <div class="custom-slot-area">
+      <p style="font-size:0.75rem; color:rgba(247,245,240,0.3); text-align:center; line-height: 1.5;" data-en>
+        Need historical rollbacks or enterprise developer deployments? Contact administrator configurations support.
+      </p>
+      <p style="font-size:0.75rem; color:rgba(247,245,240,0.3); text-align:center; line-height: 1.5;" data-lt>
+        Reikia senesnių sistemos versijų ar specifinių parametrų palaikymo? Susisiekite su sistemos administratoriumi.
+      </p>
+    </div>
+    
+  </div>
+</div>
+
 <script>
-/* ── LANGUAGE ── */
-let lang = 'en';
+/* ════════════════ CONFIGURABLE DATA AREA ════════════════ */
+// Modify or append new array objects elements here to dynamically populate your download popup menu seamlessly!
+const downloadVersions = [
+  {
+    id: "v2",
+    titleEN: "V2 — Beta Sidebar Edition",
+    titleLT: "V2 — Beta Šoninės Juostos Versija",
+    badgeEN: "Latest Beta",
+    badgeLT: "Naujausia Beta",
+    notesEN: [
+      "Added persistent sidebar layout framework so the panel will not close instantly when clicking external contexts in Chrome and firefox",
+      "Optimized contextual token reading performance metrics across high density web surfaces"
+    ],
+    notesLT: [
+      "Pridėta nuolatinė šoninė integruota juosta, apsauganti nuo netikėto plėtinio užsidarymo spustelėjus už jo ribų „Chrome“ ir "Firefox" naršyklėje",
+      "Optimizuoti puslapio turinio nuskaitymo ir apdorojimo greičio parametrai"
+    ],
+    chromeLink: "https://github.com/Jumpsipidy/Jumpsipidy.Github.io/blob/main/ElijasGPT/ElijasGPT-helper-%20chromme%20v2.rar", // Filename strings/URL pathways for custom Chrome links
+    firefoxLink: "https://github.com/Jumpsipidy/Jumpsipidy.Github.io/blob/main/ElijasGPT/ElijasGPT-helper-%20firefox%20%E2%80%93v2.rar" // Filename strings/URL pathways for Firefox links
+  },
+  {
+    id: "v1",
+    titleEN: "V1 — Fully Stable Build Release",
+    titleLT: "V1 — Visiškai Stabili Versija",
+    badgeEN: "Stable Release",
+    badgeLT: "Stabili Versija",
+    notesEN: [
+      "Fully functional stable ecosystem architecture equipped with contextual AI answering capabilities",
+      "Robust memory protection parameters isolating session contextual states cleanly"
+    ],
+    notesLT: [
+      "Pilnai veikianti, stabili versija su integruotais DI atsakymais tiesiai iš skaitomo puslapio turinio",
+      "Maksimalus privatumas — jokie jūsų užduodami klausimai nėra veikianti praėjusiose naršymo sesijose"
+    ],
+    chromeLink: "https://github.com/Jumpsipidy/Jumpsipidy.Github.io/blob/main/ElijasGPT/ElijasGPT-helper.rar?raw=true",
+    firefoxLink: "https://github.com/Jumpsipidy/Jumpsipidy.Github.io/blob/main/ElijasGPT/ElijasGPT-helper-%20firefox.rar"
+  }
+];
+
+/* ── LOCAL INSTALLATION MULTI-BROWSER DOCUMENTATION ENGINE ── */
+const installGuideData = {
+  chrome: {
+    url: "chrome://extensions/",
+    steps: [
+      {
+        titleEN: "Download the extension package bundle",
+        titleLT: "Atsisiųskite plėtinio paketą",
+        descEN: "Select your preferred version option parameters from our download workspace area to fetch the archive file format properties cleanly.",
+        descLT: "Spustelėkite atsisiuntimo mygtuką, kad išsaugotumėte pasirinktos versijos failų archyvą savo kompiuteryje.",
+        visTitleEN: "Save the bundle package",
+        visTitleLT: "Išsaugokite atsisiųstą failą",
+        visDescEN: "Your browser will save the source directory data compressions package directly into local tracks storage profiles targets.",
+        visDescLT: "Jūsų naršyklė atsisiųs programos plėtinio `.rar` failų archyvą tiesiai į jūsų atsisiuntimų aplanką."
+      },
+      {
+        titleEN: "Extract the compressed RAR package archive",
+        titleLT: "Išskleiskite atsisiųstą RAR archyvą",
+        descEN: "Perform local file execution patterns using WinRAR or 7-Zip systems. Select Extract Here option context rules directly inside stable destination paths.",
+        descLT: "Spustelėkite dešinį pelės mygtuką ant failo ir pasirinkite „Išskleisti čia“ (Extract Here). Gausite vientisą sistemos aplanką.",
+        visTitleEN: "Extract local directories content",
+        visTitleLT: "Archyvo išskleidimas aplanke",
+        visDescEN: "Ensure file structures include all system definitions including manifest configuration mapping elements inside designated folders.",
+        visDescLT: "Įsitikinkite, kad aplanke matomi visi plėtinio failai (įskaitant pagrindinius sistemos konfigūracinius failus)."
+      },
+      {
+        titleEN: "Enable Developer Mode inside Google Chrome",
+        titleLT: "Įjunkite kūrėjo režimą Chrome naršyklėje",
+        descEN: "Open a fresh tab workspace. Navigate to chrome://extensions/ addresses. Find the Developer Mode switch overlay matrix parameter in top right corner areas.",
+        descLT: "Adreso juostoje įveskite chrome://extensions/. Viršutiniame dešiniajame kampe raskite ir aktyvuokite „Kūrėjo režimas“ jungiklį.",
+        visTitleEN: "chrome://extensions/",
+        visTitleLT: "chrome://extensions/",
+        visDescEN: "Flip the Developer Mode activation state toggle control parameters interface layout into live status environments.",
+        visDescLT: "Įjunkite kūrėjo režimo valdymo funkcionalumus viršutiniame dešiniajame lango kampe."
+      },
+      {
+        titleEN: "Load the unpacked local directory structures",
+        titleLT: "Įkelkite išskleistą programos aplanką",
+        descEN: "Click Load Unpacked interface selector triggers inside your browser layout header profiles. Select the final targeted extracted path root folder.",
+        descLT: "Spustelėkite pasirodžiusį mygtuką „Įkelti išskleistą“ (Load unpacked) ir pasirinkite išskleistą plėtinio aplanką.",
+        visTitleEN: "Unpacked asset loading frameworks",
+        visTitleLT: "Išskleistų plėtinių konfigūravimas",
+        visDescEN: "Your extension assistant will compile onto internal systems toolbars engines immediately without secondary setup operations rules.",
+        visDescLT: "Sistemos asistentas akimirksniu atsiras jūsų pagrindinėje įrankių juostoje, pasiruošęs darbui."
+      }
+    ]
+  },
+  firefox: {
+    url: "about:debugging#/runtime/this-firefox",
+    steps: [
+      {
+        titleEN: "Download Firefox compatible source assets",
+        titleLT: "Atsisiųskite Firefox plėtinio paketą",
+        descEN: "Open our multi-version picker view workspace framework to load targeted variant parameters matching local installation tracks profiles.",
+        descLT: "Spustelėkite atsisiuntimo mygtuką ir išsaugokite Firefox naršyklei pritaikytą plėtinio `.rar` failų archyvą.",
+        visTitleEN: "Firefox build capture targets",
+        visTitleLT: "Firefox paketo atsisiuntimas",
+        visDescEN: "The download layer streams designated repository configuration archives structured for Firefox engine rules runtime constraints.",
+        visDescLT: "Naršyklė paruoš atsisiuntimui specifinį paketą, pritaikytą sklandžiam suderinamumui su Firefox moduliais."
+      },
+      {
+        titleEN: "Extract assets contents cleanly onto paths",
+        titleLT: "Išskleiskite RAR archyvo turinį",
+        descEN: "Right click the target file asset profile → Choose Extract option parameters context mapping rules to generate visible uncompressed properties.",
+        descLT: "Dešiniuoju pelės klavišu spustelėkite atsisiųstą archyvą ir pasirinkite „Išskleisti čia“ parinktis.",
+        visTitleEN: "Unpack core directory layouts",
+        visTitleLT: "Failų paruošimas sistemoje",
+        visDescEN: "Make sure you locate your manifest.json parameters file context targets directly inside root extraction targets.",
+        visDescLT: "Įsitikinkite, kad gautame aplanke yra aiškiai matomas pagrindinis manifest.json failas."
+      },
+      {
+        titleEN: "Navigate directly to Firefox Local Debugging layout",
+        titleLT: "Atidarykite Firefox derinimo aplinką",
+        descEN: "Type about:debugging#/runtime/this-firefox straight inside URL entry control configurations bars inside active browsing profiles.",
+        descLT: "Savo Firefox adreso juostoje įveskite konfigūracinį adresą: about:debugging#/runtime/this-firefox",
+        visTitleEN: "about:debugging",
+        visTitleLT: "about:debugging",
+        visDescEN: "This reveals local advanced manual extensions injection developer console interfaces environments frameworks inside Firefox profiles.",
+        visDescLT: "Puslapis atvers vidinę naršyklės aplinką, skirtą vietinių priedų bei laikinų kūrimo modulių valdymui."
+      },
+      {
+        titleEN: "Deploy the temporary manifest system configuration",
+        titleLT: "Įkelkite laikinąjį plėtinio priedą",
+        descEN: "Click the Load Temporary Add-on interactive utility trigger view. Select any asset file inside extracted parameters root directory tracks.",
+        descLT: "Spustelėkite mygtuką „Load Temporary Add-on...“, nukeliaukite į išskleistą aplanką ir pasirinkite manifest.json failą.",
+        visTitleEN: "Temporary framework mount processing",
+        visTitleLT: "Plėtinio aktyvavimas ir paleidimas",
+        visDescEN: "ElijasGPT activates instantly onto browser frames structures ready to interpret web contexts layout scopes dynamically.",
+        visDescLT: "Pasirinkus manifest failą, ElijasGPT asistentas iškart įsidiegs ir bus paruoštas analiziuoti jūsų puslapius."
+      }
+    ]
+  }
+};
+
+/* ── LANGUAGE CONTROLLERS STATE SYSTEM ── */
+let lang = 'lt'; // Defaults cleanly to Lithuanian language tracks structure on initial launch
+let currentInstallBrowser = 'chrome';
+
 function setLang(l) {
   lang = l;
   const pill = document.getElementById('langPill');
@@ -1099,14 +1332,98 @@ function setLang(l) {
   document.querySelectorAll('.lang-pill button').forEach((b,i) => {
     b.classList.toggle('active', (i===0 && l==='en') || (i===1 && l==='lt'));
   });
-  // update ribbon
+  // Update system blocks layouts dynamic engines
   buildRibbon();
-  // update mock input placeholder
+  renderInstallSteps();
+  
   document.getElementById('mockInput').placeholder = l === 'lt'
     ? 'Klausk apie šį puslapį…' : 'Ask about this page…';
 }
 
-/* ── RIBBON ── */
+/* ── INTERACTIVE POPUP MODAL ENGINES ── */
+function openDownloadModal(e) {
+  if (e) e.preventDefault();
+  document.getElementById('downloadModal').classList.add('open');
+  renderDownloadModal();
+}
+
+function closeDownloadModal() {
+  document.getElementById('downloadModal').classList.remove('open');
+}
+
+function renderDownloadModal() {
+  const container = document.getElementById('modalVersionList');
+  if(!container) return;
+  
+  let html = '';
+  downloadVersions.forEach(v => {
+    const title = lang === 'lt' ? v.titleLT : v.titleEN;
+    const badge = lang === 'lt' ? v.badgeLT : v.badgeEN;
+    const notes = lang === 'lt' ? v.notesLT : v.notesEN;
+    
+    let bulletNotesHtml = '';
+    notes.forEach(note => { bulletNotesHtml += `<li>${note}</li>`; });
+    
+    html += `
+      <div class="version-card">
+        <div class="v-header">
+          <h4 class="v-title">${title}</h4>
+          <span class="v-badge">${badge}</span>
+        </div>
+        <ul class="v-notes">
+          ${bulletNotesHtml}
+        </ul>
+        <div class="v-actions">
+          <a href="${v.chromeLink}" class="btn-dl-option btn-dl-chrome" ${v.chromeLink !== '#' ? 'download' : ''}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 8h8M12 16H4M4.6 9.4l6.4 3.7"/></svg>
+            <span>Chrome</span>
+          </a>
+          <a href="${v.firefoxLink}" class="btn-dl-option btn-dl-firefox" ${v.firefoxLink !== '#' ? 'download' : ''}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Firefox</span>
+          </a>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+/* ── BROWSER SWITCH DYNAMIC INTERFACES GUIDE CONTROLLERS ── */
+function switchInstallBrowser(browser) {
+  currentInstallBrowser = browser;
+  document.getElementById('tabBtnChrome').classList.toggle('active', browser === 'chrome');
+  document.getElementById('tabBtnFirefox').classList.toggle('active', browser === 'firefox');
+  setIStep(0); // Reset progress sequence counter triggers state smoothly back to start block
+  renderInstallSteps();
+}
+
+function renderInstallSteps() {
+  const browserData = installGuideData[currentInstallBrowser];
+  document.getElementById('iUrl').textContent = browserData.url;
+  
+  // Toggle UI visibility layers for unique platform elements
+  document.getElementById('chromeToggleEl').style.display = (currentInstallBrowser === 'chrome') ? 'inline-flex' : 'none';
+  
+  const loadBtnTextSpan = document.getElementById('guideBtnTxt');
+  if (currentInstallBrowser === 'chrome') {
+    loadBtnTextSpan.textContent = lang === 'lt' ? "Įkelti išskleistą" : "Load unpacked";
+  } else {
+    loadBtnTextSpan.textContent = lang === 'lt' ? "Įkelti laikiną priedą" : "Load Temporary Add-on";
+  }
+
+  browserData.steps.forEach((step, index) => {
+    // Left text blocks
+    document.getElementById(`stepTitle${index}`).textContent = lang === 'lt' ? step.titleLT : step.titleEN;
+    document.getElementById(`stepDesc${index}`).innerHTML = lang === 'lt' ? step.descLT : step.descEN;
+    
+    // Right panel mirror visualization nodes
+    document.getElementById(`visTitle${index}`).textContent = lang === 'lt' ? step.visTitleLT : step.visTitleEN;
+    document.getElementById(`visDesc${index}`).innerHTML = lang === 'lt' ? step.visDescLT : step.visDescEN;
+  });
+}
+
+/* ── RIBBON MARQUEE STRUCTURAL BUILD ── */
 const ribbonItems = {
   en: ['Reads any page automatically','Answers from page content only','No login required','Fresh context each session','Works on any website','Free Chrome extension','Session privacy by design','Ask in plain language'],
   lt: ['Nuskaito puslapį automatiškai','Atsakymai tik iš puslapio','Prisijungimo nereikia','Kiekviena sesija – švari','Veikia bet kuriame puslapyje','Nemokamas Chrome plėtinys','Sesijų privatumas','Klausk paprastai']
@@ -1114,7 +1431,6 @@ const ribbonItems = {
 function buildRibbon() {
   const track = document.getElementById('ribbonTrack');
   const items = ribbonItems[lang];
-  // double for seamless loop
   let html = '';
   for (let r = 0; r < 2; r++) {
     items.forEach(t => {
@@ -1123,7 +1439,6 @@ function buildRibbon() {
   }
   track.innerHTML = html;
 }
-buildRibbon();
 
 /* ── HOW IT WORKS STEPS ── */
 function setHowStep(n) {
@@ -1134,26 +1449,20 @@ function setHowStep(n) {
   });
 }
 
-/* ── INSTALL STEPS ── */
-const iUrls = [
-  'Downloading ElijasGPT-helper.rar…',
-  'File Explorer — Right-click → Extract Here',
-  'chrome://extensions/',
-  'chrome://extensions/'
-];
+/* ── INSTALL STEPS PROGRESSION SELECTION TRACKS ── */
 function setIStep(n) {
   document.querySelectorAll('.i-step').forEach((el,i) => {
     el.classList.toggle('active', i===n);
     el.classList.toggle('done', i<n);
   });
   document.querySelectorAll('.i-vis').forEach((el,i) => el.classList.toggle('show', i===n));
-  document.getElementById('iUrl').textContent = iUrls[n];
+  
   for (let i=0;i<4;i++) {
     const d = document.getElementById('id'+i);
     if (i===n) { d.className='i-dot active'; }
     else if (i<n) { d.className='i-dot done'; }
     else { d.className='i-dot'; }
-    // number style
+    
     const num = document.getElementById('in'+i);
     if (num) {
       if (i<n) num.innerHTML = '✓';
@@ -1162,7 +1471,7 @@ function setIStep(n) {
   }
 }
 
-/* ── TYPING DEMO (mock popup) ── */
+/* ── TYPING DEMO (mock popup simulation system loop) ── */
 const demos = [
   { url: 'wikipedia.org/wiki/Artificial_intelligence',
     q: 'What is this article about?',
@@ -1179,7 +1488,7 @@ const demosLT = [
   { a: 'Šiame puslapyje paaiškinama, kaip priimti vienkartinį mokėjimą naudojant Stripe API. Serverio pusėje sukuriate PaymentIntent, patvirtinate jį kliento pusėje.' },
   { a: 'Straipsnis teigia, kad naujausios pažangos daugiamodaliniame DI keičia kūrėjų požiūrį į vartotojo sąsajas — nuo komandinių įvesties prie natūralios.' }
 ];
-let demoIdx = 0, typeTimer = null, eraseTimer = null;
+let demoIdx = 0, typeTimer = null;
 
 function typeText(targetId, text, cb) {
   const el = document.getElementById(targetId);
@@ -1199,7 +1508,6 @@ function runDemo() {
   document.getElementById('mockUrl').textContent = d.url;
   const inp = document.getElementById('mockInput');
   inp.value = '';
-  // type question into input
   let i2 = 0;
   const qtimer = setInterval(() => {
     inp.value += d.q[i2++];
@@ -1212,7 +1520,6 @@ function runDemo() {
             demoIdx++;
             setTimeout(runDemo, 1200);
           });
-          // actually just run next
           demoIdx++;
           setTimeout(runDemo, 3500);
         });
@@ -1221,10 +1528,7 @@ function runDemo() {
   }, 55);
 }
 
-// Start demo after a moment
-setTimeout(runDemo, 1400);
-
-/* ── SCROLL REVEAL ── */
+/* ── SCROLL REVEAL TRIGGERS ENGINE ── */
 const rObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('in'); }
@@ -1232,14 +1536,14 @@ const rObs = new IntersectionObserver(entries => {
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.r,.r-left,.r-right,.r-scale').forEach(el => rObs.observe(el));
 
-/* ── PARALLAX HERO ── */
+/* ── PARALLAX HERO DECORATION UTILITIES ── */
 window.addEventListener('scroll', () => {
   const y = window.scrollY;
   const h1 = document.querySelector('.hero-h1');
   const sub = document.querySelector('.hero-sub');
   if (h1) h1.style.transform = `translateY(${y*.18}px)`;
   if (sub) sub.style.transform = `translateY(${y*.1}px)`;
-  // fade out hero content
+  
   const hero = document.querySelector('.hero');
   if (hero) {
     const opacity = Math.max(0, 1 - y / (hero.offsetHeight * .6));
@@ -1250,7 +1554,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
-/* ── RIPPLE ── */
+/* ── RIPPLE INTERACTION ANIMATIONS ── */
 document.querySelectorAll('.btn-primary').forEach(btn => {
   btn.addEventListener('click', e => {
     const r = document.createElement('span');
@@ -1264,7 +1568,13 @@ document.querySelectorAll('.btn-primary').forEach(btn => {
     setTimeout(() => r.remove(), 600);
   });
 });
+
+/* ── RUN GLOBAL ARCHITECTURE AT STARTUP TRACKS ── */
+window.addEventListener('DOMContentLoaded', () => {
+  setLang('lt');
+  switchInstallBrowser('chrome');
+  setTimeout(runDemo, 1400);
+});
 </script>
 </body>
 </html>
-
