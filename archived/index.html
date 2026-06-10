@@ -11,21 +11,21 @@
 
   <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
   <nav>
-    <a href="index.html" class="nav-logo">Elijas<em>GPT</em></a>
+    <a href="../index.html" class="nav-logo">Elijas<em>GPT</em></a>
     <div class="nav-center">
-      <a href="index.html#features" data-en>Features</a>
-      <a href="index.html#features" data-lt>Funkcijos</a>
-      <a href="index.html#how" data-en>How it works</a>
-      <a href="index.html#how" data-lt>Kaip veikia</a>
-      <a href="index.html#install" data-en>Install guide</a>
-      <a href="index.html#install" data-lt>Įdiegimas</a>
-      <a href="archived-downloads.html" class="nav-active" data-en>Archive</a>
-      <a href="archived-downloads.html" class="nav-active" data-lt>Archyvas</a>
+      <a href="../index.html#features" data-en>Features</a>
+      <a href="../index.html#features" data-lt>Funkcijos</a>
+      <a href="../index.html#how" data-en>How it works</a>
+      <a href="../index.html#how" data-lt>Kaip veikia</a>
+      <a href="../index.html#install" data-en>Install guide</a>
+      <a href="../index.html#install" data-lt>Įdiegimas</a>
+      <a href="index.html" class="nav-active" data-en>Archive</a>
+      <a href="index.html" class="nav-active" data-lt>Archyvas</a>
     </div>
     <div class="lang-pill lt" id="langPill">
       <div class="pill-bg"></div>
-      <button onclick="setLang('en')">EN</button>
-      <button class="active" onclick="setLang('lt')">LT</button>
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" class="active" data-lang="lt">LT</button>
     </div>
   </nav>
 
@@ -49,12 +49,12 @@
     </p>
 
     <div class="hero-actions">
-      <a href="index.html" class="btn-outline">
+      <a href="../index.html" class="btn-outline">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
         <span data-en>Back to main site</span>
         <span data-lt>Grįžti į pagrindinį</span>
       </a>
-      <a href="index.html#install" class="btn-primary">
+      <a href="../index.html#install" class="btn-primary">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span data-en>Latest version</span>
         <span data-lt>Naujausia versija</span>
@@ -89,11 +89,11 @@
         <div class="disclaimer-icon">⚠️</div>
         <p data-en>
           <strong>Before you download:</strong> Archived builds are provided as-is.
-          We recommend using the <a href="index.html">latest release</a> unless you need a specific older version for compatibility.
+          We recommend using the <a href="../index.html">latest release</a> unless you need a specific older version for compatibility.
         </p>
         <p data-lt>
           <strong>Prieš atsisiunčiant:</strong> Archyvuotos versijos teikiamos „kaip yra“.
-          Rekomenduojame naudoti <a href="index.html">naujausią versiją</a>, nebent jums reikia konkrečios senesnės versijos.
+          Rekomenduojame naudoti <a href="../index.html">naujausią versiją</a>, nebent jums reikia konkrečios senesnės versijos.
         </p>
       </div>
 
@@ -133,64 +133,10 @@
 
       <p class="results-meta r d2" id="resultsMeta"></p>
 
-      <!-- ═══════════════════════ ARCHIVE CARDS ═══════════════════════ -->
       <!-- Cards are rendered by JavaScript from archivedVersions[] in archived-downloads.js -->
-      <!-- To add a new archived version manually in HTML, copy the template block below -->
-      <!-- and paste it inside #archiveGrid BEFORE the closing </div> tag.              -->
+      <!-- To add versions: edit archived-downloads.js (see comments at top of that file) -->
 
-      <div class="archive-grid r d3" id="archiveGrid">
-
-        <!--
-        ══════════════════════════════════════════════════════════════
-        TEMPLATE: Copy this block to add more archived versions in HTML
-        ══════════════════════════════════════════════════════════════
-
-        <article class="archive-card" data-version="v0.9" data-type="beta" data-keywords="beta sidebar">
-          <div class="card-top">
-            <div class="card-version">
-              <span class="version-num">v0.9</span>
-              <span class="version-badge badge-beta">Beta</span>
-            </div>
-            <div class="card-meta">
-              <span class="meta-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span>2025-08-12</span>
-              </span>
-              <span class="meta-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span>4.1 MB</span>
-              </span>
-            </div>
-          </div>
-          <p class="card-summary" data-en>Short description of this release.</p>
-          <p class="card-summary" data-lt>Trumpas šios versijos aprašymas.</p>
-          <div class="card-actions">
-            <button class="btn-changelog" data-version="v0.9">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              <span data-en>Changelog</span>
-              <span data-lt>Pakeitimai</span>
-            </button>
-            <div class="dl-group">
-              REPLACE WITH DOWNLOAD LINK — Chrome:
-              <a href="YOUR_DOWNLOAD_LINK_HERE" class="btn-dl btn-dl-chrome" download>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 8h8M12 16H4M4.6 9.4l6.4 3.7"/></svg>
-                Chrome
-              </a>
-              REPLACE WITH DOWNLOAD LINK — Firefox:
-              <a href="YOUR_DOWNLOAD_LINK_HERE" class="btn-dl btn-dl-firefox" download>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Firefox
-              </a>
-            </div>
-          </div>
-        </article>
-
-        ══════════════════════════════════════════════════════════════
-        END TEMPLATE
-        ══════════════════════════════════════════════════════════════
-        -->
-
-      </div>
+      <div class="archive-grid r d3" id="archiveGrid"></div>
 
       <!-- Empty state (shown when search returns no results) -->
       <div class="empty-state" id="emptyState" hidden>
@@ -216,9 +162,9 @@
   </footer>
 
   <!-- ═══════════════════════ CHANGELOG MODAL ═══════════════════════ -->
-  <div class="modal-overlay" id="changelogModal" onclick="if(event.target===this) closeChangelogModal()">
+  <div class="modal-overlay" id="changelogModal">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeChangelogModal()" aria-label="Close">&times;</button>
+      <button class="modal-close" type="button" aria-label="Close">&times;</button>
       <h3 class="modal-title" id="changelogTitle">—</h3>
       <p class="modal-subtitle" id="changelogDate">—</p>
       <ul class="changelog-list" id="changelogList"></ul>

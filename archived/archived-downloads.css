@@ -636,6 +636,19 @@ nav {
   background: rgba(255, 148, 26, .08);
   transform: translateY(-1px);
 }
+.btn-dl.is-disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+.btn-dl.is-disabled:hover {
+  transform: none;
+  background: var(--cream);
+}
+.btn-dl.btn-dl-firefox.is-disabled:hover {
+  background: transparent;
+  border-color: rgba(247, 245, 240, .15);
+}
 
 /* ═══════════════════════ EMPTY STATE ═══════════════════════ */
 .empty-state {

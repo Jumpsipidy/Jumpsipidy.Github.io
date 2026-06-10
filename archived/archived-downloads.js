@@ -28,6 +28,18 @@
 
    ═══════════════════════════════════════════════════════════════ */
 
+const DOWNLOAD_BASE = 'https://raw.githubusercontent.com/Jumpsipidy/Jumpsipidy.Github.io/main/ElijasGPT/';
+
+function dlUrl(filename) {
+  if (!filename || filename === 'YOUR_DOWNLOAD_LINK_HERE') return '';
+  if (filename.startsWith('http://') || filename.startsWith('https://')) return filename;
+  return DOWNLOAD_BASE + encodeURIComponent(filename);
+}
+
+function isPlaceholderLink(url) {
+  return !url || url === 'YOUR_DOWNLOAD_LINK_HERE';
+}
+
 const archivedVersions = [
   {
     id: "v3",
@@ -50,10 +62,9 @@ const archivedVersions = [
       "Optimizuota eduka.lt svetainei",
       "Neveikia vilkimo ir paspaudimo klausimams su nuotraukomis"
     ],
-    // REPLACE WITH DOWNLOAD LINK
-    chromeLink: "YOUR_DOWNLOAD_LINK_HERE",
-    // REPLACE WITH DOWNLOAD LINK
-    firefoxLink: "YOUR_DOWNLOAD_LINK_HERE"
+    // REPLACE WITH DOWNLOAD LINK (filename in ElijasGPT/ folder, or full URL)
+    chromeLink: "ElijasGPT-helper- chromme v3 test.rar",
+    firefoxLink: "ElijasGPT-helper- firefox v3 test.rar"
   },
   {
     id: "v2",
@@ -77,9 +88,8 @@ const archivedVersions = [
       "Patobulintas suderinamumas su Chrome ir Firefox"
     ],
     // REPLACE WITH DOWNLOAD LINK
-    chromeLink: "YOUR_DOWNLOAD_LINK_HERE",
-    // REPLACE WITH DOWNLOAD LINK
-    firefoxLink: "YOUR_DOWNLOAD_LINK_HERE"
+    chromeLink: "ElijasGPT-helper- chromme v2.rar",
+    firefoxLink: "ElijasGPT-helper- firefox –v2.rar"
   },
   {
     id: "v1",
@@ -103,9 +113,8 @@ const archivedVersions = [
       "Veikia bet kuriame puslapyje, kurį gali atidaryti Chrome"
     ],
     // REPLACE WITH DOWNLOAD LINK
-    chromeLink: "YOUR_DOWNLOAD_LINK_HERE",
-    // REPLACE WITH DOWNLOAD LINK
-    firefoxLink: "YOUR_DOWNLOAD_LINK_HERE"
+    chromeLink: "ElijasGPT-helper.rar",
+    firefoxLink: "ElijasGPT-helper- firefox.rar"
   }
 
   /* ── ADD MORE ARCHIVED VERSIONS BELOW THIS LINE ── */
@@ -217,6 +226,25 @@ function updateResultsMeta() {
   document.getElementById('totalVersions').textContent = total;
 }
 
+/* ═══════════════════════ DOWNLOAD BUTTON HTML ═══════════════════════ */
+function renderDlButtons(v) {
+  const chrome = dlUrl(v.chromeLink);
+  const firefox = dlUrl(v.firefoxLink);
+  const chromeReady = !isPlaceholderLink(v.chromeLink);
+  const firefoxReady = !isPlaceholderLink(v.firefoxLink);
+
+  return `
+    <a href="${chromeReady ? chrome : '#'}" class="btn-dl btn-dl-chrome${chromeReady ? '' : ' is-disabled'}" ${chromeReady ? 'download' : 'data-disabled="true"'}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 8h8M12 16H4M4.6 9.4l6.4 3.7"/></svg>
+      Chrome
+    </a>
+    <a href="${firefoxReady ? firefox : '#'}" class="btn-dl btn-dl-firefox${firefoxReady ? '' : ' is-disabled'}" ${firefoxReady ? 'download' : 'data-disabled="true"'}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Firefox
+    </a>
+  `;
+}
+
 /* ═══════════════════════ RENDER CARDS ═══════════════════════ */
 function renderArchiveCards() {
   const grid = document.getElementById('archiveGrid');
@@ -271,28 +299,13 @@ function renderArchiveCards() {
             <span data-en>Changelog</span>
             <span data-lt>Pakeitimai</span>
           </button>
-          <div class="dl-group">
-            <!-- REPLACE WITH DOWNLOAD LINK -->
-            <a href="${v.chromeLink}" class="btn-dl btn-dl-chrome" ${v.chromeLink !== 'YOUR_DOWNLOAD_LINK_HERE' ? 'download' : ''}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 8h8M12 16H4M4.6 9.4l6.4 3.7"/></svg>
-              Chrome
-            </a>
-            <!-- REPLACE WITH DOWNLOAD LINK -->
-            <a href="${v.firefoxLink}" class="btn-dl btn-dl-firefox" ${v.firefoxLink !== 'YOUR_DOWNLOAD_LINK_HERE' ? 'download' : ''}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Firefox
-            </a>
-          </div>
+          <div class="dl-group">${renderDlButtons(v)}</div>
         </div>
       </article>
     `;
   });
 
   grid.innerHTML = html;
-
-  grid.querySelectorAll('.btn-changelog').forEach(btn => {
-    btn.addEventListener('click', () => openChangelogModal(btn.dataset.id));
-  });
 }
 
 function formatDate(dateStr) {
@@ -317,18 +330,7 @@ function openChangelogModal(id) {
   const list = document.getElementById('changelogList');
   list.innerHTML = notes.map(n => `<li>${n}</li>`).join('');
 
-  document.getElementById('changelogDlRow').innerHTML = `
-    <!-- REPLACE WITH DOWNLOAD LINK -->
-    <a href="${v.chromeLink}" class="btn-dl btn-dl-chrome" ${v.chromeLink !== 'YOUR_DOWNLOAD_LINK_HERE' ? 'download' : ''}>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 8h8M12 16H4M4.6 9.4l6.4 3.7"/></svg>
-      Chrome
-    </a>
-    <!-- REPLACE WITH DOWNLOAD LINK -->
-    <a href="${v.firefoxLink}" class="btn-dl btn-dl-firefox" ${v.firefoxLink !== 'YOUR_DOWNLOAD_LINK_HERE' ? 'download' : ''}>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Firefox
-    </a>
-  `;
+  document.getElementById('changelogDlRow').innerHTML = renderDlButtons(v);
 
   document.getElementById('changelogModal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -363,6 +365,34 @@ function initScrollReveal() {
 }
 
 /* ═══════════════════════ EVENT LISTENERS ═══════════════════════ */
+function initDelegatedClicks() {
+  document.getElementById('archiveGrid').addEventListener('click', e => {
+    const changelogBtn = e.target.closest('.btn-changelog');
+    if (changelogBtn) {
+      e.preventDefault();
+      openChangelogModal(changelogBtn.dataset.id);
+      return;
+    }
+
+    const disabledDl = e.target.closest('.btn-dl[data-disabled="true"]');
+    if (disabledDl) {
+      e.preventDefault();
+    }
+  });
+
+  document.getElementById('changelogModal').addEventListener('click', e => {
+    if (e.target.id === 'changelogModal') closeChangelogModal();
+    if (e.target.closest('.modal-close')) closeChangelogModal();
+    if (e.target.closest('.btn-dl[data-disabled="true"]')) e.preventDefault();
+  });
+}
+
+function initLang() {
+  document.querySelectorAll('.lang-pill button[data-lang]').forEach(btn => {
+    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+  });
+}
+
 function initSearch() {
   const input = document.getElementById('archiveSearch');
   const clearBtn = document.getElementById('searchClear');
@@ -417,9 +447,15 @@ document.addEventListener('keydown', e => {
 
 /* ═══════════════════════ INIT ═══════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
-  setLang('lt');
+  initLang();
+  initDelegatedClicks();
   initSearch();
   initFilters();
   initReset();
   initScrollReveal();
+  setLang('lt');
 });
+
+window.setLang = setLang;
+window.closeChangelogModal = closeChangelogModal;
+window.openChangelogModal = openChangelogModal;
