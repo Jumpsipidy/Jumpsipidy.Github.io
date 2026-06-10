@@ -742,6 +742,19 @@ nav{
 /* Custom dynamic links downloaddable slot styling */
 .custom-slot-area {
   margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed rgba(247,245,240,0.1);
+  text-align: center;
+}
+.btn-archive-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  margin-top: 1rem; padding: .75rem 1.5rem;
+  border: 1px solid rgba(247,245,240,0.15); border-radius: .5rem;
+  font-family: var(--sans); font-size: .82rem; font-weight: 600;
+  color: rgba(247,245,240,0.7); cursor: pointer;
+  transition: border-color .2s, background .2s, color .2s, transform .2s;
+}
+.btn-archive-link:hover {
+  border-color: var(--amber); background: var(--amber-glow);
+  color: var(--cream); transform: translateY(-1px);
 }
 
 /* ═══════════════════════ FOOTER ═══════════════════════ */
@@ -803,6 +816,8 @@ footer{
     <a href="#how" data-lt>Kaip veikia</a>
     <a href="#install" data-en>Install guide</a>
     <a href="#install" data-lt>Įdiegimas</a>
+    <a href="https://jumpsipidy.online/archived/" data-en>Archive</a>
+    <a href="https://jumpsipidy.online/archived/" data-lt>Archyvas</a>
   </div>
   <div class="lang-pill lt" id="langPill">
     <div class="pill-bg"></div>
@@ -1166,21 +1181,26 @@ footer{
   <div class="modal-card">
     <button class="modal-close" onclick="closeDownloadModal()">&times;</button>
     
-    <h3 class="modal-title" data-en>Select Version</h3>
-    <h3 class="modal-title" data-lt>Pasirinkite versiją</h3>
+    <h3 class="modal-title" data-en>Download</h3>
+    <h3 class="modal-title" data-lt>Atsisiųsti</h3>
     
-    <p class="modal-subtitle" data-en>Choose your targeted build release variant and your current active browser.</p>
-    <p class="modal-subtitle" data-lt>Pasirinkite norimą programos versiją bei naudojamą naršyklę.</p>
+    <p class="modal-subtitle" data-en>Current release — choose your browser to download.</p>
+    <p class="modal-subtitle" data-lt>Dabartinė versija — pasirinkite naršyklę atsisiuntimui.</p>
     
     <div class="version-list" id="modalVersionList"></div>
     
     <div class="custom-slot-area">
-      <p style="font-size:0.75rem; color:rgba(247,245,240,0.3); text-align:center; line-height: 1.5;" data-en>
-        Need historical rollbacks or enterprise developer deployments? Contact administrator configurations support.
+      <p style="font-size:0.75rem; color:rgba(247,245,240,0.35); line-height:1.6;" data-en>
+        Need an older version?
       </p>
-      <p style="font-size:0.75rem; color:rgba(247,245,240,0.3); text-align:center; line-height: 1.5;" data-lt>
-        Reikia senesnių sistemos versijų ar specifinių parametrų palaikymo? Susisiekite su sistemos administratoriumi.
+      <p style="font-size:0.75rem; color:rgba(247,245,240,0.35); line-height:1.6;" data-lt>
+        Reikia senesnės versijos?
       </p>
+      <a href="https://jumpsipidy.online/archived/" class="btn-archive-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span data-en>Browse archived downloads</span>
+        <span data-lt>Archyvuoti atsisiuntimai</span>
+      </a>
     </div>
     
   </div>
@@ -1188,14 +1208,15 @@ footer{
 
 <script>
 /* ════════════════ CONFIGURABLE DATA AREA ════════════════ */
-// Modify or append new array objects elements here to dynamically populate your download popup menu seamlessly!
+// Current release only. Older versions live at https://jumpsipidy.online/archived/
+const ARCHIVE_URL = 'https://jumpsipidy.online/archived/';
 const downloadVersions = [
   {
     id: "v3",
     titleEN: "ElijasGPT v.3.0 - ALPHA-made for eduka",
     titleLT: "ElijasGPT v.3.0 - ALPHA- Eduka.lt",
-    badgeEN: "Alpha Release",
-    badgeLT: "Alfa Versija",
+    badgeEN: "Current Release",
+    badgeLT: "Dabartinė Versija",
     notesEN: [
       "Added alpha automatic click answer",
       "Does not work for drag and click photo with text questions. auto is only for eduka.lt speciflicly"
@@ -1206,40 +1227,6 @@ const downloadVersions = [
     ],
     chromeLink: "ElijasGPT-helper- chromme v3 test.rar",
     firefoxLink: "ElijasGPT-helper- firefox v3 test.rar"
-  },
-  {
-    id: "v2",
-    titleEN: "V2 — Beta Sidebar Edition",
-    titleLT: "V2 — Beta Šoninės Juostos Versija",
-    badgeEN: "Latest Beta",
-    badgeLT: "Naujausia Beta",
-    notesEN: [
-      "Added persistent sidebar layout framework so the panel will not close instantly when clicking external contexts in Chrome and firefox",
-      "Optimized contextual token reading performance metrics across high density web surfaces"
-    ],
-    notesLT: [
-      "Pridėta nuolatinė šoninė integruota juosta, apsauganti nuo netikėto plėtinio užsidarymo spustelėjus už jo ribų „Chrome“ ir \"Firefox\" naršyklėje",
-      "Optimizuoti puslapio turinio nuskaitymo ir apdorojimo greičio parametrai"
-    ],
-    chromeLink: "ElijasGPT-helper- chromme v2.rar", // Filename strings/URL pathways for custom Chrome links
-    firefoxLink: "ElijasGPT-helper- firefox –v2.rar" // Filename strings/URL pathways for Firefox links
-  },
-  {
-    id: "v1",
-    titleEN: "V1 — Fully Stable Build Release",
-    titleLT: "V1 — Visiškai Stabili Versija",
-    badgeEN: "Stable Release",
-    badgeLT: "Stabili Versija",
-    notesEN: [
-      "Fully functional stable ecosystem architecture equipped with contextual AI answering capabilities",
-      "Robust memory protection parameters isolating session contextual states cleanly"
-    ],
-    notesLT: [
-      "Pilnai veikianti, stabili versija su integruotais DI atsakymais tiesiai iš skaitomo puslapio turinio",
-      "Maksimalus privatumas — jokie jūsų užduodami klausimai nėra veikianti praėjusiose naršymo sesijose"
-    ],
-    chromeLink: "https://github.com/Jumpsipidy/Jumpsipidy.Github.io/blob/main/ElijasGPT/ElijasGPT-helper.rar?raw=true",
-    firefoxLink: "ElijasGPT-helper- firefox.rar"
   }
 ];
 
