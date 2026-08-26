@@ -116,12 +116,14 @@ nav{
 }
 /* Mesh gradient background */
 .hero::before{
-  content:'';position:absolute;inset:0;
+  content:'';position:absolute;
+  top:-20%;left:-20%;right:-20%;bottom:-20%;
   background:
     radial-gradient(ellipse 80% 60% at 20% 40%, rgba(200,134,26,.07) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 80% 60%, rgba(200,134,26,.05) 0%, transparent 55%),
     radial-gradient(ellipse 100% 50% at 50% 100%, rgba(26,24,20,.03) 0%, transparent 60%);
   pointer-events:none;
+  animation:moveGlow 25s infinite alternate ease-in-out;
 }
 /* Subtle grid lines */
 .hero::after{
@@ -732,7 +734,7 @@ nav{
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
   padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.82rem; font-weight: 600;
   cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.1s;
-  font-family: var(--sans);
+  font-family: var(--sans); text-decoration: none;
 }
 .btn-dl-chrome { background: var(--cream); color: var(--ink); border: none; }
 .btn-dl-chrome:hover { background: #fff; transform: translateY(-1px); }
@@ -749,7 +751,7 @@ nav{
   margin-top: 1rem; padding: .75rem 1.5rem;
   border: 1px solid rgba(247,245,240,0.15); border-radius: .5rem;
   font-family: var(--sans); font-size: .82rem; font-weight: 600;
-  color: rgba(247,245,240,0.7); cursor: pointer;
+  color: rgba(247,245,240,0.7); cursor: pointer; text-decoration: none;
   transition: border-color .2s, background .2s, color .2s, transform .2s;
 }
 .btn-archive-link:hover {
@@ -791,6 +793,11 @@ footer{
   0%{background-position:-400px 0}
   100%{background-position:400px 0}
 }
+@keyframes moveGlow {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, 3%) scale(1.05); }
+  100% { transform: translate(-3%, -2%) scale(0.98); }
+}
 
 /* ═══════════════════════ RESPONSIVE ═══════════════════════ */
 @media(max-width:900px){
@@ -816,8 +823,8 @@ footer{
     <a href="#how" data-lt>Kaip veikia</a>
     <a href="#install" data-en>Install guide</a>
     <a href="#install" data-lt>Įdiegimas</a>
-    <a href="https://jumpsipidy.online/archived/" data-en>Archive</a>
-    <a href="https://jumpsipidy.online/archived/" data-lt>Archyvas</a>
+    <a href="archive.html" data-en>Archive</a>
+    <a href="archive.html" data-lt>Archyvas</a>
   </div>
   <div class="lang-pill lt" id="langPill">
     <div class="pill-bg"></div>
@@ -846,8 +853,8 @@ footer{
   <div class="hero-actions">
     <a href="#" onclick="openDownloadModal(event)" class="btn-primary" id="heroDl">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span data-en>Download Now</span>
-      <span data-lt>Atsisiųsti dabar</span>
+      <span data-en>Download V4 Now</span>
+      <span data-lt>Atsisiųsti V4 dabar</span>
     </a>
     <a href="#install" class="btn-outline" data-en>Installation guide</a>
     <a href="#install" class="btn-outline" data-lt>Įdiegimo instrukcija</a>
@@ -895,10 +902,10 @@ footer{
 
       <div class="bento-cell c8">
         <div class="cell-icon">📖</div>
-        <h3 data-en>Reads the page for you</h3>
-        <h3 data-lt>Nuskaito puslapį už tave</h3>
-        <p data-en>The moment you open the panel, ElijasGPT automatically extracts and understands the full content of your current tab — articles, docs, product pages, anything.</p>
-        <p data-lt>Kai tik atidaro plėtinį, ElijasGPT automatiškai ištraukia ir supranta dabartinio skirtuko turinį — straipsnius, dokumentus, produktų puslapius, viską.</p>
+        <h3 data-en>WHAT, WHERE, HOW Format</h3>
+        <h3 data-lt>KĄ, KUR, KAIP Formatas</h3>
+        <p data-en>The new V4 format explicitly tells you exactly what answer to use, where on screen the element is, and how to interact with it step by step.</p>
+        <p data-lt>Naujasis V4 formatas aiškiai nurodo, kokį atsakymą naudoti, kur ekrane jis yra ir kaip tiksliai su juo sąveikauti (paspausti, nutempti ir kt.).</p>
       </div>
       <div class="bento-cell c4 accent-bg">
         <div class="cell-icon" style="background:rgba(247,245,240,.06);border-color:rgba(247,245,240,.08)">⚡</div>
@@ -910,17 +917,17 @@ footer{
 
       <div class="bento-cell c4 amber-bg">
         <div class="cell-icon">🌐</div>
-        <h3 data-en>Works everywhere</h3>
-        <h3 data-lt>Veikia visur</h3>
-        <p data-en>News, Wikipedia, documentation, online stores, e-mails — if Chrome can open it, ElijasGPT can understand it.</p>
-        <p data-lt>Naujienos, Wikipedia, dokumentacija, internetinės parduotuvės — jei Chrome gali atidaryti, ElijasGPT supranta.</p>
+        <h3 data-en>Task Auto-Detection</h3>
+        <h3 data-lt>Užduočių Atpažinimas</h3>
+        <p data-en>Automatically handles multiple choice, text inputs, drag-and-drop, sequence ordering, and True/False questions without any setup.</p>
+        <p data-lt>Automatiškai atpažįsta pasirinkimus, įvestis, nutempimus, tvarkos išdėstymą ir Teisinga/Neteisinga klausimus.</p>
       </div>
       <div class="bento-cell c4">
         <div class="cell-icon">💬</div>
-        <h3 data-en>Conversational follow-ups</h3>
-        <h3 data-lt>Tolesni klausimai</h3>
-        <p data-en>Ask one question, then dig deeper with follow-ups — all within the same session, all about the same page.</p>
-        <p data-lt>Užduok klausimą, tada gilinkis toliau — visa tai vienos sesijos ribose.</p>
+        <h3 data-en>3-Way API Fallback</h3>
+        <h3 data-lt>3-Lygių DI Variklis</h3>
+        <p data-en>Never get stuck. V4 automatically switches between Groq, Mistral, and Gemini models to ensure maximum reliability and speed.</p>
+        <p data-lt>Sukurta patikimumui. V4 automatiškai perjungia tarp Groq, Mistral ir Gemini sistemų, kad visada gautumėte atsakymą per kelias sekundes.</p>
       </div>
       <div class="bento-cell c4">
         <div class="cell-icon">🔒</div>
@@ -1067,7 +1074,7 @@ footer{
         <div class="i-step" onclick="setIStep(1)">
           <div class="i-num" id="in1">2</div>
           <div class="i-text">
-            <strong id="stepTitle1">Extract the RAR archive</strong>
+            <strong id="stepTitle1">Extract the ZIP archive</strong>
             <span id="stepDesc1">Unpack archive file contents into an accessible folder space.</span>
           </div>
         </div>
@@ -1102,7 +1109,7 @@ footer{
               <h5 id="visTitle0">Save the file</h5>
               <p id="visDesc0">Checking your download parameters...</p>
               <br>
-              <a href="#" onclick="openDownloadModal(event)" style="display:inline-flex;gap:.5rem;align-items:center;background:var(--cream);color:var(--ink);padding:.6rem 1.5rem;border-radius:.4rem;font-size:.8rem;font-weight:600;font-family:var(--sans)">
+              <a href="#" onclick="openDownloadModal(event)" style="display:inline-flex;gap:.5rem;align-items:center;background:var(--cream);color:var(--ink);padding:.6rem 1.5rem;border-radius:.4rem;font-size:.8rem;font-weight:600;font-family:var(--sans);text-decoration:none;">
                 <span>⬇</span> <span data-en>Get ElijasGPT Bundle</span><span data-lt>Atsisiųsti ElijasGPT paketą</span>
               </a>
             </div>
@@ -1148,8 +1155,8 @@ footer{
   <p class="overline r" data-lt>Nemokama</p>
   <h2 class="section-title r d1" data-en>Start understanding<br><em>any page, right now</em></h2>
   <h2 class="section-title r d1" data-lt>Pradėk suprasti<br><em>bet kurį puslapį dabar</em></h2>
-  <p class="section-body r d2" data-en>Download ElijasGPT, follow the four-step guide above, and you'll be asking questions about any webpage within minutes.</p>
-  <p class="section-body r d2" data-lt>Atsisiųsk ElijasGPT, vadovaukis keturių žingsnių instrukcija ir per kelias minutes klausinėk apie bet kurį puslapį.</p>
+  <p class="section-body r d2" data-en>Download ElijasGPT V4, follow the four-step guide above, and you'll be asking questions about any webpage within minutes.</p>
+  <p class="section-body r d2" data-lt>Atsisiųsk ElijasGPT V4, vadovaukis keturių žingsnių instrukcija ir per kelias minutes klausinėk apie bet kurį puslapį.</p>
 
   <div class="r d3" style="margin-top:2.5rem">
     <a href="#" onclick="openDownloadModal(event)" class="btn-primary" style="font-size:.95rem;padding:1rem 2.8rem" id="ctaDl">
@@ -1181,8 +1188,8 @@ footer{
   <div class="modal-card">
     <button class="modal-close" onclick="closeDownloadModal()">&times;</button>
     
-    <h3 class="modal-title" data-en>Download</h3>
-    <h3 class="modal-title" data-lt>Atsisiųsti</h3>
+    <h3 class="modal-title" data-en>Download V4</h3>
+    <h3 class="modal-title" data-lt>Atsisiųsti V4</h3>
     
     <p class="modal-subtitle" data-en>Current release — choose your browser to download.</p>
     <p class="modal-subtitle" data-lt>Dabartinė versija — pasirinkite naršyklę atsisiuntimui.</p>
@@ -1196,7 +1203,7 @@ footer{
       <p style="font-size:0.75rem; color:rgba(247,245,240,0.35); line-height:1.6;" data-lt>
         Reikia senesnės versijos?
       </p>
-      <a href="https://jumpsipidy.online/archived/" class="btn-archive-link">
+      <a href="archive.html" class="btn-archive-link">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         <span data-en>Browse archived downloads</span>
         <span data-lt>Archyvuoti atsisiuntimai</span>
@@ -1208,25 +1215,28 @@ footer{
 
 <script>
 /* ════════════════ CONFIGURABLE DATA AREA ════════════════ */
-// Current release only. Older versions live at https://jumpsipidy.online/archived/
-const ARCHIVE_URL = 'https://jumpsipidy.online/archived/';
+// V4 is now the official current release. Download links use relative .zip files for Github Pages
 const downloadVersions = [
   {
-    id: "v3",
-    titleEN: "ElijasGPT v.3.0 - ALPHA-made for eduka",
-    titleLT: "ElijasGPT v.3.0 - ALPHA- Eduka.lt",
-    badgeEN: "Current Release",
-    badgeLT: "Dabartinė Versija",
+    id: "v4",
+    titleEN: "ElijasGPT v4.0 - WHAT, WHERE, HOW",
+    titleLT: "ElijasGPT v4.0 - KĄ, KUR, KAIP Išvestis",
+    badgeEN: "Latest Release",
+    badgeLT: "Naujausia Versija",
     notesEN: [
-      "Added alpha automatic click answer",
-      "Does not work for drag and click photo with text questions. auto is only for eduka.lt speciflicly"
+      "New actionable WHAT, WHERE, HOW instructions",
+      "Automatic task type detection (Drag-and-Drop, Choice, etc)",
+      "Fixed blurry screenshots with crisp PNG capture",
+      "Maintained 3-Way API Fallback Engine"
     ],
     notesLT: [
-      "Pridėtas automatinis paspaudimo atsakymas (Alpha)",
-      "atnaujintas auto i v3.2. NEVEIKIA DRAG KLAUSIMAM"
+      "Aiškios instrukcijos: KĄ atsakyti, KUR rasti, KAIP daryti",
+      "Automatinis užduočių tipo atpažinimas (sujungimas, pasirinkimas ir kt.)",
+      "Ištaisyta ekrano nuotraukų kokybė į ryškią PNG",
+      "Išlaikyta 3-Lygių AI Atsarginė Sistema"
     ],
-    chromeLink: "ElijasGPT-helper- chromme v3 test.rar",
-    firefoxLink: "ElijasGPT-helper- firefox v3 test.rar"
+    chromeLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/ElijasGPT/ElijasGPT-Chrome-v4.0.zip",
+    firefoxLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/ElijasGPT/ElijasGPT-Firefox-v4.0.zip"
   }
 ];
 
@@ -1243,12 +1253,12 @@ const installGuideData = {
         visTitleEN: "Save the bundle package",
         visTitleLT: "Išsaugokite atsisiųstą failą",
         visDescEN: "Your browser will save the source directory data compressions package directly into local tracks storage profiles targets.",
-        visDescLT: "Jūsų naršyklė atsisiųs programos plėtinio `.rar` failų archyvą tiesiai į jūsų atsisiuntimų aplanką."
+        visDescLT: "Jūsų naršyklė atsisiųs programos plėtinio `.zip` failų archyvą tiesiai į jūsų atsisiuntimų aplanką."
       },
       {
-        titleEN: "Extract the compressed RAR package archive",
-        titleLT: "Išskleiskite atsisiųstą RAR archyvą",
-        descEN: "Perform local file execution patterns using WinRAR or 7-Zip systems. Select Extract Here option context rules directly inside stable destination paths.",
+        titleEN: "Extract the compressed ZIP package archive",
+        titleLT: "Išskleiskite atsisiųstą ZIP archyvą",
+        descEN: "Perform local file execution patterns using Windows or Mac zip systems. Select Extract Here option context rules directly inside stable destination paths.",
         descLT: "Spustelėkite dešinį pelės mygtuką ant failo ir pasirinkite „Išskleisti čia“ (Extract Here). Gausite vientisą sistemos aplanką.",
         visTitleEN: "Extract local directories content",
         visTitleLT: "Archyvo išskleidimas aplanke",
@@ -1284,7 +1294,7 @@ const installGuideData = {
         titleEN: "Download Firefox compatible source assets",
         titleLT: "Atsisiųskite Firefox plėtinio paketą",
         descEN: "Open our multi-version picker view workspace framework to load targeted variant parameters matching local installation tracks profiles.",
-        descLT: "Spustelėkite atsisiuntimo mygtuką ir išsaugokite Firefox naršyklei pritaikytą plėtinio `.rar` failų archyvą.",
+        descLT: "Spustelėkite atsisiuntimo mygtuką ir išsaugokite Firefox naršyklei pritaikytą plėtinio `.zip` failų archyvą.",
         visTitleEN: "Firefox build capture targets",
         visTitleLT: "Firefox paketo atsisiuntimas",
         visDescEN: "The download layer streams designated repository configuration archives structured for Firefox engine rules runtime constraints.",
@@ -1292,7 +1302,7 @@ const installGuideData = {
       },
       {
         titleEN: "Extract assets contents cleanly onto paths",
-        titleLT: "Išskleiskite RAR archyvo turinį",
+        titleLT: "Išskleiskite ZIP archyvo turinį",
         descEN: "Right click the target file asset profile → Choose Extract option parameters context mapping rules to generate visible uncompressed properties.",
         descLT: "Dešiniuoju pelės klavišu spustelėkite atsisiųstą archyvą ir pasirinkite „Išskleisti čia“ parinktis.",
         visTitleEN: "Unpack core directory layouts",
@@ -1429,8 +1439,8 @@ function renderInstallSteps() {
 
 /* ── RIBBON MARQUEE STRUCTURAL BUILD ── */
 const ribbonItems = {
-  en: ['Reads any page automatically','Answers from page content only','No login required','Fresh context each session','Works on any website','Free Chrome extension','Session privacy by design','Ask in plain language'],
-  lt: ['Nuskaito puslapį automatiškai','Atsakymai tik iš puslapio','Prisijungimo nereikia','Kiekviena sesija – švari','Veikia bet kuriame puslapyje','Nemokamas Chrome plėtinys','Sesijų privatumas','Klausk paprastai']
+  en: ['Actionable Format','Automatic Detection','Lossless AI Vision','Mistral + Groq + Gemini','Works on any website','Free Chrome extension','Session privacy by design','Ask in plain language'],
+  lt: ['KĄ, KUR, KAIP Formatas','Automatinis Atpažinimas','Ryškus Ekrano AI','Mistral + Groq + Gemini','Veikia bet kuriame puslapyje','Nemokamas Chrome plėtinys','Sesijų privatumas','Klausk paprastai']
 };
 function buildRibbon() {
   const track = document.getElementById('ribbonTrack');
@@ -1477,20 +1487,20 @@ function setIStep(n) {
 
 /* ── TYPING DEMO (mock popup simulation system loop) ── */
 const demos = [
+  { url: 'eduka.lt/testas/biologija',
+    q: 'Ką čia atsakyti?',
+    a: '📌 Klausimas 1\nAtsakymas (KĄ): Chloroplastas\nVieta (KUR): 2-as langelis iš dešinės\nVeiksmas (KAIP): Nutempk „Chloroplastas“ į 2-ą langelį.' },
   { url: 'wikipedia.org/wiki/Artificial_intelligence',
     q: 'What is this article about?',
     a: 'This article covers artificial intelligence — the theory and development of computer systems that perform tasks typically requiring human intelligence, such as visual perception, speech, and reasoning.' },
   { url: 'docs.stripe.com/payments/accept-a-payment',
     q: 'How do I accept a payment?',
-    a: 'This page explains how to accept a one-time payment using Stripe\'s API. You create a PaymentIntent server-side, confirm it client-side with Stripe.js, and handle the result with a webhook.' },
-  { url: 'nytimes.com/2026/05/24/technology/...',
-    q: 'What\'s the main point of this article?',
-    a: 'The article argues that recent advances in multimodal AI are shifting how developers think about user interfaces — moving from command-based inputs toward natural, conversational interactions.' }
+    a: 'This page explains how to accept a one-time payment using Stripe\'s API. You create a PaymentIntent server-side, confirm it client-side with Stripe.js, and handle the result with a webhook.' }
 ];
 const demosLT = [
-  { a: 'Šis straipsnis nagrinėja dirbtinį intelektą — kompiuterinių sistemų teoriją ir kūrimą, atliekančių užduotis, kurioms paprastai reikia žmogaus intelekto.' },
-  { a: 'Šiame puslapyje paaiškinama, kaip priimti vienkartinį mokėjimą naudojant Stripe API. Serverio pusėje sukuriate PaymentIntent, patvirtinate jį kliento pusėje.' },
-  { a: 'Straipsnis teigia, kad naujausios pažangos daugiamodaliniame DI keičia kūrėjų požiūrį į vartotojo sąsajas — nuo komandinių įvesties prie natūralios.' }
+  { a: '📌 Klausimas 1\n• Atsakymas (KĄ): Chloroplastas\n• Vieta (KUR): 2-as langelis iš dešinės\n• Veiksmas (KAIP): Nutempk „Chloroplastas“ į 2-ą langelį dešinėje.' },
+  { a: '📌 Klausimas 2\n• Atsakymas (KĄ): 1918\n• Vieta (KUR): Tuščias teksto laukelis\n• Veiksmas (KAIP): Įrašykite skaičių „1918“ į laukelį.' },
+  { a: '📌 Klausimas 3\n• Atsakymas (KĄ): B) Vilnius\n• Vieta (KUR): Antras mygtukas iš viršaus\n• Veiksmas (KAIP): Paspauskite ant „B) Vilnius“ atsakymo.' }
 ];
 let demoIdx = 0, typeTimer = null;
 
