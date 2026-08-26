@@ -146,12 +146,13 @@ nav {
 .archive-hero::before {
   content: '';
   position: absolute;
-  inset: 0;
+  top: -20%; left: -20%; right: -20%; bottom: -20%;
   background:
     radial-gradient(ellipse 80% 60% at 20% 40%, rgba(200, 134, 26, .09) 0%, transparent 60%),
     radial-gradient(ellipse 60% 80% at 80% 60%, rgba(200, 134, 26, .06) 0%, transparent 55%),
     radial-gradient(ellipse 100% 50% at 50% 100%, rgba(26, 24, 20, .4) 0%, transparent 60%);
   pointer-events: none;
+  animation: moveGlow 25s infinite alternate ease-in-out;
 }
 .archive-hero::after {
   content: '';
@@ -813,6 +814,11 @@ footer {
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
+}
+@keyframes moveGlow {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, 3%) scale(1.05); }
+  100% { transform: translate(-3%, -2%) scale(0.98); }
 }
 
 /* ═══════════════════════ RESPONSIVE ═══════════════════════ */
