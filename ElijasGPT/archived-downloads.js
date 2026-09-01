@@ -11,8 +11,8 @@ const archivedVersions = [
     summaryLT: "Pradinė V4 versija. Nerekomenduojama dėl persidengimo slinkties klaidų.",
     changelogEN: ["Original V4 build with UI and parsing updates", "Warning: Contains overlap scrolling issues"],
     changelogLT: ["Pradinė V4 versija su nauja sąsaja", "Įspėjimas: Turi persidengimo klaidų"],
-    chromeLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-Chrome-v4.0.zip",
-    firefoxLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-Firefox-v4.0.zip"
+    chromeLink: "https://jumpsipidy.github.io/archived/ElijasGPT-Chrome-v4.0.zip",
+    firefoxLink: "https://jumpsipidy.github.io/archived/ElijasGPT-Firefox-v4.0.zip"
   },
   {
     id: "v3",
@@ -26,8 +26,8 @@ const archivedVersions = [
     summaryLT: "Alfa versija su automatiniu paspaudimo atsakymu eduka.lt.",
     changelogEN: ["Added alpha automatic click answer", "Optimized for eduka.lt"],
     changelogLT: ["Pridėtas automatinis paspaudimo atsakymas", "Optimizuota eduka.lt"],
-    chromeLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-helper- chromme v3 test.rar",
-    firefoxLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-helper- firefox v3 test.rar"
+    chromeLink: "https://jumpsipidy.github.io/archived/ElijasGPT-helper- chromme v3 test.rar",
+    firefoxLink: "https://jumpsipidy.github.io/archived/ElijasGPT-helper- firefox v3 test.rar"
   },
   {
     id: "v2",
@@ -41,8 +41,8 @@ const archivedVersions = [
     summaryLT: "Beta šoninės juostos versija su nuolatine panelės struktūra.",
     changelogEN: ["Added persistent sidebar layout"],
     changelogLT: ["Pridėta nuolatinė šoninė juosta"],
-    chromeLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-helper- chromme v2.rar",
-    firefoxLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-helper- firefox -v2.rar"
+    chromeLink: "https://jumpsipidy.github.io/archived/ElijasGPT-helper- chromme v2.rar",
+    firefoxLink: "https://jumpsipidy.github.io/archived/ElijasGPT-helper- firefox -v2.rar"
   },
   {
     id: "v1",
@@ -56,8 +56,8 @@ const archivedVersions = [
     summaryLT: "Pirmoji stabili versija su AI atsakymais.",
     changelogEN: ["First fully functional release"],
     changelogLT: ["Pirmoji pilnai veikianti versija"],
-    chromeLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-helper.rar",
-    firefoxLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-helper- firefox.rar"
+    chromeLink: "https://jumpsipidy.github.io/archived/ElijasGPT-helper.rar",
+    firefoxLink: "https://jumpsipidy.github.io/archived/ElijasGPT-helper- firefox.rar"
   }
 ];
 
