@@ -64,8 +64,8 @@ const archivedVersions = [
     type: "stable",
     badgeEN: "Stable Release",
     badgeLT: "Stabili Versija",
-    summaryEN: "First stable build with contextual AI answering.",
-    summaryLT: "Pirmoji stabili versija su AI atsakymais.",
+    summaryEN: "First stable build with contextual page answering.",
+    summaryLT: "Pirmoji stabili versija su atsakymais pagal puslapio turinį.",
     changelogEN: ["First fully functional release"],
     changelogLT: ["Pirmoji pilnai veikianti versija"],
     chromeLink: "https://jumpsipidy.github.io/Jumpsipidy.Github.io/archived/ElijasGPT-helper.rar",
@@ -74,8 +74,8 @@ const archivedVersions = [
 ];
 
 const ribbonItems = {
-  en: ['Actionable Format','Automatic Detection','Lossless AI Vision','Mistral + Groq + Gemini','Works on any website','Free Chrome extension','Session privacy by design','Ask in plain language'],
-  lt: ['KĄ, KUR, KAIP Formatas','Automatinis Atpažinimas','Ryškus Ekrano AI','Mistral + Groq + Gemini','Veikia bet kuriame puslapyje','Nemokamas Chrome plėtinys','Sesijų privatumas','Klausk paprastai']
+  en: ['Actionable Format','Automatic Detection','Clear page reading','Reliable processing','Works on any website','Free Chrome extension','Session privacy by design','Ask in plain language'],
+  lt: ['KĄ, KUR, KAIP Formatas','Automatinis Atpažinimas','Aiškus puslapio skaitymas','Patikimas veikimas','Veikia bet kuriame puslapyje','Nemokamas Chrome plėtinys','Sesijų privatumas','Klausk paprastai']
 };
 
 let lang = 'lt';
@@ -241,7 +241,7 @@ function openChangelog(id) {
   if (!v) return;
 
   const titleEl = document.getElementById('changelogTitle');
-  if (titleEl) titleEl.textContent = `ElijasGPT ${v.version}`;
+  if (titleEl) titleEl.textContent = `Elijas Helper ${v.version}`;
   
   const dateEl = document.getElementById('changelogDate');
   if (dateEl) {
