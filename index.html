@@ -380,40 +380,12 @@ body::before{
     <div class="section-label" id="r-label">Projects & Tools</div>
     <div class="cards">
 
-      <a href="https://jumpsipidy.online/jumpsipidy" class="app-card" id="card-1">
+      <a href="https://jumpsipidy.online/ElijasGPT" class="app-card" id="card-1">
         <div class="card-fill"></div>
         <div class="card-num">01</div>
         <div class="card-body">
-          <div class="card-name" id="n1">Portfolio</div>
-          <div class="card-desc" id="d1">View my latest work and projects</div>
-        </div>
-        <div class="card-arrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
-          </svg>
-        </div>
-      </a>
-
-      <a href="https://ai-document-builder-659410443561.europe-west2.run.app" class="app-card" id="card-2">
-        <div class="card-fill"></div>
-        <div class="card-num">02</div>
-        <div class="card-body">
-          <div class="card-name" id="n2">AI Document Builder</div>
-          <div class="card-desc" id="d2">Generate professional documents instantly</div>
-        </div>
-        <div class="card-arrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>
-          </svg>
-        </div>
-      </a>
-
-      <a href="https://jumpsipidy.online/ElijasGPT" class="app-card" id="card-3">
-        <div class="card-fill"></div>
-        <div class="card-num">03</div>
-        <div class="card-body">
-          <div class="card-name" id="n3">ElijasGPT</div>
-          <div class="card-desc" id="d3">AI-powered helper and tools</div>
+          <div class="card-name" id="n1">Elijas Helper</div>
+          <div class="card-desc" id="d1">Helper and tools</div>
         </div>
         <div class="card-arrow">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -433,17 +405,13 @@ const T = {
     badge:'Personal Hub',
     subtitle:'A curated collection of projects, tools and work — built with precision and care.',
     label:'Projects & Tools',
-    n1:'Portfolio',d1:'View my latest work and projects',
-    n2:'AI Document Builder',d2:'Generate professional documents instantly',
-    n3:'ElijasGPT',d3:'AI-powered helper and tools',
+    n1:'Elijas Helper',d1:'Helper and tools',
   },
   lt:{
     badge:'Asmeninis Centras',
     subtitle:'Projektų, įrankių ir darbų kolekcija — sukurta kruopščiai ir tiksliai.',
     label:'Projektai ir Įrankiai',
-    n1:'Portfolio',d1:'Peržiūrėkite mano naujausius darbus',
-    n2:'AI Dokumentų Kūrėjas',d2:'Akimirksniu kurkite profesionalius dokumentus',
-    n3:'ElijasGPT',d3:'AI pagalbininkas ir įrankiai',
+    n1:'Elijas Helper',d1:'Pagalbininkas ir įrankiai',
   }
 };
 
@@ -454,10 +422,6 @@ function launch(lang){
   document.getElementById('r-label').textContent = c.label;
   document.getElementById('n1').textContent = c.n1;
   document.getElementById('d1').textContent = c.d1;
-  document.getElementById('n2').textContent = c.n2;
-  document.getElementById('d2').textContent = c.d2;
-  document.getElementById('n3').textContent = c.n3;
-  document.getElementById('d3').textContent = c.d3;
 
   const ls = document.getElementById('lang-screen');
   ls.style.opacity = '0';
@@ -480,8 +444,6 @@ function animateIn(){
     {el:'l-meta2',   delay:420},
     {el:'r-label',   delay:200},
     {el:'card-1',    delay:320},
-    {el:'card-2',    delay:440},
-    {el:'card-3',    delay:560},
   ];
   seq.forEach(({el,delay})=>{
     const node = document.getElementById(el);
